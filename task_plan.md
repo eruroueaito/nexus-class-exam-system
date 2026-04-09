@@ -4,7 +4,7 @@
 为基于 GitHub Pages + Supabase 的在线考试/作业系统整理一份可直接执行的本地开发技术文档，并同步维护项目级规划记录文件。
 
 ## Current Phase
-Phase 4
+Phase 5
 
 ## Phases
 
@@ -38,10 +38,12 @@ Phase 4
 - **Status:** in_progress
 
 ### Phase 5: Delivery
-- [ ] 更新 planning-with-files 记录
-- [ ] 汇报首批实现结果
+- [ ] 写入最终生产联调收尾计划
+- [ ] 完成修复版 Edge Functions 远端重发与烟测
+- [ ] 完成 GitHub Pages 与 Supabase 线上联调验证
+- [ ] 回填卡点、经验和最终状态到本地文档
 - [ ] 持久化本轮项目记忆
-- **Status:** pending
+- **Status:** in_progress
 
 ## Key Questions
 1. 如何在 GitHub Pages 前端前提下，保证题目与答案不直接暴露给学生？
@@ -133,4 +135,10 @@ Phase 4
 - 4. 初始化 git、创建 GitHub 仓库并完成 Pages 部署
 - 5. 生成真实英文博弈论试题 JSON 作为联调测试数据
 - 6. 下一阶段进入 AI 导题、打印导出与 admin route 代码拆分
+- 当前最终收尾切片限定为生产联调闭环：
+- 1. 用 helper RPC 替代 Edge Function 中对 `app_private` 的直接访问
+- 2. 将修复版函数全量重发到远端 Supabase
+- 3. 对学生开始考试、提交考试和管理员读取试卷做真实烟测
+- 4. 将通过验证的前端代码推送到 GitHub Pages
+- 5. 把生产卡点、修复路径、key 使用边界和经验总结写回本地文档
 - 文档中会显式标记对原始需求的必要修正点，避免后续实现时返工。

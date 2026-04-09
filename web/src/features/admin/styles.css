@@ -113,6 +113,11 @@
   font-size: 0.875rem;
 }
 
+.ai-sync-panel__textarea {
+  min-height: 16rem;
+  font-family: "SF Mono", Menlo, monospace;
+}
+
 .analytics-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);

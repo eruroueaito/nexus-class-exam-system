@@ -32,6 +32,68 @@ class FakeClient {
     return new FakeClient(this.tables, schemaName)
   }
 
+  async rpc(functionName: string, args?: Record<string, unknown>) {
+    switch (functionName) {
+      case 'get_exam_access_password_hash': {
+        const examId = args?.target_exam_id
+        const examAccessRows = this.tables['app_private.exam_access'] ?? []
+        const record = examAccessRows.find((row) => row.exam_id === examId) ?? null
+        return {
+          data: record ? record.password_hash ?? null : null,
+          error: null,
+        }
+      }
+      case 'list_exam_answer_records': {
+        const examId = args?.target_exam_id
+        const questions = this.tables.questions ?? []
+        const questionIds = new Set(
+          questions
+            .filter((question) => question.exam_id === examId)
+            .map((question) => String(question.id)),
+        )
+        const answers = this.tables['app_private.answers_library'] ?? []
+
+        return {
+          data: answers.filter((answer) => questionIds.has(String(answer.question_id))),
+          error: null,
+        }
+      }
+      case 'create_exam_access_record': {
+        const examAccessRows = this.tables['app_private.exam_access'] ?? []
+        examAccessRows.push({
+          exam_id: args?.target_exam_id,
+          password_hash: args?.target_password_hash,
+        })
+        return { data: null, error: null }
+      }
+      case 'upsert_answer_record': {
+        const answers = this.tables['app_private.answers_library'] ?? []
+        const existing = answers.find(
+          (answer) => answer.question_id === args?.target_question_id,
+        )
+
+        if (existing) {
+          existing.correct_answer = args?.target_correct_answer
+          existing.explanation = args?.target_explanation
+        } else {
+          answers.push({
+            id: `answer-${answers.length + 1}`,
+            question_id: args?.target_question_id,
+            correct_answer: args?.target_correct_answer,
+            explanation: args?.target_explanation,
+          })
+        }
+
+        return { data: null, error: null }
+      }
+      default:
+        return {
+          data: null,
+          error: { message: `Unsupported RPC: ${functionName}` },
+        }
+    }
+  }
+
   from(table: string) {
     return new FakeQuery(this.tables, this.schemaName, table)
   }

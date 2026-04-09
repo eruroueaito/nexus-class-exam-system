@@ -7,6 +7,7 @@
  */
 
 import { getSupabaseBrowserClient } from '../../../lib/supabase'
+import { aiExamImportSchema } from '../schemas/aiPayloadSchema'
 
 export const FALLBACK_EXAM_ID = '11111111-1111-1111-1111-111111111111'
 
@@ -91,6 +92,12 @@ export interface CreateExamDraftResult {
 export interface DeleteExamDraftResult {
   examId: string
   deleted: boolean
+}
+
+export interface ImportExamFromJsonResult {
+  examId: string
+  examTitle: string
+  savedQuestionCount: number
 }
 
 export function relabelQuestions(questions: EditableQuestionSnapshot[]) {
@@ -223,6 +230,11 @@ export function mapExamEditorSavePayload(
   }
 }
 
+export function parseAiExamImportPayload(rawJson: string) {
+  const parsed = JSON.parse(rawJson) as unknown
+  return aiExamImportSchema.parse(parsed)
+}
+
 export async function getExamEditorData(
   examId: string,
 ): Promise<ExamEditorSnapshot> {
@@ -293,12 +305,12 @@ export async function saveExamEditorData(
   }
 }
 
-export async function createExamDraft(): Promise<CreateExamDraftResult> {
+export async function createExamDraft(examTitle = 'Untitled Exam'): Promise<CreateExamDraftResult> {
   try {
     const client = getSupabaseBrowserClient()
     const { data, error } = await client.functions.invoke('create-exam-draft', {
       body: {
-        exam_title: 'Untitled Exam',
+        exam_title: examTitle,
       },
     })
 
@@ -313,7 +325,7 @@ export async function createExamDraft(): Promise<CreateExamDraftResult> {
   } catch {
     return {
       examId: FALLBACK_EXAM_ID,
-      examTitle: fallbackExamEditorData.examTitle,
+      examTitle,
     }
   }
 }
@@ -342,5 +354,37 @@ export async function deleteExamDraft(
       examId,
       deleted: true,
     }
+  }
+}
+
+export async function importExamFromJson(
+  rawJson: string,
+): Promise<ImportExamFromJsonResult> {
+  const payload = parseAiExamImportPayload(rawJson)
+  const createdExam = await createExamDraft(payload.exam_title)
+
+  const snapshot: ExamEditorSnapshot = {
+    examId: createdExam.examId,
+    examTitle: payload.exam_title,
+    examStatusLabel: 'Draft',
+    questions: relabelQuestions(
+      payload.questions.map((question) => ({
+        id: question.id ?? crypto.randomUUID(),
+        questionLabel: 'Question 00',
+        type: question.type,
+        stem: question.stem,
+        options: question.type === 'text' ? [] : question.options,
+        correctAnswerValues: question.correct_answer,
+        explanation: question.explanation,
+      })),
+    ),
+  }
+
+  const savedExam = await saveExamEditorData(snapshot)
+
+  return {
+    examId: savedExam.examId,
+    examTitle: savedExam.examTitle,
+    savedQuestionCount: savedExam.savedQuestionCount,
   }
 }

@@ -3,9 +3,11 @@ import {
   createExamDraft,
   deleteExamDraft,
   getExamEditorData,
+  importExamFromJson,
   listAdminExams,
   mapExamEditorData,
   mapExamEditorSavePayload,
+  parseAiExamImportPayload,
   saveExamEditorData,
   type ExamEditorSnapshot,
 } from './examAdminApi'
@@ -327,6 +329,97 @@ describe('examAdminApi', () => {
       body: {
         exam_title: 'Untitled Exam',
       },
+    })
+  })
+
+  test('parses a valid AI exam import payload', () => {
+    expect(
+      parseAiExamImportPayload(
+        JSON.stringify({
+          exam_title: 'Game Theory - Midterm Assessment',
+          questions: [
+            {
+              type: 'radio',
+              stem: 'What is a dominant strategy?',
+              options: [
+                { id: 'A', text: 'A weak response' },
+                { id: 'B', text: 'A best response for every opponent action' },
+              ],
+              correct_answer: ['B'],
+              explanation: 'A dominant strategy is optimal regardless of the opponent action.',
+            },
+          ],
+        }),
+      ),
+    ).toMatchObject({
+      exam_title: 'Game Theory - Midterm Assessment',
+      questions: [
+        {
+          type: 'radio',
+          correct_answer: ['B'],
+        },
+      ],
+    })
+  })
+
+  test('imports an AI exam payload by creating and saving a draft exam', async () => {
+    invokeMock
+      .mockResolvedValueOnce({
+        data: {
+          exam: {
+            id: 'exam-9',
+            title: 'Game Theory - Midterm Assessment',
+            is_active: false,
+          },
+        },
+        error: null,
+      })
+      .mockResolvedValueOnce({
+        data: {
+          exam: {
+            id: 'exam-9',
+            title: 'Game Theory - Midterm Assessment',
+          },
+          saved_question_count: 1,
+        },
+        error: null,
+      })
+
+    await expect(
+      importExamFromJson(
+        JSON.stringify({
+          exam_title: 'Game Theory - Midterm Assessment',
+          questions: [
+            {
+              id: 'question-1',
+              type: 'radio',
+              stem: 'What is a dominant strategy?',
+              options: [
+                { id: 'A', text: 'A weak response' },
+                { id: 'B', text: 'A best response for every opponent action' },
+              ],
+              correct_answer: ['B'],
+              explanation: 'A dominant strategy is optimal regardless of the opponent action.',
+            },
+          ],
+        }),
+      ),
+    ).resolves.toEqual({
+      examId: 'exam-9',
+      examTitle: 'Game Theory - Midterm Assessment',
+      savedQuestionCount: 1,
+    })
+
+    expect(invokeMock).toHaveBeenNthCalledWith(1, 'create-exam-draft', {
+      body: {
+        exam_title: 'Game Theory - Midterm Assessment',
+      },
+    })
+    expect(invokeMock).toHaveBeenNthCalledWith(2, 'save-exam-draft', {
+      body: expect.objectContaining({
+        exam_id: 'exam-9',
+        exam_title: 'Game Theory - Midterm Assessment',
+      }),
     })
   })
 

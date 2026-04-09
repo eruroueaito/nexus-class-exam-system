@@ -148,6 +148,10 @@ function buildPrototypeResult(answers: Record<string, AnswerValue>): ExamResult 
   }
 }
 
+function printResultSummary() {
+  window.print()
+}
+
 export function NexusShellPage() {
   const navigate = useNavigate()
   const examApi = createBrowserExamApi()
@@ -610,6 +614,13 @@ export function NexusShellPage() {
               ))}
             </div>
             <div className="quiz-actions">
+              <button
+                className="btn btn-secondary"
+                type="button"
+                onClick={printResultSummary}
+              >
+                Print Results
+              </button>
               <button
                 className="btn"
                 type="button"

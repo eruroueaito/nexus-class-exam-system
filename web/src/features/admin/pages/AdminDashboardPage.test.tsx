@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { beforeEach, describe, expect, test, vi } from 'vitest'
 import { AdminDashboardPage } from './AdminDashboardPage'
@@ -20,6 +20,10 @@ const { listAdminExamsMock } = vi.hoisted(() => ({
   listAdminExamsMock: vi.fn(),
 }))
 
+const { importExamFromJsonMock } = vi.hoisted(() => ({
+  importExamFromJsonMock: vi.fn(),
+}))
+
 vi.mock('../../auth/api/adminLogin', () => ({
   getAdminSession: getAdminSessionMock,
   signOutAdmin: signOutAdminMock,
@@ -32,6 +36,7 @@ vi.mock('../api/analyticsApi', () => ({
 vi.mock('../api/examAdminApi', () => ({
   FALLBACK_EXAM_ID: '11111111-1111-1111-1111-111111111111',
   createExamDraft: createExamDraftMock,
+  importExamFromJson: importExamFromJsonMock,
   listAdminExams: listAdminExamsMock,
 }))
 
@@ -42,6 +47,7 @@ describe('AdminDashboardPage', () => {
     getExamAnalyticsMock.mockReset()
     createExamDraftMock.mockReset()
     listAdminExamsMock.mockReset()
+    importExamFromJsonMock.mockReset()
   })
 
   test('redirects unauthenticated visitors to the admin login page', async () => {
@@ -187,5 +193,48 @@ describe('AdminDashboardPage', () => {
       'href',
       '/admin/exams/exam-2',
     )
+  })
+
+  test('imports a JSON draft and opens the created exam editor route', async () => {
+    getAdminSessionMock.mockResolvedValue({
+      email: 'admin@example.com',
+    })
+    getExamAnalyticsMock.mockResolvedValue({
+      averageAccuracyLabel: '83.3%',
+      activeStudents: 2,
+      commonErrorLabel: 'Q.01',
+      scoreTrend: [],
+      questionHeat: [],
+    })
+    listAdminExamsMock.mockResolvedValue([])
+    importExamFromJsonMock.mockResolvedValue({
+      examId: 'exam-imported',
+      examTitle: 'Game Theory - Midterm Assessment',
+      savedQuestionCount: 1,
+    })
+
+    render(
+      <MemoryRouter initialEntries={['/admin']}>
+        <Routes>
+          <Route path="/admin" element={<AdminDashboardPage />} />
+          <Route path="/admin/exams/:examId" element={<div>Imported Exam Route</div>} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    const textarea = await screen.findByLabelText('JSON Payload')
+    fireEvent.change(textarea, {
+      target: {
+        value:
+          '{"exam_title":"Game Theory - Midterm Assessment","questions":[{"type":"text","stem":"Define Nash equilibrium.","correct_answer":["best response"],"explanation":"A Nash equilibrium is a profile of mutual best responses."}]}',
+      },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Import JSON Draft' }))
+
+    await waitFor(() => {
+      expect(importExamFromJsonMock).toHaveBeenCalled()
+    })
+
+    expect(await screen.findByText('Imported Exam Route')).toBeInTheDocument()
   })
 })

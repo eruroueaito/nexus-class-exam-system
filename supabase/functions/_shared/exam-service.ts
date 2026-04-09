@@ -9,6 +9,10 @@ type JsonValue =
 interface ServiceClient {
   from: (table: string) => QueryBuilder
   schema: (schema: string) => ServiceClient
+  rpc: (
+    fn: string,
+    args?: Record<string, unknown>,
+  ) => PromiseLike<{ data: unknown; error: { message: string } | null }>
 }
 
 interface QueryBuilder {
@@ -222,6 +226,30 @@ async function sha256Hex(value: string) {
     .join('')
 }
 
+async function getExamAccessPasswordHash(client: ServiceClient, examId: string) {
+  const response = await client.rpc('get_exam_access_password_hash', {
+    target_exam_id: examId,
+  })
+
+  if (response.error) {
+    throw new Error(response.error.message)
+  }
+
+  return response.data as string | null
+}
+
+async function listExamAnswerRecords(client: ServiceClient, examId: string) {
+  const response = await client.rpc('list_exam_answer_records', {
+    target_exam_id: examId,
+  })
+
+  if (response.error) {
+    throw new Error(response.error.message)
+  }
+
+  return (response.data as AnswerRow[]) ?? []
+}
+
 export async function loadExamCatalog(client: ServiceClient) {
   const response = await client
     .from('exam_catalog')
@@ -261,20 +289,9 @@ export async function startExam(client: ServiceClient, request: StartExamRequest
     }
   }
 
-  const accessResponse = await client
-    .schema('app_private')
-    .from('exam_access')
-    .select('password_hash')
-    .eq('exam_id', request.examId)
-    .maybeSingle()
+  const passwordHash = await getExamAccessPasswordHash(client, request.examId)
 
-  if (accessResponse.error) {
-    throw new Error(accessResponse.error.message)
-  }
-
-  const accessRecord = accessResponse.data as { password_hash: string } | null
-
-  if (!accessRecord) {
+  if (!passwordHash) {
     return {
       status: 500,
       body: {
@@ -288,7 +305,7 @@ export async function startExam(client: ServiceClient, request: StartExamRequest
 
   const providedHash = await sha256Hex(request.accessPassword)
 
-  if (providedHash !== accessRecord.password_hash) {
+  if (providedHash !== passwordHash) {
     return {
       status: 403,
       body: {
@@ -361,16 +378,7 @@ export async function submitExam(client: ServiceClient, request: SubmitExamReque
 
   const questions = (questionResponse.data as QuestionRow[]) ?? []
 
-  const answerResponse = await client
-    .schema('app_private')
-    .from('answers_library')
-    .select('question_id,correct_answer,explanation')
-
-  if (answerResponse.error) {
-    throw new Error(answerResponse.error.message)
-  }
-
-  const answerRows = (answerResponse.data as AnswerRow[]) ?? []
+  const answerRows = await listExamAnswerRecords(client, request.examId)
   const answerMap = new Map(answerRows.map((row) => [row.question_id, row]))
 
   const submissionItems = questions.map((question) => {
@@ -490,17 +498,8 @@ export async function loadExamDraft(
     throw new Error(questionResponse.error.message)
   }
 
-  const answerResponse = await client
-    .schema('app_private')
-    .from('answers_library')
-    .select('question_id,correct_answer,explanation')
-
-  if (answerResponse.error) {
-    throw new Error(answerResponse.error.message)
-  }
-
   const questions = (questionResponse.data as Array<QuestionRow & { order_index?: number }>) ?? []
-  const answerRows = (answerResponse.data as AnswerRow[]) ?? []
+  const answerRows = await listExamAnswerRecords(client, request.examId)
   const answerMap = new Map(answerRows.map((row) => [row.question_id, row]))
 
   return {
@@ -541,13 +540,10 @@ export async function createExamDraft(
 
   const exam = examInsertResponse.data as ExamRow
   const passwordHash = await sha256Hex('changeme123')
-  const accessInsertResponse = await client
-    .schema('app_private')
-    .from('exam_access')
-    .insert({
-      exam_id: exam.id,
-      password_hash: passwordHash,
-    })
+  const accessInsertResponse = await client.rpc('create_exam_access_record', {
+    target_exam_id: exam.id,
+    target_password_hash: passwordHash,
+  })
 
   if (accessInsertResponse.error) {
     throw new Error(accessInsertResponse.error.message)
@@ -643,16 +639,7 @@ export async function saveExamDraft(
 
   const storedQuestions = (questionResponse.data as QuestionRow[]) ?? []
   const questionMap = new Map(storedQuestions.map((question) => [question.id, question]))
-  const answerResponse = await client
-    .schema('app_private')
-    .from('answers_library')
-    .select('question_id,correct_answer,explanation')
-
-  if (answerResponse.error) {
-    throw new Error(answerResponse.error.message)
-  }
-
-  const storedAnswers = (answerResponse.data as AnswerRow[]) ?? []
+  const storedAnswers = await listExamAnswerRecords(client, request.examId)
   const answerMap = new Map(storedAnswers.map((answer) => [answer.question_id, answer]))
 
   for (const question of request.questions) {
@@ -720,17 +707,14 @@ export async function saveExamDraft(
         throw new Error(insertQuestionResponse.error.message)
       }
 
-      const insertAnswerResponse = await client
-        .schema('app_private')
-        .from('answers_library')
-        .insert({
-          question_id: question.id,
-          correct_answer: normalizeCorrectAnswerForStorage(
-            question.type,
-            question.correctAnswer,
-          ),
-          explanation: question.explanation,
-        })
+      const insertAnswerResponse = await client.rpc('upsert_answer_record', {
+        target_question_id: question.id,
+        target_correct_answer: normalizeCorrectAnswerForStorage(
+          question.type,
+          question.correctAnswer,
+        ),
+        target_explanation: question.explanation,
+      })
 
       if (insertAnswerResponse.error) {
         throw new Error(insertAnswerResponse.error.message)
@@ -760,17 +744,14 @@ export async function saveExamDraft(
       throw new Error(updateResponse.error.message)
     }
 
-    const answerUpdateResponse = await client
-      .schema('app_private')
-      .from('answers_library')
-      .update({
-        correct_answer: normalizeCorrectAnswerForStorage(
-          question.type,
-          question.correctAnswer,
-        ),
-        explanation: question.explanation,
-      })
-      .eq('question_id', question.id)
+    const answerUpdateResponse = await client.rpc('upsert_answer_record', {
+      target_question_id: question.id,
+      target_correct_answer: normalizeCorrectAnswerForStorage(
+        question.type,
+        question.correctAnswer,
+      ),
+      target_explanation: question.explanation,
+    })
 
     if (answerUpdateResponse.error) {
       throw new Error(answerUpdateResponse.error.message)

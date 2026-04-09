@@ -176,4 +176,72 @@ describe('NexusShellPage', () => {
       screen.getByText('Opportunity cost is the value of the next best option.'),
     ).toBeInTheDocument()
   })
+
+  test('prints the result summary on demand', async () => {
+    const printMock = vi.fn()
+    vi.stubGlobal('print', printMock)
+
+    startExamMock.mockResolvedValue({
+      exam: {
+        id: 'exam-1',
+        title: 'Microeconomics - Midterm Assessment',
+      },
+      user_name: 'Alice',
+      questions: [
+        {
+          id: 'question-1',
+          type: 'radio',
+          content: {
+            stem: 'What does opportunity cost describe?',
+            options: [
+              { id: 'A', text: 'Money already spent' },
+              { id: 'B', text: 'The next best alternative foregone' },
+            ],
+          },
+        },
+      ],
+    })
+
+    submitExamMock.mockResolvedValue({
+      submission_id: 'submission-1',
+      exam: {
+        id: 'exam-1',
+        title: 'Microeconomics - Midterm Assessment',
+      },
+      score: 1,
+      correct_count: 1,
+      total_count: 1,
+      items: [
+        {
+          question_id: 'question-1',
+          user_answer: ['B'],
+          correct_answer: ['B'],
+          is_correct: true,
+          explanation: 'Opportunity cost is the value of the next best option.',
+        },
+      ],
+    })
+
+    render(
+      <MemoryRouter>
+        <NexusShellPage />
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Student Access' }))
+    fireEvent.click(screen.getByRole('button', { name: /Microeconomics - Midterm Assessment/ }))
+    fireEvent.change(screen.getByLabelText('Your Name'), {
+      target: { value: 'Alice' },
+    })
+    fireEvent.change(screen.getByLabelText('Access Password'), {
+      target: { value: '123456' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Start Assignment' }))
+    fireEvent.click(await screen.findByRole('radio', { name: 'The next best alternative foregone' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Submit Assignment' }))
+
+    expect(await screen.findByRole('button', { name: 'Print Results' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Print Results' }))
+    expect(printMock).toHaveBeenCalledTimes(1)
+  })
 })

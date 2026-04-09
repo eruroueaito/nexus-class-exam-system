@@ -9,12 +9,14 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { AdminLayout } from '../components/AdminLayout'
+import { AiSyncPanel } from '../components/AiSyncPanel'
 import { QuestionHeatTable } from '../components/QuestionHeatTable'
 import { ScoreTrendChart } from '../components/ScoreTrendChart'
 import { getExamAnalytics, type AdminAnalyticsSnapshot } from '../api/analyticsApi'
 import {
   FALLBACK_EXAM_ID,
   createExamDraft,
+  importExamFromJson,
   listAdminExams,
   type AdminExamListItem,
 } from '../api/examAdminApi'
@@ -130,6 +132,11 @@ export function AdminDashboardPage() {
     }
   }
 
+  async function handleImportExam(rawJson: string) {
+    const importedExam = await importExamFromJson(rawJson)
+    navigate(`/admin/exams/${importedExam.examId}`)
+  }
+
   if (session === undefined) {
     return (
       <div className="admin-route-shell nexus-shell">
@@ -206,6 +213,8 @@ export function AdminDashboardPage() {
               ))}
             </div>
           </section>
+
+          <AiSyncPanel onImport={handleImportExam} />
         </>
       ) : (
         <section className="admin-panel">
