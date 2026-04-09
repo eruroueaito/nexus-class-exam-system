@@ -96,6 +96,39 @@
 - Planning-with-files skill: `/Users/Zhuanz/.agents/skills/planning-with-files/planning-with-files/SKILL.md`
 - Codex config: `/Users/Zhuanz/.codex/config.toml`
 
+## Production Integration Notes
+
+### Why `Invalid schema: app_private` happened and how it was fixed
+
+Supabase Edge Functions use the Supabase client library to connect to the database. By default, the client only exposes schemas listed in the Data API allow-list (`public` and `storage`). When function code called `client.schema('app_private').from('exam_access')`, Supabase rejected the call with `Invalid schema: app_private` because custom private schemas are not in the allow-list and cannot be added there without making them publicly accessible — which defeats the purpose of keeping them private.
+
+**Fix:** All access to `app_private` tables is now routed through `SECURITY DEFINER` helper functions in the `public` schema. These functions are:
+- `get_exam_access_password_hash(target_exam_id)` — reads `exam_access.password_hash`
+- `list_exam_answer_records(target_exam_id)` — reads `answers_library` joined to `questions`
+- `create_exam_access_record(target_exam_id, target_password_hash)` — inserts into `exam_access`
+- `upsert_answer_record(target_question_id, target_correct_answer, target_explanation)` — upserts into `answers_library`
+
+Each helper has `EXECUTE` granted only to `service_role` and revoked from `public`, so browser clients cannot call them directly even if they somehow know the function name.
+
+### Why the frontend must only use the publishable key, not the secret key
+
+The `service_role` (secret) key bypasses all Row Level Security policies. If it were embedded in the frontend JavaScript bundle, any user who opens browser devtools could extract it and gain unrestricted read/write access to the entire database — including private answers, all student submissions, and admin credentials.
+
+The publishable key is an unprivileged API key that respects RLS. The frontend uses it for:
+- `supabase.auth.*` — sign-in and session management (admin login page)
+- `supabase.from('exam_catalog')` — public exam list (allowed by anon SELECT policy)
+- Calling Edge Function URLs with the key in the `apikey` header — functions internally create a `service_role` client from environment variables, which never leave the server
+
+### Why sensitive logic must go through Edge Functions or helper RPCs
+
+Three categories of operations cannot safely run in the browser:
+
+1. **Access password verification** — The stored password hash must never be returned to the browser. The `start-exam` function receives the plaintext password, computes the hash server-side, compares it against the stored hash via RPC, and only then returns the question list.
+
+2. **Answer evaluation and submission scoring** — Correct answers are stored in `app_private.answers_library`. The `submit-exam` function reads them via `list_exam_answer_records` RPC, evaluates each answer, and writes the scored `submission_items`. The browser never sees the correct answers before or during the exam.
+
+3. **Admin write operations** — Creating, updating, and deleting exams and questions requires both a verified admin session (`app_metadata.role === 'admin'`) and service-role-level writes to `app_private`. The `requireAdminUser` helper verifies the session using the user's JWT, then the function switches to a service-role client for the actual database writes.
+
 ## Visual/Browser Findings
 - 本轮任务未使用浏览器可视化探索。
 

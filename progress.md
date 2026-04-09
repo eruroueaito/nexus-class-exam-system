@@ -287,6 +287,33 @@
 | 2026-04-09 16:15 | 目标测试第一次运行使用了仓库根相对路径，Vitest 在 `web/` 下没有匹配到测试文件 | 1 | 改成 `tests/...` 和 `src/...` 的 `web` 目录内相对路径 |
 | 2026-04-09 16:30 | GitHub Pages 首次 workflow 在 `Configure Pages` 失败，因为新仓库还没有 Pages site | 1 | 先用 `gh api -X POST repos/eruroueaito/nexus-class-exam-system/pages -f build_type=workflow` 创建站点，再重跑 workflow |
 
+### Phase 5: Production Finish (continued)
+- **Status:** complete
+- Actions taken:
+  - Confirmed all 3 remote migrations applied and 4 helper RPCs exist in production.
+  - Deployed all 6 Edge Functions (start-exam v3, submit-exam v3, load-exam-draft v2, save-exam-draft v2, create-exam-draft v2, delete-exam-draft v2) via MCP with RPC-only service layer.
+  - Ran smoke tests: start-exam → 200, submit-exam → 200 score=1.0 (3/3 correct, submission persisted), load-exam-draft → 401 without admin JWT (auth boundary verified).
+  - Confirmed GitHub repository variables VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY are set.
+  - Committed 17 files including helper migration, plan docs, and frontend test extensions.
+  - Pushed to main; GitHub Actions workflow succeeded; Pages URL returns HTTP 200.
+  - Documented production integration lessons in findings.md (app_private schema access, publishable key model, Edge Function security boundary).
+- Files created/modified:
+  - `supabase/migrations/20260409193000_private_helper_functions.sql` (committed)
+  - `docs/superpowers/plans/2026-04-09-production-finish.md` (committed)
+  - `web/src/features/admin/components/AiSyncPanel.tsx` (committed)
+  - `web/src/features/admin/schemas/aiPayloadSchema.ts` (committed)
+  - `findings.md` (updated with Production Integration Notes)
+  - `progress.md` (updated)
+  - `task_plan.md` (updated)
+
+## Test Results (Production Smoke Tests — 2026-04-09)
+| Test | Endpoint | Input | Expected | Actual | Status |
+|------|----------|-------|----------|--------|--------|
+| start-exam smoke | `/functions/v1/start-exam` | exam_id=11111111, password=123456, user=smoke-test-user | HTTP 200, 3 questions returned, no answers in response | 200, exam+questions payload, no correct_answer field | ✓ |
+| submit-exam smoke | `/functions/v1/submit-exam` | exam_id=11111111, 3 correct answers | HTTP 200, score=1.0, submission_id written to DB | 200, score=1.0, correct_count=3, submission_id=5f50fb6c | ✓ |
+| load-exam-draft auth boundary | `/functions/v1/load-exam-draft` | no Authorization header | HTTP 401 | 401 missing_authorization | ✓ |
+| GitHub Pages deployment | https://eruroueaito.github.io/nexus-class-exam-system/ | GET / | HTTP 200 | 200 | ✓ |
+
 ## 5-Question Reboot Check
 | Question | Answer |
 |----------|--------|

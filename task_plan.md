@@ -38,12 +38,12 @@ Phase 5
 - **Status:** in_progress
 
 ### Phase 5: Delivery
-- [ ] 写入最终生产联调收尾计划
-- [ ] 完成修复版 Edge Functions 远端重发与烟测
-- [ ] 完成 GitHub Pages 与 Supabase 线上联调验证
-- [ ] 回填卡点、经验和最终状态到本地文档
+- [x] 写入最终生产联调收尾计划
+- [x] 完成修复版 Edge Functions 远端重发与烟测
+- [x] 完成 GitHub Pages 与 Supabase 线上联调验证
+- [x] 回填卡点、经验和最终状态到本地文档
 - [ ] 持久化本轮项目记忆
-- **Status:** in_progress
+- **Status:** complete
 
 ## Key Questions
 1. 如何在 GitHub Pages 前端前提下，保证题目与答案不直接暴露给学生？
