@@ -1,0 +1,55 @@
+:root {
+  --bg-base: #f5f5f7;
+  --accent: #0071e3;
+  --glass-white: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --text-main: #1d1d1f;
+  --text-secondary: #86868b;
+  --ease-apple: cubic-bezier(0.25, 1, 0.5, 1);
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue',
+    sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--text-main);
+  background: var(--bg-base);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  transition:
+    background-color 0.4s var(--ease-apple),
+    border-color 0.4s var(--ease-apple),
+    color 0.4s var(--ease-apple),
+    transform 0.4s var(--ease-apple),
+    opacity 0.4s var(--ease-apple);
+}
+
+html,
+body,
+#root {
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Class | Digital Learning Environment</title>
+    <style>
+        :root {
+            --bg-base: #f5f5f7;
+            --accent: #0071e3;
+            --glass-white: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-main: #1d1d1f;
+            --text-secondary: #86868b;
+            --ease-apple: cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        * { box-sizing: border-box; transition: all 0.4s var(--ease-apple); }
+
+        body, html {
+            margin: 0; padding: 0;
+            font-family: -apple-system, "SF Pro Display", "Helvetica Neue", sans-serif;
+            background: var(--bg-base);
+            color: var(--text-main);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .background-blobs {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 20% 30%, #e0eafc 0%, #cfdef3 100%);
+            z-index: -1;
+        }
+
+        .blob {
+            position: absolute; width: 500px; height: 500px;
+            background: rgba(0, 113, 227, 0.08);
+            filter: blur(80px); border-radius: 50%;
+            animation: drift 20s infinite alternate linear;
+        }
+
+        .app-container {
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; width: 100vw; padding: 20px;
+        }
+
+        .glass-panel {
+            background: var(--glass-white);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 36px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.04);
+            width: 100%; max-width: 940px; height: 640px;
+            display: flex; flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .view-section {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            padding: 50px; display: none;
+            opacity: 0; transform: translateY(24px);
+        }
+
+        .view-section.active {
+            display: flex; flex-direction: column;
+            opacity: 1; transform: translateY(0);
+            animation: slideIn 0.8s var(--ease-apple) forwards;
+        }
+
+        @keyframes slideIn { to { opacity: 1; transform: translateY(0); } }
+
+        input[type="text"], input[type="password"] {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0,0,0,0.05);
+            padding: 14px 20px; border-radius: 14px;
+            outline: none; font-size: 16px; margin-bottom: 16px;
+        }
+
+        .btn {
+            background: var(--accent); color: white;
+            border: none; padding: 14px 28px; border-radius: 14px;
+            font-weight: 500; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 113, 227, 0.15);
+        }
+
+        .btn:hover { transform: scale(1.02); filter: brightness(1.05); }
+        .btn:active { transform: scale(0.98); }
+
+        .quiz-card {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 24px; border-radius: 22px;
+            margin-bottom: 18px; border: 1px solid rgba(255,255,255,0.6);
+            cursor: pointer;
+        }
+        .quiz-card:hover { background: rgba(255,255,255,0.7); border-color: var(--accent); }
+
+        .progress-bar {
+            height: 4px; background: rgba(0,0,0,0.03);
+            width: 100%; position: absolute; top: 0; left: 0;
+        }
+        .progress-inner {
+            height: 100%; background: var(--accent); width: 0%;
+            transition: width 1s var(--ease-apple);
+        }
+
+        .stat-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+        }
+        .stat-item {
+            background: rgba(255,255,255,0.35); padding: 20px;
+            border-radius: 20px; text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .ai-interface {
+            margin-top: auto; background: rgba(0,0,0,0.03);
+            border-radius: 18px; padding: 20px;
+            font-family: "SF Mono", Menlo, monospace;
+        }
+
+        @keyframes drift { from { transform: translate(-5%, -5%); } to { transform: translate(5%, 5%); } }
+    </style>
+</head>
+<body>
+
+<div class="background-blobs">
+    <div class="blob" style="top: -10%; left: -10%;"></div>
+    <div class="blob" style="bottom: -10%; right: -10%; background: rgba(134, 134, 139, 0.05);"></div>
+</div>
+
+<div class="app-container">
+    <div class="glass-panel">
+        <div class="progress-bar"><div class="progress-inner" id="globalProgress"></div></div>
+
+        <section id="loginView" class="view-section active">
+            <h1 style="font-size: 34px; letter-spacing: -0.03em; margin-bottom: 8px;">Nexus Class</h1>
+            <p style="color: var(--text-secondary); margin-bottom: 48px; font-size: 18px;">Select your role to continue.</p>
+            <div style="display: flex; gap: 16px;">
+                <button class="btn" style="background: white; color: var(--text-main); border: 1px solid rgba(0,0,0,0.05);" onclick="showView('examListView')">Student Access</button>
+                <button class="btn" onclick="showView('adminView')">Administrator Portal</button>
+            </div>
+        </section>
+
+        <section id="examListView" class="view-section">
+            <h2 style="font-size: 24px; margin-bottom: 24px;">Available Assignments</h2>
+            <div style="overflow-y: auto;">
+                <div class="quiz-card" onclick="startExam()">
+                    <h3 style="margin: 0 0 6px 0;">Microeconomics - Midterm Assessment</h3>
+                    <p style="font-size: 14px; color: var(--text-secondary); margin: 0;">15 Questions • Estimated 20 mins • Password Protected</p>
+                </div>
+                <div class="quiz-card" style="opacity: 0.5; cursor: not-allowed;">
+                    <h3 style="margin: 0 0 6px 0;">Macroeconomics - Exercise Set 04</h3>
+                    <p style="font-size: 14px; color: var(--text-secondary); margin: 0;">Not yet released by instructor</p>
+                </div>
+            </div>
+            <button class="btn" style="margin-top: auto; background: transparent; color: var(--text-secondary); box-shadow: none;" onclick="showView('loginView')">← Back</button>
+        </section>
+
+        <section id="quizView" class="view-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <span style="font-size: 13px; color: var(--accent); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">Question 04 / 15</span>
+                <span id="timer" style="font-variant-numeric: tabular-nums; font-weight: 500; font-size: 18px;">09:41</span>
+            </div>
+            <div style="flex: 1;">
+                <p style="font-size: 22px; font-weight: 500; line-height: 1.4; margin-bottom: 32px;">Which of the following best describes the concept of "Opportunity Cost"?</p>
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                    <label style="padding: 18px; border: 1px solid rgba(0,0,0,0.06); border-radius: 16px; cursor: pointer; display: flex; align-items: center; gap: 12px;">
+                        <input type="radio" name="q1" style="width: 18px; height: 18px;">
+                        <span>The actual out-of-pocket monetary expenses.</span>
+                    </label>
+                    <label style="padding: 18px; border: 1px solid rgba(0,0,0,0.06); border-radius: 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: rgba(0, 113, 227, 0.03); border-color: var(--accent);">
+                        <input type="radio" name="q1" style="width: 18px; height: 18px;" checked>
+                        <span>The value of the next best alternative foregone.</span>
+                    </label>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+                <button class="btn" onclick="submitAndFinish()">Submit Assignment</button>
+            </div>
+        </section>
+
+        <section id="adminView" class="view-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+                <h2 style="margin: 0; font-size: 24px;">Admin Console</h2>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" style="padding: 10px 18px; font-size: 14px; background: white; color: var(--text-main); border: 1px solid rgba(0,0,0,0.05);" onclick="exportData()">Export HTML Report</button>
+                    <button class="btn" style="padding: 10px 18px; font-size: 14px;" onclick="showView('loginView')">Sign Out</button>
+                </div>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-item">
+                    <div style="font-size: 28px; font-weight: 600;">88.4%</div>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.03em;">Avg. Accuracy</div>
+                </div>
+                <div class="stat-item">
+                    <div style="font-size: 28px; font-weight: 600;">24</div>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.03em;">Active Students</div>
+                </div>
+                <div class="stat-item">
+                    <div style="font-size: 28px; font-weight: 600;">Q.07</div>
+                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.03em;">Common Error</div>
+                </div>
+            </div>
+
+            <div class="ai-interface">
+                <div style="font-size: 11px; margin-bottom: 12px; font-weight: 700; color: var(--text-secondary);">AI SYNC AGENT INTERFACE (RESTRICTED)</div>
+                <div style="font-size: 13px; color: #444; line-height: 1.5;">
+                    <span style="color: var(--accent);">GET</span> /api/v1/exam/id_001/sync<br>
+                    <span style="color: #27ae60;">{ "status": "ready", "rules": "strict_decoupling" }</span>
+                </div>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-top: 15px;">AI Instructions: Generate questions in JSONB format with explicit explanation strings for each answer key.</p>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+    function showView(viewId) {
+        document.querySelectorAll('.view-section').forEach(s => {
+            s.classList.remove('active');
+        });
+        const target = document.getElementById(viewId);
+        target.style.display = 'flex';
+        setTimeout(() => target.classList.add('active'), 10);
+
+        const progressMap = { 'loginView': 5, 'examListView': 35, 'quizView': 70, 'adminView': 100 };
+        document.getElementById('globalProgress').style.width = (progressMap[viewId] || 0) + '%';
+    }
+
+    function startExam() {
+        const pass = prompt("Enter Access Password for this assignment:");
+        if (pass === "123") {
+            showView('quizView');
+        } else if (pass !== null) {
+            alert("Invalid access code.");
+        }
+    }
+
+    function submitAndFinish() {
+        alert("Submission Successful.\n\nScore: 92%\nDuration: 14m 22s\n\nReturning to assignment list.");
+        showView('examListView');
+    }
+
+    function exportData() {
+        alert("Generating standalone HTML report...\n\nIncluding: Questions, Analytics, and Student Submissions with embedded Liquid Glass styling.");
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,152 @@
+{
+  "exam_title": "Game Theory - Midterm Assessment",
+  "description": "A realistic undergraduate economics game theory sample exam for system testing.",
+  "difficulty": "intermediate",
+  "language": "English",
+  "questions": [
+    {
+      "id": "11111111-2222-4333-8444-555555555551",
+      "type": "radio",
+      "stem": "In a normal-form game, what is a dominant strategy?",
+      "options": [
+        { "id": "A", "text": "A strategy that gives the highest payoff only when the opponent cooperates" },
+        { "id": "B", "text": "A strategy that yields at least as high a payoff as any other strategy for every action of the opponent" },
+        { "id": "C", "text": "A strategy that is chosen with positive probability in mixed equilibrium" },
+        { "id": "D", "text": "A strategy that maximizes total welfare for all players" }
+      ],
+      "correct_answer": ["B"],
+      "explanation": "A dominant strategy is best regardless of what the other player does. It is defined player by player, not by total welfare."
+    },
+    {
+      "id": "11111111-2222-4333-8444-555555555552",
+      "type": "radio",
+      "stem": "Which statement best describes a Nash equilibrium?",
+      "options": [
+        { "id": "A", "text": "Each player is maximizing joint payoffs" },
+        { "id": "B", "text": "Each player is using a dominant strategy" },
+        { "id": "C", "text": "No player can improve their payoff by deviating unilaterally" },
+        { "id": "D", "text": "The government has eliminated strategic uncertainty" }
+      ],
+      "correct_answer": ["C"],
+      "explanation": "A Nash equilibrium is a profile of strategies where each strategy is a best response to the others, so no one gains by changing alone."
+    },
+    {
+      "id": "11111111-2222-4333-8444-555555555553",
+      "type": "checkbox",
+      "stem": "Which of the following are standard assumptions of a one-shot Prisoner's Dilemma?",
+      "options": [
+        { "id": "A", "text": "Each prisoner chooses simultaneously" },
+        { "id": "B", "text": "Mutual confession yields a lower payoff than unilateral silence against confession" },
+        { "id": "C", "text": "The game is repeated an infinite number of times" },
+        { "id": "D", "text": "Each player takes the other player's action as given when choosing" }
+      ],
+      "correct_answer": ["A", "B", "D"],
+      "explanation": "The one-shot Prisoner's Dilemma is simultaneous and strategic. Infinite repetition is not part of the one-shot setup."
+    },
+    {
+      "id": "11111111-2222-4333-8444-555555555554",
+      "type": "radio",
+      "stem": "In a Cournot duopoly, firms compete primarily by choosing:",
+      "options": [
+        { "id": "A", "text": "Prices" },
+        { "id": "B", "text": "Advertising intensity" },
+        { "id": "C", "text": "Quantities" },
+        { "id": "D", "text": "Product quality standards" }
+      ],
+      "correct_answer": ["C"],
+      "explanation": "The canonical Cournot model treats quantities as strategic choices made simultaneously, with price determined by market demand."
+    },
+    {
+      "id": "11111111-2222-4333-8444-555555555555",
+      "type": "radio",
+      "stem": "Compared with Cournot competition, Bertrand competition with homogeneous goods and constant marginal cost usually predicts:",
+      "options": [
+        { "id": "A", "text": "A higher price and lower output" },
+        { "id": "B", "text": "Price equal to marginal cost" },
+        { "id": "C", "text": "Collusion as the unique equilibrium" },
+        { "id": "D", "text": "No pure-strategy equilibrium" }
+      ],
+      "correct_answer": ["B"],
+      "explanation": "Under standard Bertrand assumptions, price competition drives price down to marginal cost, producing the Bertrand paradox."
+    },
+    {
+      "id": "11111111-2222-4333-8444-555555555556",
+      "type": "checkbox",
+      "stem": "Which statements about subgame perfect equilibrium are correct?",
+      "options": [
+        { "id": "A", "text": "It rules out non-credible threats in dynamic games" },
+        { "id": "B", "text": "Every subgame perfect equilibrium is also a Nash equilibrium" },
+        { "id": "C", "text": "It only applies to simultaneous-move games" },
+        { "id": "D", "text": "Backward induction is often used to find it in finite perfect-information games" }
+      ],
+      "correct_answer": ["A", "B", "D"],
+      "explanation": "Subgame perfection refines Nash equilibrium in dynamic settings by requiring optimal play in every subgame, and backward induction is the standard tool in finite perfect-information cases."
+    },
+    {
+      "id": "11111111-2222-4333-8444-555555555557",
+      "type": "radio",
+      "stem": "A sequential entry game in which the incumbent threatens a price war after entry illustrates the importance of:",
+      "options": [
+        { "id": "A", "text": "Pareto efficiency" },
+        { "id": "B", "text": "Credibility of off-path actions" },
+        { "id": "C", "text": "Comparative advantage" },
+        { "id": "D", "text": "Revealed preference" }
+      ],
+      "correct_answer": ["B"],
+      "explanation": "Entry deterrence examples often turn on whether a threat is credible once the entrant has already entered."
+    },
+    {
+      "id": "11111111-2222-4333-8444-555555555558",
+      "type": "text",
+      "stem": "What concept describes a player's strategy being optimal given beliefs formed after observing previous moves in a dynamic game with incomplete information?",
+      "correct_answer": ["perfect bayesian equilibrium", "pbe"],
+      "explanation": "Perfect Bayesian equilibrium combines sequential rationality with belief updating, making it a central solution concept in dynamic games with incomplete information."
+    },
+    {
+      "id": "11111111-2222-4333-8444-555555555559",
+      "type": "radio",
+      "stem": "If two players randomize in equilibrium so that each makes the other indifferent across pure strategies, the equilibrium is:",
+      "options": [
+        { "id": "A", "text": "A correlated equilibrium" },
+        { "id": "B", "text": "A mixed-strategy Nash equilibrium" },
+        { "id": "C", "text": "A dominant-strategy equilibrium" },
+        { "id": "D", "text": "A cooperative bargaining solution" }
+      ],
+      "correct_answer": ["B"],
+      "explanation": "The indifference condition is the standard way to compute a mixed-strategy Nash equilibrium."
+    },
+    {
+      "id": "11111111-2222-4333-8444-555555555560",
+      "type": "checkbox",
+      "stem": "Which factors can help sustain collusion in an infinitely repeated oligopoly?",
+      "options": [
+        { "id": "A", "text": "A high discount factor" },
+        { "id": "B", "text": "Frequent interaction" },
+        { "id": "C", "text": "Immediate detection of deviation" },
+        { "id": "D", "text": "One firm having strictly dominant deviation profits with no future punishment" }
+      ],
+      "correct_answer": ["A", "B", "C"],
+      "explanation": "Collusion is easier to sustain when firms value the future, meet often, and can detect deviations quickly. If deviation brings gains with no punishment, collusion collapses."
+    },
+    {
+      "id": "11111111-2222-4333-8444-555555555561",
+      "type": "radio",
+      "stem": "In a signaling model, a separating equilibrium means that:",
+      "options": [
+        { "id": "A", "text": "All types choose the same signal" },
+        { "id": "B", "text": "Signals carry no information" },
+        { "id": "C", "text": "Different types choose different signals, allowing receivers to infer type" },
+        { "id": "D", "text": "Receivers ignore the signal and randomize uniformly" }
+      ],
+      "correct_answer": ["C"],
+      "explanation": "A separating equilibrium reveals private information because different sender types choose distinguishable signals."
+    },
+    {
+      "id": "11111111-2222-4333-8444-555555555562",
+      "type": "text",
+      "stem": "Name the refinement of Nash equilibrium that requires players to assign beliefs using Bayes' rule wherever possible after observing a signal.",
+      "correct_answer": ["perfect bayesian equilibrium", "pbe"],
+      "explanation": "The defining idea is that strategies must be sequentially rational and beliefs should be updated by Bayes' rule whenever the observed history occurs with positive probability."
+    }
+  ]
+}
