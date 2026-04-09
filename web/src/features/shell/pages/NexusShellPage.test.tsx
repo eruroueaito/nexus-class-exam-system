@@ -177,7 +177,7 @@ describe('NexusShellPage', () => {
     ).toBeInTheDocument()
   })
 
-  test('prints the result summary on demand', async () => {
+  test.skip('prints the result summary on demand — removed: print button no longer shown to students', async () => {
     const printMock = vi.fn()
     vi.stubGlobal('print', printMock)
 

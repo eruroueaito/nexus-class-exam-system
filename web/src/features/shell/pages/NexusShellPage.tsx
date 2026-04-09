@@ -615,13 +615,6 @@ export function NexusShellPage() {
             </div>
             <div className="quiz-actions">
               <button
-                className="btn btn-secondary"
-                type="button"
-                onClick={printResultSummary}
-              >
-                Print Results
-              </button>
-              <button
                 className="btn"
                 type="button"
                 onClick={() => resetStudentFlow('exam-list')}
