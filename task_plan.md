@@ -126,4 +126,11 @@ Phase 4
 - 3. 新增 `create-exam-draft` / `delete-exam-draft` Edge Functions
 - 4. 服务端统一处理试卷草稿创建、默认访问记录和级联删除
 - 5. 下一阶段进入试卷列表、AI 导题与 admin route 代码拆分
+- 当前切片已推进为“部署前收尾闭环”：
+- 1. dashboard 增加真实试卷列表
+- 2. 对照最初开发文档标记已完成项与未完成项
+- 3. 新增 GitHub Pages workflow 与 `vite.config.ts` base 配置
+- 4. 初始化 git、创建 GitHub 仓库并完成 Pages 部署
+- 5. 生成真实英文博弈论试题 JSON 作为联调测试数据
+- 6. 下一阶段进入 AI 导题、打印导出与 admin route 代码拆分
 - 文档中会显式标记对原始需求的必要修正点，避免后续实现时返工。

@@ -57,6 +57,10 @@
 | 试卷级新增/删除也必须继续走受限 Edge Function | 浏览器不能直接写 `exams` 与 `app_private.exam_access`，管理员会话校验和默认访问记录创建都应放在服务端 |
 | 试卷草稿创建的最小可用合同只需要 `title + inactive status + default password hash` | 这样可以先打通 dashboard 到 editor 的创建流，不必等试卷列表和密码编辑器一起完成 |
 | 删除试卷应依赖数据库级联约束而不是前端手工多次删除 | `exams -> questions -> answers_library` 与 `exam_access` 的清理应由数据库关系兜底，前端只发单次删除请求 |
+| 部署前最值得补齐的后台能力是真实试卷列表，而不是继续深挖编辑器局部交互 | 文档要求后台具备试卷 CRUD，试卷列表是管理员导航和演示闭环的最低前提 |
+| GitHub Pages 在新仓库上可能需要先创建 Pages site，随后 workflow 才能正常 deploy | 仓库首次部署时 `actions/configure-pages` 可能因为站点不存在而失败，需要先将 Pages build type 初始化为 `workflow` |
+| `vite.config.ts` 的 `base` 最稳妥的做法是从环境变量读取 | 本地开发可保持 `/`，GitHub Actions 则注入 `/<repo-name>/`，避免把仓库名写死在源码里 |
+| 真实测试题数据应先落成独立 JSON fixture，而不是直接塞进 seed 或硬编码 fallback | 这样便于后续 AI 导题、人工导入和回归测试复用，也不会污染默认演示数据 |
 
 ## Issues Encountered
 | Issue | Resolution |
@@ -78,6 +82,7 @@
 | 题目删除应优先删除 `questions` 表记录，而不是单独清理 `answers_library` | 当前 schema 已有 `ON DELETE CASCADE`，利用数据库约束比手工双删更稳妥 |
 | 选项新增的最小实现可以按 `A/B/C/...` 顺序生成新 option ID | 这足够支撑当前后台维护流，后续若支持重排再考虑更复杂的稳定 ID 策略 |
 | 目标测试首次运行时把路径写成了仓库根相对路径，Vitest 在 `web/` 内无法匹配测试文件 | 改为 `tests/...` 和 `src/...` 的 `web` 目录内相对路径 |
+| GitHub Pages 首次 workflow 运行在 `Configure Pages` 失败 | 使用本地 `gh api -X POST repos/<owner>/<repo>/pages -f build_type=workflow` 先创建 Pages site，再重跑 workflow |
 
 ## Resources
 - Frontend prototype: `/Users/Zhuanz/AI coding/Carol's test/docs/reference/nexus-class-prototype.html`

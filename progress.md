@@ -192,6 +192,18 @@
   - `web/tests/exam-service.test.ts` (updated)
   - `findings.md` (updated)
   - `task_plan.md` (updated)
+  - `docs/test-data/game-theory-midterm-sample.json` (created)
+  - `.gitignore` (created)
+  - `.github/workflows/deploy-pages.yml` (created)
+  - `web/vite.config.ts` (updated)
+  - `web/src/features/admin/api/examAdminApi.ts` (updated)
+  - `web/src/features/admin/api/examAdminApi.test.ts` (updated)
+  - `web/src/features/admin/pages/AdminDashboardPage.tsx` (updated)
+  - `web/src/features/admin/pages/AdminDashboardPage.test.tsx` (updated)
+  - `web/src/features/admin/styles.css` (updated)
+  - `docs/online-exam-system-development-plan.md` (updated)
+  - `task_plan.md` (updated)
+  - `findings.md` (updated)
 
 ## Test Results
 | Test | Input | Expected | Actual | Status |
@@ -233,6 +245,9 @@
 | Full regression after option editing slice | `cd web && npm test && npm run build` | Frontend should remain healthy after option editing workflow | 10 files / 37 tests passed; Vite build passed with chunk size warning | ✓ |
 | Exam create/delete targeted tests | `cd web && npm test -- --run tests/exam-service.test.ts src/features/admin/api/examAdminApi.test.ts src/features/admin/pages/AdminDashboardPage.test.tsx src/features/admin/pages/ExamEditorPage.test.tsx` | Secure exam-level create/delete workflow should be covered across service, API, dashboard, and editor layers | 4 files / 30 tests passed | ✓ |
 | Full regression after exam create/delete slice | `cd web && npm test && npm run build` | Frontend should remain healthy after exam-level create/delete workflow | 10 files / 43 tests passed; Vite build passed with chunk size warning | ✓ |
+| Admin exam list targeted tests | `cd web && npm test -- --run src/features/admin/api/examAdminApi.test.ts src/features/admin/pages/AdminDashboardPage.test.tsx` | Admin dashboard should load and render a browsable exam list | 2 files / 13 tests passed | ✓ |
+| Full regression after deployment-prep slice | `cd web && npm test && VITE_BASE_PATH=/nexus-class-exam-system/ npm run build` | Frontend should stay healthy after exam list and Pages config changes | 10 files / 45 tests passed; base-aware Vite build passed with chunk size warning | ✓ |
+| GitHub Pages deployment | `gh repo create` + `gh run watch` + `curl -I` | Repo should exist, workflow should deploy, and site should return 200 | Repo created, deploy workflow succeeded, Pages URL returned HTTP 200 | ✓ |
 
 ## Error Log
 | Timestamp | Error | Attempt | Resolution |
@@ -257,15 +272,16 @@
 | 2026-04-09 16:06 | 题目新增测试最初漏掉了“完整列表同步语义”而导致误判 | 1 | 修正测试输入，保留未删除的既有题目，只把新增/删除行为各自单独验证 |
 | 2026-04-09 16:10 | 页面层选项编辑测试最初失败，因为 UI 仍是静态选项标签 | 1 | 将选项渲染改为可编辑输入框，并补 Add/Remove Option 按钮与状态回写逻辑 |
 | 2026-04-09 16:15 | 目标测试第一次运行使用了仓库根相对路径，Vitest 在 `web/` 下没有匹配到测试文件 | 1 | 改成 `tests/...` 和 `src/...` 的 `web` 目录内相对路径 |
+| 2026-04-09 16:30 | GitHub Pages 首次 workflow 在 `Configure Pages` 失败，因为新仓库还没有 Pages site | 1 | 先用 `gh api -X POST repos/eruroueaito/nexus-class-exam-system/pages -f build_type=workflow` 创建站点，再重跑 workflow |
 
 ## 5-Question Reboot Check
 | Question | Answer |
 |----------|--------|
 | Where am I? | Phase 4: Initial Implementation |
-| Where am I going? | 继续进入试卷列表、AI 导题接口，以及 admin route 代码拆分 |
+| Where am I going? | 继续进入 AI 导题接口、打印导出、Playwright E2E 与 admin route 代码拆分 |
 | What's the goal? | 为在线考试系统形成可落地的本地开发技术文档 |
-| What have I learned? | 试卷级创建和删除也应复用受限 Edge Function 边界，浏览器只负责导航和最小交互，不直接触碰 `app_private` 或多表写入 |
-| What have I done? | 已保存原型、实现 React 壳层、创建 schema 与 RLS migrations、完成学生端真实考试流、本地联调基础、管理员登录壳层、后台 analytics 第一版，并完成管理员编辑器对题干、正确答案、解析、题目新增/删除、选项编辑以及试卷级 create/delete 的第一版安全读写 |
+| What have I learned? | 新仓库的 GitHub Pages 首次部署可能需要先手动创建 Pages site，之后 workflow 才能稳定工作；同时部署前最关键的后台补齐项是真实试卷列表而不是继续深挖局部编辑器细节 |
+| What have I done? | 已保存原型、实现 React 壳层、创建 schema 与 RLS migrations、完成学生端真实考试流、本地联调基础、管理员登录壳层、后台 analytics 第一版、管理员编辑器的安全读写与试卷级 create/delete，补上后台试卷列表，完成 GitHub 仓库初始化与 GitHub Pages 部署，并生成了一套真实英文博弈论测试卷 JSON |
 
 ---
 *Update after completing each phase or encountering errors*
