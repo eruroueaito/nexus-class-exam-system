@@ -148,9 +148,6 @@ function buildPrototypeResult(answers: Record<string, AnswerValue>): ExamResult 
   }
 }
 
-function printResultSummary() {
-  window.print()
-}
 
 export function NexusShellPage() {
   const navigate = useNavigate()
