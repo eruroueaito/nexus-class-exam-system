@@ -147,6 +147,9 @@ Three categories of operations cannot safely run in the browser:
 - 远端 `start-exam` 已通过生产烟测验证：当请求体中省略 `user_name` 时，当前生产函数会回退为 `Guest Student`，说明匿名姓名策略已经真正生效，而不仅是本地代码已改。
 - “提交后又回到 Assignment Access 并显示 500” 的直接根因是前端错误处理：`handleSubmitExam` 在 catch 分支里把错误写进 `accessError`，再把视图切回 `exam-list`，于是学生会看到 access modal 和一条与提交失败无关的验证错误。远端 `submit-exam` 本身对宏观经济学试卷已验证可用。
 - admin 视觉上的滚动条违和感，根因不是 thumb 颜色，而是外层 `admin-route-shell` 和内层 `admin-layout` 都可能参与滚动，导致滚动条贴在最外层背景边缘。将滚动责任收回到 `admin-layout` 后，遮罩层才能正确把滚动条压到玻璃面板之下。
+- 图四里微观试卷再次返回 `403` 的原因不是缓存或前端，而是线上 `app_private.exam_access` 对该试卷的密码哈希确实还没同步成 `123`。这个远端数据现已修正，`start-exam` 对三张卷都应接受 `123`。
+- 学生首页里“Student Access” 单独入口块会制造空白层级和视觉噪音。将首页直接收敛为试卷列表后，入口逻辑和视觉结构都更稳定，且不再需要额外的返回层级。
+- 管理员图表更适合展示分布而不是按日期趋势线。当前数据量较小时，折线趋势容易误导；成绩分布柱状图更符合“考试系统后台”这一语境。
 
 ---
 *Update this file after every 2 view/browser/search operations*

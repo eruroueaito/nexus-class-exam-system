@@ -413,5 +413,19 @@
   - `cd web && npm test` → 10 files / 55 passed / 1 skipped
   - `cd web && npm run build` → passed
 
+### Session: 2026-04-09 (Direct Entry + Distribution Chart + Flow Verification)
+- **Status:** complete
+- Actions taken:
+  - Removed the extra student landing layer: the app now opens directly on `Available Assignments`, with `Administrator Portal` still exposed as the alternate entry point.
+  - Replaced admin `Score Trend` with `Score Distribution`, now rendered as a histogram where the x-axis is score bands and the y-axis is submission counts.
+  - Added scrollbar styling to the student result list so long review screens remain scrollable with the same thin glass-like thumb used in admin.
+  - Corrected remote access data: all three seeded exams now use password `123` in production, including `Microeconomics - Midterm Assessment`.
+  - Simulated a real local browser flow with Playwright: open assignment list → open access modal → start exam → answer → submit → reach result page → return to assignments.
+- Verification:
+  - Remote smoke check: `start-exam` for exam `11111111-1111-1111-1111-111111111111` with password `123` now returns `HTTP 200`
+  - `cd web && npm test -- src/features/admin/api/analyticsApi.test.ts src/features/admin/pages/AdminDashboardPage.test.tsx src/features/shell/pages/NexusShellPage.test.tsx` → 3 files / 13 passed / 1 skipped
+  - `cd web && npm test` → 10 files / 55 passed / 1 skipped
+  - `cd web && npm run build` → passed
+
 ---
 *Update after completing each phase or encountering errors*

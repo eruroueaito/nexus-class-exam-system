@@ -61,7 +61,10 @@ describe('analyticsApi', () => {
     expect(result.averageAccuracyLabel).toBe('83.3%')
     expect(result.activeStudents).toBe(2)
     expect(result.commonErrorLabel).toBe('Q.01')
-    expect(result.scoreTrend).toHaveLength(2)
+    expect(result.scoreDistribution).toEqual([
+      { label: '60-69%', submissionCount: 1 },
+      { label: '100%', submissionCount: 1 },
+    ])
     expect(result.questionHeat[0]).toMatchObject({
       questionLabel: 'Q.01',
       incorrectRateLabel: '50.0%',

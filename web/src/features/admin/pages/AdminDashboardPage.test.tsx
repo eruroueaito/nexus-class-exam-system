@@ -73,9 +73,9 @@ describe('AdminDashboardPage', () => {
       averageAccuracyLabel: '83.3%',
       activeStudents: 2,
       commonErrorLabel: 'Q.01',
-      scoreTrend: [
-        { label: 'Apr 8', scorePercent: 100 },
-        { label: 'Apr 9', scorePercent: 66.7 },
+      scoreDistribution: [
+        { label: '60-69%', submissionCount: 1 },
+        { label: '100%', submissionCount: 1 },
       ],
       questionHeat: [
         {
@@ -111,7 +111,7 @@ describe('AdminDashboardPage', () => {
     expect(screen.getByText('admin@example.com')).toBeInTheDocument()
     expect(await screen.findByText('83.3%')).toBeInTheDocument()
     expect(screen.getByText('Active Students')).toBeInTheDocument()
-    expect(screen.getByText('Score Trend')).toBeInTheDocument()
+    expect(screen.getByText('Score Distribution')).toBeInTheDocument()
     expect(screen.getByText('Question Heat')).toBeInTheDocument()
     expect(screen.getByText('What does opportunity cost describe?')).toBeInTheDocument()
     expect(screen.getAllByText('Microeconomics - Midterm Assessment').length).toBeGreaterThan(0)
@@ -125,7 +125,7 @@ describe('AdminDashboardPage', () => {
       averageAccuracyLabel: '83.3%',
       activeStudents: 2,
       commonErrorLabel: 'Q.01',
-      scoreTrend: [{ label: 'Apr 9', scorePercent: 75 }],
+      scoreDistribution: [{ label: '70-79%', submissionCount: 1 }],
       questionHeat: [
         {
           questionId: 'question-10',
@@ -146,7 +146,7 @@ describe('AdminDashboardPage', () => {
       </MemoryRouter>,
     )
 
-    const scoreTrend = await screen.findByRole('heading', { name: 'Score Trend' })
+    const scoreTrend = await screen.findByRole('heading', { name: 'Score Distribution' })
     const questionHeat = screen.getByRole('heading', { name: 'Question Heat' })
 
     expect(
@@ -164,7 +164,7 @@ describe('AdminDashboardPage', () => {
       averageAccuracyLabel: '83.3%',
       activeStudents: 2,
       commonErrorLabel: 'Q.01',
-      scoreTrend: [],
+      scoreDistribution: [],
       questionHeat: [],
     })
     listAdminExamsMock.mockResolvedValue([])
@@ -200,7 +200,7 @@ describe('AdminDashboardPage', () => {
       averageAccuracyLabel: '83.3%',
       activeStudents: 2,
       commonErrorLabel: 'Q.01',
-      scoreTrend: [],
+      scoreDistribution: [],
       questionHeat: [],
     })
     listAdminExamsMock.mockResolvedValue([
@@ -242,7 +242,7 @@ describe('AdminDashboardPage', () => {
       averageAccuracyLabel: '83.3%',
       activeStudents: 2,
       commonErrorLabel: 'Q.01',
-      scoreTrend: [],
+      scoreDistribution: [],
       questionHeat: [],
     })
     listAdminExamsMock.mockResolvedValue([])

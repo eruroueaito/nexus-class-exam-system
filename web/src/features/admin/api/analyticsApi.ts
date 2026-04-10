@@ -35,9 +35,9 @@ interface AnalyticsInput {
   questions: QuestionRow[]
 }
 
-export interface ScoreTrendPoint {
+export interface ScoreDistributionPoint {
   label: string
-  scorePercent: number
+  submissionCount: number
 }
 
 export interface QuestionHeatRow {
@@ -53,7 +53,7 @@ export interface AdminAnalyticsSnapshot {
   averageAccuracyLabel: string
   activeStudents: number
   commonErrorLabel: string
-  scoreTrend: ScoreTrendPoint[]
+  scoreDistribution: ScoreDistributionPoint[]
   questionHeat: QuestionHeatRow[]
 }
 
@@ -61,9 +61,9 @@ const fallbackAnalytics: AdminAnalyticsSnapshot = {
   averageAccuracyLabel: '83.3%',
   activeStudents: 2,
   commonErrorLabel: 'Q.01',
-  scoreTrend: [
-    { label: 'Apr 8', scorePercent: 100 },
-    { label: 'Apr 9', scorePercent: 66.7 },
+  scoreDistribution: [
+    { label: '60-69%', submissionCount: 1 },
+    { label: '100%', submissionCount: 1 },
   ],
   questionHeat: [
     {
@@ -81,11 +81,14 @@ function formatPercent(value: number) {
   return `${value.toFixed(1)}%`
 }
 
-function formatTrendLabel(value: string) {
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-  }).format(new Date(value))
+function getScoreBucketLabel(scorePercent: number) {
+  if (scorePercent >= 100) {
+    return '100%'
+  }
+
+  const lowerBound = Math.floor(scorePercent / 10) * 10
+  const upperBound = lowerBound + 9
+  return `${lowerBound}-${upperBound}%`
 }
 
 export function mapAnalyticsData({
@@ -98,7 +101,7 @@ export function mapAnalyticsData({
       averageAccuracyLabel: '0.0%',
       activeStudents: 0,
       commonErrorLabel: 'None',
-      scoreTrend: [],
+      scoreDistribution: [],
       questionHeat: [],
     }
   }
@@ -178,16 +181,33 @@ export function mapAnalyticsData({
       return left.questionLabel.localeCompare(right.questionLabel)
     })
 
+  const scoreDistributionMap = new Map<string, number>()
+  for (const submission of submissions) {
+    const scorePercent = Number((submission.score * 100).toFixed(1))
+    const bucketLabel = getScoreBucketLabel(scorePercent)
+    scoreDistributionMap.set(bucketLabel, (scoreDistributionMap.get(bucketLabel) ?? 0) + 1)
+  }
+
+  const scoreDistribution = [...scoreDistributionMap.entries()]
+    .map(([label, submissionCount]) => ({
+      label,
+      submissionCount,
+    }))
+    .sort((left, right) => {
+      if (left.label === '100%') {
+        return 1
+      }
+      if (right.label === '100%') {
+        return -1
+      }
+      return Number.parseInt(left.label, 10) - Number.parseInt(right.label, 10)
+    })
+
   return {
     averageAccuracyLabel: formatPercent(averageScore * 100),
     activeStudents,
     commonErrorLabel: questionHeat[0]?.questionLabel ?? 'None',
-    scoreTrend: submissions
-      .slice(-7)
-      .map((submission) => ({
-        label: formatTrendLabel(submission.submitted_at),
-        scorePercent: Number((submission.score * 100).toFixed(1)),
-      })),
+    scoreDistribution,
     questionHeat: questionHeat.map(({ incorrectRate, ...row }) => row),
   }
 }

@@ -13,7 +13,7 @@ import type { ExamQuestionContent, QuestionType } from '../../exams/types'
 import { useExamCatalog } from '../../exams/hooks/useExamCatalog'
 import '../../shell/styles.css'
 
-type ViewId = 'login' | 'exam-list' | 'quiz' | 'result' | 'admin'
+type ViewId = 'exam-list' | 'quiz' | 'result' | 'admin'
 type AnswerValue = string | string[]
 
 interface StartedExam {
@@ -57,7 +57,6 @@ interface ResultMetric {
 }
 
 const progressByView: Record<ViewId, number> = {
-  login: 5,
   'exam-list': 35,
   quiz: 70,
   result: 92,
@@ -170,7 +169,7 @@ export function NexusShellPage() {
   const navigate = useNavigate()
   const examApi = createBrowserExamApi()
   const examCatalogQuery = useExamCatalog()
-  const [view, setView] = useState<ViewId>('login')
+  const [view, setView] = useState<ViewId>('exam-list')
   const [selectedExamId, setSelectedExamId] = useState<string | null>(null)
   const [userName, setUserName] = useState('')
   const [accessPassword, setAccessPassword] = useState('')
@@ -466,8 +465,8 @@ export function NexusShellPage() {
           </div>
 
           <section
-            className={`view-section ${view === 'login' ? 'active' : ''}`}
-            aria-hidden={view !== 'login'}
+            className={`view-section ${view === 'exam-list' ? 'active' : ''}`}
+            aria-hidden={view !== 'exam-list'}
           >
             <button
               className="btn btn-ghost admin-entry"
@@ -476,23 +475,6 @@ export function NexusShellPage() {
             >
               Administrator Portal
             </button>
-            <h1 className="hero-title">Nexus Class</h1>
-            <p className="hero-copy">Select your role to continue.</p>
-            <div className="button-row">
-              <button
-                className="btn btn-secondary"
-                type="button"
-                onClick={() => setView('exam-list')}
-              >
-                Student Access
-              </button>
-            </div>
-          </section>
-
-          <section
-            className={`view-section ${view === 'exam-list' ? 'active' : ''}`}
-            aria-hidden={view !== 'exam-list'}
-          >
             <h2 className="section-title">Available Assignments</h2>
             <div className="scroll-area">
               {examCatalogQuery.isFetching ? (
@@ -538,14 +520,6 @@ export function NexusShellPage() {
                 </div>
               ) : null}
             </div>
-
-            <button
-              className="btn btn-ghost back-button"
-              type="button"
-              onClick={() => resetStudentFlow('login')}
-            >
-              ← Back
-            </button>
           </section>
           {view === 'exam-list' && selectedExam ? (
             <div className="access-modal-overlay" role="presentation">
@@ -760,7 +734,7 @@ export function NexusShellPage() {
                 <button
                   className="btn btn-small"
                   type="button"
-                  onClick={() => setView('login')}
+                  onClick={() => resetStudentFlow('exam-list')}
                 >
                   Sign Out
                 </button>

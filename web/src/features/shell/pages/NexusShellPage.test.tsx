@@ -74,7 +74,6 @@ describe('NexusShellPage', () => {
       </MemoryRouter>,
     )
 
-    fireEvent.click(screen.getByRole('button', { name: 'Student Access' }))
     fireEvent.click(
       screen.getByRole('button', {
         name: /Microeconomics - Midterm Assessment/,
@@ -109,8 +108,6 @@ describe('NexusShellPage', () => {
       </MemoryRouter>,
     )
 
-    fireEvent.click(screen.getByRole('button', { name: 'Student Access' }))
-
     expect(screen.getByRole('button', { name: /Microeconomics - Midterm Assessment/ })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Introductory Macroeconomics - Quiz 01/ })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Game Theory - Midterm Assessment/ })).toBeInTheDocument()
@@ -144,7 +141,6 @@ describe('NexusShellPage', () => {
       </MemoryRouter>,
     )
 
-    fireEvent.click(screen.getByRole('button', { name: 'Student Access' }))
     fireEvent.click(screen.getByRole('button', { name: /Introductory Macroeconomics - Quiz 01/ }))
     fireEvent.change(screen.getByLabelText('Access Password'), {
       target: { value: '123' },
@@ -210,7 +206,6 @@ describe('NexusShellPage', () => {
       </MemoryRouter>,
     )
 
-    fireEvent.click(screen.getByRole('button', { name: 'Student Access' }))
     fireEvent.click(
       screen.getByRole('button', {
         name: /Microeconomics - Midterm Assessment/,
@@ -283,7 +278,6 @@ describe('NexusShellPage', () => {
       </MemoryRouter>,
     )
 
-    fireEvent.click(screen.getByRole('button', { name: 'Student Access' }))
     fireEvent.click(
       screen.getByRole('button', {
         name: /Microeconomics - Midterm Assessment/,
@@ -316,7 +310,6 @@ describe('NexusShellPage', () => {
       </MemoryRouter>,
     )
 
-    fireEvent.click(screen.getByRole('button', { name: 'Student Access' }))
     fireEvent.click(
       screen.getByRole('button', {
         name: /Microeconomics - Midterm Assessment/,

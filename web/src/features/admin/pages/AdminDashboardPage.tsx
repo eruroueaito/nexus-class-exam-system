@@ -208,7 +208,7 @@ export function AdminDashboardPage() {
           </section>
 
           <section className="analytics-stack">
-            <ScoreTrendChart points={analytics.scoreTrend} />
+            <ScoreTrendChart points={analytics.scoreDistribution} />
             <QuestionHeatTable rows={analytics.questionHeat} />
           </section>
           <p className="analytics-source-note">

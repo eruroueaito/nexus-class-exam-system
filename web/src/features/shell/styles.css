@@ -434,6 +434,27 @@ input[type='password'] {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.375rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(78, 116, 177, 0.42) transparent;
+}
+
+.result-list::-webkit-scrollbar {
+  width: 0.75rem;
+}
+
+.result-list::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 999px;
+}
+
+.result-list::-webkit-scrollbar-thumb {
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(96, 141, 216, 0.62), rgba(122, 135, 171, 0.48));
 }
 
 .result-card {
