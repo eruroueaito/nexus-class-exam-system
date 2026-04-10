@@ -113,5 +113,5 @@
 
 ## Last Significant Update
 
-- Date: 2026-04-09
-- Theme: progress bar visibility fix, password-control audit, progress log reduction, and AI-oriented migration handoff preparation
+- Date: 2026-04-10
+- Theme: repository documentation hardening through directory-level README guides for docs, Supabase, and frontend/testing folders

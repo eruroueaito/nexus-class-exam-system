@@ -120,6 +120,20 @@ If you need the shortest safe path after a fork:
 └── progress.md
 ```
 
+## Directory Guides
+
+These directory-level guides exist so a new maintainer or agent can open a folder and immediately understand its purpose:
+
+- [`docs/README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/docs/README.md)
+- [`docs/reference/README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/docs/reference/README.md)
+- [`docs/test-data/README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/docs/test-data/README.md)
+- [`supabase/README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase/README.md)
+- [`supabase/migrations/README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase/migrations/README.md)
+- [`supabase/functions/README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase/functions/README.md)
+- [`supabase/functions/_shared/README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase/functions/_shared/README.md)
+- [`web/src/README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/web/src/README.md)
+- [`web/tests/README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/web/tests/README.md)
+
 ## Security Model Summary
 
 - The frontend uses only the Supabase publishable key.

@@ -176,4 +176,9 @@ Phase 5
 - 3. 共享服务测试已锁定“保存新密码后旧密码失效、新密码生效”
 - 4. `progress.md` 已压缩成高信号里程碑版本
 - 5. 新增面向另一位 AI 的迁移交接文档 `docs/agent-migration-guide.md` 和仓库级 `README.md`
+- 当前仓库文档补全切片已完成：
+- 1. 为 `docs/`、`docs/reference/`、`docs/test-data/` 补充目录级 README，明确文档用途和阅读顺序
+- 2. 为 `supabase/`、`supabase/migrations/`、`supabase/functions/`、`supabase/functions/_shared/` 补充目录级 README，明确后端边界与迁移纪律
+- 3. 为 `web/src/` 和 `web/tests/` 补充目录级 README，明确前端源码与共享测试的职责
+- 4. 在仓库根 `README.md` 中新增 “Directory Guides” 入口，降低新 AI 接手时的仓库导航成本
 - 文档中会显式标记对原始需求的必要修正点，避免后续实现时返工。
