@@ -186,4 +186,8 @@ Phase 5
 - 2. 将 `README.md`、`docs/agent-migration-guide.md`、`progress.md` 里的 `/Users/...` 链接全部改为仓库内相对路径
 - 3. 重新扫描仓库 Markdown，确认不再存在会导致 GitHub 网页端跳转失败的本地路径链接
 - 4. 将这次 GitHub 兼容性问题记录进规划和发现文件，避免后续再次把“本地引用格式”写进仓库文档
+- 当前 GitHub 文档语言收敛切片已完成：
+- 1. `progress.md` 已确认保持英文，不再重复改写
+- 2. `docs/online-exam-system-development-plan.md` 已重写为完整英文版，供 GitHub 阅读与 AI 迁移使用
+- 3. 本轮仅调整 GitHub-facing 文档，不改动本地临时文件或运行配置
 - 文档中会显式标记对原始需求的必要修正点，避免后续实现时返工。

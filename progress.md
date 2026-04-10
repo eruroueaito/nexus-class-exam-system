@@ -114,4 +114,4 @@
 ## Last Significant Update
 
 - Date: 2026-04-10
-- Theme: repository documentation hardening plus GitHub-compatible link cleanup to remove broken `/Users/...` paths from tracked Markdown files
+- Theme: repository documentation hardening, GitHub-compatible link cleanup, and full English translation of the main development plan for GitHub readers
