@@ -531,6 +531,7 @@ describe('exam-service', () => {
     const result = await saveExamDraft(client, {
       examId: 'exam-1',
       examTitle: 'Updated Exam Title',
+      isPublished: false,
       questions: [
         {
           id: 'question-1',
@@ -548,6 +549,7 @@ describe('exam-service', () => {
 
     expect(result.status).toBe(200)
     expect(tables.exams[0]?.title).toBe('Updated Exam Title')
+    expect(tables.exams[0]?.is_active).toBe(false)
     expect(tables.questions[0]?.content).toMatchObject({
       stem: 'Updated opportunity cost question',
     })
@@ -565,6 +567,7 @@ describe('exam-service', () => {
     const result = await saveExamDraft(client, {
       examId: 'exam-1',
       examTitle: 'Microeconomics - Midterm Assessment',
+      isPublished: true,
       questions: [
         {
           id: 'question-1',
@@ -617,6 +620,7 @@ describe('exam-service', () => {
     const result = await saveExamDraft(client, {
       examId: 'exam-1',
       examTitle: 'Microeconomics - Midterm Assessment',
+      isPublished: true,
       questions: [
         {
           id: 'question-1',
@@ -646,6 +650,7 @@ describe('exam-service', () => {
     const result = await saveExamDraft(client, {
       examId: 'exam-1',
       examTitle: 'Microeconomics - Midterm Assessment',
+      isPublished: true,
       questions: [
         {
           id: 'question-1',
@@ -685,6 +690,7 @@ describe('exam-service', () => {
     const result = await saveExamDraft(client, {
       examId: 'exam-1',
       examTitle: 'Microeconomics - Midterm Assessment',
+      isPublished: true,
       questions: [
         {
           id: 'question-1',

@@ -15,6 +15,18 @@ vi.mock('../../exams/hooks/useExamCatalog', () => ({
         createdAt: '2026-04-09T18:00:00Z',
         isActive: true,
       },
+      {
+        id: 'exam-2',
+        title: 'Introductory Macroeconomics - Quiz 01',
+        createdAt: '2026-04-08T18:00:00Z',
+        isActive: true,
+      },
+      {
+        id: 'exam-3',
+        title: 'Game Theory - Midterm Assessment',
+        createdAt: '2026-04-07T18:00:00Z',
+        isActive: true,
+      },
     ],
     isFetching: false,
     isError: false,
@@ -88,6 +100,66 @@ describe('NexusShellPage', () => {
     expect(
       await screen.findByText('What does opportunity cost describe?'),
     ).toBeInTheDocument()
+  })
+
+  test('renders every active assignment from the catalog instead of only the first one', async () => {
+    render(
+      <MemoryRouter>
+        <NexusShellPage />
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Student Access' }))
+
+    expect(screen.getByRole('button', { name: /Microeconomics - Midterm Assessment/ })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Introductory Macroeconomics - Quiz 01/ })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Game Theory - Midterm Assessment/ })).toBeInTheDocument()
+  })
+
+  test('starts an exam even when the student leaves the name field blank', async () => {
+    startExamMock.mockResolvedValue({
+      exam: {
+        id: 'exam-2',
+        title: 'Introductory Macroeconomics - Quiz 01',
+      },
+      user_name: 'Guest Student',
+      questions: [
+        {
+          id: 'question-1',
+          type: 'radio',
+          content: {
+            stem: 'What does GDP measure in macroeconomics?',
+            options: [
+              { id: 'A', text: 'The value of total financial assets held by households' },
+              { id: 'B', text: 'The market value of final goods and services produced within a country' },
+            ],
+          },
+        },
+      ],
+    })
+
+    render(
+      <MemoryRouter>
+        <NexusShellPage />
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Student Access' }))
+    fireEvent.click(screen.getByRole('button', { name: /Introductory Macroeconomics - Quiz 01/ }))
+    fireEvent.change(screen.getByLabelText('Access Password'), {
+      target: { value: '123' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Start Assignment' }))
+
+    await waitFor(() => {
+      expect(startExamMock).toHaveBeenCalledWith({
+        examId: 'exam-2',
+        userName: '',
+        accessPassword: '123',
+      })
+    })
+
+    expect(await screen.findByText('What does GDP measure in macroeconomics?')).toBeInTheDocument()
   })
 
   test('submits the active exam and renders the result summary', async () => {

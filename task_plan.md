@@ -141,4 +141,10 @@ Phase 5
 - 3. 对学生开始考试、提交考试和管理员读取试卷做真实烟测
 - 4. 将通过验证的前端代码推送到 GitHub Pages
 - 5. 把生产卡点、修复路径、key 使用边界和经验总结写回本地文档
+- 当前问题修复切片已进一步细化为：
+- 1. 学生端试卷列表必须渲染全部 active exams，而不是只取第一个 active exam
+- 2. `Assignment Access` modal 改为更不透明的独立浮层
+- 3. 学生名改为可选，后端空值统一回落到 `Guest Student`
+- 4. admin 滚动条轨道完全弱化，只保留更细的 thumb
+- 5. editor 增加 `Publish / Unpublish`，明确用 `is_active` 控制前台是否可见
 - 文档中会显式标记对原始需求的必要修正点，避免后续实现时返工。

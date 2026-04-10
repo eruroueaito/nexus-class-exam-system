@@ -59,6 +59,7 @@ describe('ExamEditorPage', () => {
       examId: 'exam-1',
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
+      isPublished: true,
       questions: [
         {
           id: 'question-1',
@@ -102,6 +103,7 @@ describe('ExamEditorPage', () => {
       examId: 'exam-1',
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
+      isPublished: true,
       questions: [
         {
           id: 'question-1',
@@ -147,6 +149,7 @@ describe('ExamEditorPage', () => {
         examId: 'exam-1',
         examTitle: 'Updated Exam Title',
         examStatusLabel: 'Active',
+        isPublished: true,
         questions: [
           {
             id: 'question-1',
@@ -175,6 +178,7 @@ describe('ExamEditorPage', () => {
       examId: 'exam-1',
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
+      isPublished: true,
       questions: [
         {
           id: 'question-1',
@@ -212,6 +216,7 @@ describe('ExamEditorPage', () => {
       examId: 'exam-1',
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
+      isPublished: true,
       questions: [
         {
           id: 'question-1',
@@ -257,6 +262,7 @@ describe('ExamEditorPage', () => {
       examId: 'exam-1',
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
+      isPublished: true,
       questions: [
         {
           id: 'question-1',
@@ -317,6 +323,7 @@ describe('ExamEditorPage', () => {
       examId: 'exam-1',
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
+      isPublished: true,
       questions: [
         {
           id: 'question-1',
@@ -358,6 +365,7 @@ describe('ExamEditorPage', () => {
       examId: 'exam-1',
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
+      isPublished: true,
       questions: [
         {
           id: 'question-1',
@@ -393,5 +401,57 @@ describe('ExamEditorPage', () => {
     })
 
     expect(await screen.findByText('Admin Dashboard Route')).toBeInTheDocument()
+  })
+
+  test('publishes a draft exam through the admin save API', async () => {
+    getAdminSessionMock.mockResolvedValue({
+      email: 'admin@example.com',
+    })
+    getExamEditorDataMock.mockResolvedValue({
+      examId: 'exam-1',
+      examTitle: 'Game Theory - Midterm Assessment',
+      examStatusLabel: 'Draft',
+      isPublished: false,
+      questions: [
+        {
+          id: 'question-1',
+          questionLabel: 'Question 01',
+          type: 'radio',
+          stem: 'What is a Nash equilibrium?',
+          options: [
+            { id: 'A', text: 'A dominated outcome' },
+            { id: 'B', text: 'A profile of mutual best responses' },
+          ],
+          correctAnswerValues: ['B'],
+          explanation: 'A Nash equilibrium is a profile of mutual best responses.',
+        },
+      ],
+    })
+    saveExamEditorDataMock.mockResolvedValue({
+      examId: 'exam-1',
+      examTitle: 'Game Theory - Midterm Assessment',
+      savedQuestionCount: 1,
+    })
+
+    render(
+      <MemoryRouter initialEntries={['/admin/exams/exam-1']}>
+        <Routes>
+          <Route path="/admin/exams/:examId" element={<ExamEditorPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    await screen.findByDisplayValue('Game Theory - Midterm Assessment')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Publish Exam' }))
+
+    await waitFor(() => {
+      expect(saveExamEditorDataMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          examStatusLabel: 'Active',
+          isPublished: true,
+        }),
+      )
+    })
   })
 })

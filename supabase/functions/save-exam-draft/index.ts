@@ -20,11 +20,17 @@ interface SaveExamQuestionPayload {
 interface SaveExamDraftPayload {
   exam_id?: string
   exam_title?: string
+  is_active?: boolean
   questions?: SaveExamQuestionPayload[]
 }
 
 function parsePayload(payload: SaveExamDraftPayload) {
-  if (!payload.exam_id || !payload.exam_title || !Array.isArray(payload.questions)) {
+  if (
+    !payload.exam_id ||
+    !payload.exam_title ||
+    typeof payload.is_active !== 'boolean' ||
+    !Array.isArray(payload.questions)
+  ) {
     return null
   }
 
@@ -59,6 +65,7 @@ function parsePayload(payload: SaveExamDraftPayload) {
   return {
     examId: payload.exam_id,
     examTitle: payload.exam_title.trim(),
+    isPublished: payload.is_active,
     questions,
   }
 }
@@ -87,7 +94,7 @@ Deno.serve(async (request) => {
     return errorResponse(
       400,
       'invalid_payload',
-      'exam_id, exam_title, and fully normalized questions are required.',
+      'exam_id, exam_title, is_active, and fully normalized questions are required.',
     )
   }
 

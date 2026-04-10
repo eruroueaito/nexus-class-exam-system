@@ -276,6 +276,7 @@ export function ExamEditorPage() {
         ...editorData,
         examId: result.examId,
         examTitle: result.examTitle,
+        examStatusLabel: editorData.isPublished ? 'Active' : 'Draft',
       }
 
       setEditorData(nextSnapshot)
@@ -284,6 +285,42 @@ export function ExamEditorPage() {
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : 'Unable to save the current draft.',
+      )
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  async function handleTogglePublish() {
+    if (!editorData || isSaving) {
+      return
+    }
+
+    setIsSaving(true)
+    setSaveMessage(null)
+    setErrorMessage(null)
+
+    const nextPublishedState = !editorData.isPublished
+    const nextSnapshot = {
+      ...editorData,
+      isPublished: nextPublishedState,
+      examStatusLabel: nextPublishedState ? 'Active' : 'Draft',
+    }
+
+    try {
+      const result = await saveExamEditorData(nextSnapshot)
+      const savedSnapshot = {
+        ...nextSnapshot,
+        examId: result.examId,
+        examTitle: result.examTitle,
+      }
+
+      setEditorData(savedSnapshot)
+      setSavedEditorData(savedSnapshot)
+      setSaveMessage(nextPublishedState ? 'Exam published.' : 'Exam moved back to draft.')
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : 'Unable to update the publish status.',
       )
     } finally {
       setIsSaving(false)
@@ -382,6 +419,14 @@ export function ExamEditorPage() {
                 onClick={() => void handleSaveDraft()}
               >
                 {isSaving ? 'Saving…' : 'Save Draft'}
+              </button>
+              <button
+                className="btn btn-secondary"
+                type="button"
+                disabled={isSaving}
+                onClick={() => void handleTogglePublish()}
+              >
+                {editorData.isPublished ? 'Unpublish Exam' : 'Publish Exam'}
               </button>
               <button
                 className="btn btn-secondary"

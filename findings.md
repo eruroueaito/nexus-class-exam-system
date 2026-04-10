@@ -68,6 +68,8 @@
 | 学生端访问表单作为页面内嵌块时，视觉层级不够清晰 | 把 `Assignment Access` 提升为带遮罩的独立 modal，能更明确地区分“选试卷”和“输入凭证”两个步骤 |
 | 当前项目如果要重置 analytics 展示，最直接的方法是清空 `submissions` 与 `submission_items` | 统计全部来自这两张表，清空后前台和后台都会立即回到“无历史答题数据”的状态 |
 | 为了让本地 fallback、seed 数据和线上行为一致，新增试卷时需要同时改三层 | 至少要同步 `supabase/seed.sql`、前端 fallback catalog，以及远端 Supabase 数据 |
+| 前台“只看到一张试卷”并不是线上 catalog 缺数据 | 根因是 `NexusShellPage` 只取了第一张 active exam 和第一张 inactive exam，而不是渲染完整列表 |
+| 密码 `123` 在线上对第二张宏观经济学试卷已经生效 | 真实 `start-exam` 调用已成功返回 5 道题；用户感知异常主要来自前端列表逻辑和姓名必填校验 |
 
 ## Issues Encountered
 | Issue | Resolution |
@@ -136,6 +138,13 @@ Three categories of operations cannot safely run in the browser:
 
 ## Visual/Browser Findings
 - 本轮任务未使用浏览器可视化探索。
+
+## Current UI / Product Findings
+- 前台“只显示一个考试”不是远端数据缺失，而是 `NexusShellPage` 只渲染了第一个 active exam 和第一个 inactive exam。远端 `exam_catalog` 实际已返回 3 个 active exams。
+- 密码 `123` 在线上 `start-exam` 已验证可用；用户看到“密码不对”更可能是前端当时仍强制要求 `user_name`，或仍停留在旧 Pages 缓存版本。
+- 原有 `Assignment Access` 浮层之所以看起来“粘在背景上”，根因是 overlay 仍然半透明并叠加 blur；将 overlay 改为近乎不透明后，modal 层级感明显更清晰。
+- admin 后台此前缺少显式发布语义，导致“后台可见”和“前台可见”的边界只能依赖隐式 `is_active` 数据状态。新增 `Publish / Unpublish` 后，这个边界才真正闭环。
+- 远端 `start-exam` 已通过生产烟测验证：当请求体中省略 `user_name` 时，当前生产函数会回退为 `Guest Student`，说明匿名姓名策略已经真正生效，而不仅是本地代码已改。
 
 ---
 *Update this file after every 2 view/browser/search operations*

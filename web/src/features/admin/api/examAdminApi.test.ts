@@ -78,6 +78,7 @@ describe('examAdminApi', () => {
       correctAnswerValues: ['B'],
       explanation: 'Opportunity cost is the next best alternative that is given up.',
     })
+    expect(result.isPublished).toBe(true)
   })
 
   test('loads the secure editor snapshot through the restricted edge function', async () => {
@@ -170,6 +171,7 @@ describe('examAdminApi', () => {
       examId: 'exam-1',
       examTitle: 'Updated Exam Title',
       examStatusLabel: 'Active',
+      isPublished: true,
       questions: [
         {
           id: 'question-1',
@@ -189,6 +191,7 @@ describe('examAdminApi', () => {
     expect(mapExamEditorSavePayload(snapshot)).toEqual({
       exam_id: 'exam-1',
       exam_title: 'Updated Exam Title',
+      is_active: true,
       questions: [
         {
           id: 'question-1',
@@ -210,6 +213,7 @@ describe('examAdminApi', () => {
       examId: 'exam-1',
       examTitle: 'Updated Exam Title',
       examStatusLabel: 'Active',
+      isPublished: true,
       questions: [
         {
           id: 'question-1',
@@ -244,6 +248,7 @@ describe('examAdminApi', () => {
       body: {
         exam_id: 'exam-1',
         exam_title: 'Updated Exam Title',
+        is_active: true,
         questions: [
           {
             id: 'question-1',
@@ -263,6 +268,7 @@ describe('examAdminApi', () => {
       examId: 'exam-1',
       examTitle: 'Updated Exam Title',
       examStatusLabel: 'Active',
+      isPublished: true,
       questions: [
         {
           id: 'draft-question-3',
@@ -284,6 +290,7 @@ describe('examAdminApi', () => {
       examId: 'exam-1',
       examTitle: 'Updated Exam Title',
       examStatusLabel: 'Active',
+      isPublished: true,
       questions: [
         {
           id: 'question-1',

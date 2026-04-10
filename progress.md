@@ -16,6 +16,9 @@
   - 将本地联调用示例试卷访问码统一改为 `123`，并同步修正文档和测试。
   - 将本地 fallback 和 `seed.sql` 扩展为第二张试卷 `Introductory Macroeconomics - Quiz 01`，包含 5 道初级宏观经济学单选题。
   - 清空远端 Supabase 的 `submissions` 和 `submission_items`，并将第二张试卷同步到线上，访问码也统一为 `123`。
+  - 修正学生端试卷列表逻辑：不再只显示第一张 active exam，而是渲染 catalog 返回的全部 active exams。
+  - 放开学生姓名为非必填；只要求访问码，空姓名时由后端或本地 fallback 回填 `Guest Student`。
+  - 将 access modal 遮罩改为近乎不透明，并去掉滚动条轨道边框感，只保留细条 thumb。
 - Files created/modified:
   - `docs/superpowers/plans/2026-04-09-production-finish.md` (created)
   - `task_plan.md` (updated)
@@ -35,6 +38,7 @@
   - `docs/online-exam-system-development-plan.md` (updated)
   - `web/src/features/exams/hooks/useExamCatalog.ts` (updated)
   - `web/src/features/admin/api/examAdminApi.ts` (updated)
+  - `supabase/functions/start-exam/index.ts` (updated)
 
 ### Phase 1: Requirements & Discovery
 - **Status:** complete
@@ -372,6 +376,29 @@
 |------|---------|----------|--------|--------|
 | Full regression after enhancement round | `npx vitest run` | All tests pass | 10 files / 48 passed / 1 skipped | ✓ |
 | TypeScript type check | `tsc --noEmit` | No type errors | No output (clean) | ✓ |
+
+### Session: 2026-04-09 (Student Flow + Publish Fixes)
+- **Status:** in_progress
+- Actions taken:
+  - Fixed student catalog rendering: `NexusShellPage` now renders all active exams returned by the catalog instead of only the first active exam.
+  - Relaxed start-access validation: student name is now optional in the UI; the fallback and Edge Function both normalize an empty name to `Guest Student`.
+  - Refined `Assignment Access` layering: modal overlay is now substantially more opaque and no longer relies on a strong blur, so the dialog reads as an independent sheet.
+  - Simplified admin scrollbar visuals: the track is now effectively transparent and the thumb border is removed so only the thin bar remains visible.
+  - Added editor publish controls: `ExamEditorPage` now exposes `Publish Exam` / `Unpublish Exam` and persists the state via `save-exam-draft`.
+  - Extended editor save contract: admin snapshots now carry `isPublished`, and `save-exam-draft` persists `is_active` server-side.
+- Verification:
+  - `cd web && npm test -- src/features/shell/pages/NexusShellPage.test.tsx` → passed
+  - `cd web && npm test -- src/features/admin/api/examAdminApi.test.ts src/features/admin/pages/ExamEditorPage.test.tsx tests/exam-service.test.ts` → 3 files / 31 passed
+  - `cd web && npm test` → 10 files / 52 passed / 1 skipped
+  - `cd web && npm run build` → passed
+- Remote rollout:
+  - Deployed `start-exam` Edge Function v4 with optional-name fallback
+  - Deployed `save-exam-draft` Edge Function v3 with `is_active` persistence
+  - Smoke-tested live `exam_catalog` with the publishable key: 3 active exams returned
+  - Smoke-tested live `start-exam` without `user_name`: remote response now returns `Guest Student`
+- Remaining:
+  - Verify published/unpublished exams on live GitHub Pages against the remote catalog.
+  - Push the current frontend bundle to GitHub Pages so the live site reflects the student-list and publish-control fixes.
 
 ---
 *Update after completing each phase or encountering errors*

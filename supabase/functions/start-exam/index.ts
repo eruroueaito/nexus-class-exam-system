@@ -13,13 +13,13 @@ interface StartExamPayload {
 }
 
 function parsePayload(payload: StartExamPayload) {
-  if (!payload.exam_id || !payload.user_name || !payload.access_password) {
+  if (!payload.exam_id || !payload.access_password) {
     return null
   }
 
   return {
     examId: payload.exam_id,
-    userName: payload.user_name.trim(),
+    userName: payload.user_name?.trim() || 'Guest Student',
     accessPassword: payload.access_password,
   }
 }
@@ -48,7 +48,7 @@ Deno.serve(async (request) => {
     return errorResponse(
       400,
       'invalid_payload',
-      'exam_id, user_name, and access_password are required.',
+      'exam_id and access_password are required.',
     )
   }
 

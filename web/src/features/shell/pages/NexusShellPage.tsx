@@ -170,8 +170,8 @@ export function NexusShellPage() {
 
   const availableExams = examCatalogQuery.data ?? []
   const selectedExam = availableExams.find((exam) => exam.id === selectedExamId) ?? null
-  const featuredExam = availableExams.find((exam) => exam.isActive) ?? null
-  const upcomingExam = availableExams.find((exam) => !exam.isActive) ?? null
+  const activeCatalogExams = availableExams.filter((exam) => exam.isActive)
+  const inactiveCatalogExams = availableExams.filter((exam) => !exam.isActive)
 
   const activeQuestion = activeExam?.questions[currentQuestionIndex] ?? null
   const progressLabel = activeExam
@@ -283,8 +283,8 @@ export function NexusShellPage() {
       return
     }
 
-    if (!userName.trim() || !accessPassword.trim()) {
-      setAccessError('Enter your name and the access password.')
+    if (!accessPassword.trim()) {
+      setAccessError('Enter the access password to continue.')
       return
     }
 
@@ -300,13 +300,13 @@ export function NexusShellPage() {
           })
         : {
             exam: prototypeExamSession.exam,
-            user_name: userName.trim(),
+            user_name: userName.trim() || 'Guest Student',
             questions: prototypeExamSession.questions,
           }
 
       const nextExam: StartedExam = {
         exam: response.exam,
-        userName: userName.trim(),
+        userName: response.user_name ?? 'Guest Student',
         questions: response.questions.map(normalizeQuestion),
         startedAt: Date.now(),
       }
@@ -463,27 +463,28 @@ export function NexusShellPage() {
                 </div>
               ) : null}
 
-              {featuredExam ? (
+              {activeCatalogExams.map((exam) => (
                 <button
-                  className={`quiz-card ${selectedExamId === featuredExam.id ? 'quiz-card--active' : ''}`}
+                  key={exam.id}
+                  className={`quiz-card ${selectedExamId === exam.id ? 'quiz-card--active' : ''}`}
                   type="button"
-                  onClick={() => openAccessForm(featuredExam.id)}
+                  onClick={() => openAccessForm(exam.id)}
                 >
-                  <span className="quiz-card__title">{featuredExam.title}</span>
+                  <span className="quiz-card__title">{exam.title}</span>
                   <span className="quiz-card__meta">
                     Live catalog entry • Password Protected
                   </span>
                 </button>
-              ) : null}
+              ))}
 
-              {upcomingExam ? (
-                <div className="quiz-card quiz-card--disabled">
-                  <span className="quiz-card__title">{upcomingExam.title}</span>
+              {inactiveCatalogExams.map((exam) => (
+                <div key={exam.id} className="quiz-card quiz-card--disabled">
+                  <span className="quiz-card__title">{exam.title}</span>
                   <span className="quiz-card__meta">
                     Not yet released by instructor
                   </span>
                 </div>
-              ) : null}
+              ))}
 
               {examCatalogQuery.isError ? (
                 <div className="quiz-card quiz-card--disabled">

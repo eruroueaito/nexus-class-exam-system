@@ -21,17 +21,16 @@
 .admin-route-shell::-webkit-scrollbar-track,
 .admin-layout::-webkit-scrollbar-track,
 .analytics-table::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.2);
+  background: transparent;
   border-radius: 999px;
 }
 
 .admin-route-shell::-webkit-scrollbar-thumb,
 .admin-layout::-webkit-scrollbar-thumb,
 .analytics-table::-webkit-scrollbar-thumb {
-  border: 0.18rem solid transparent;
+  border: none;
   border-radius: 999px;
   background: linear-gradient(180deg, rgba(96, 141, 216, 0.62), rgba(122, 135, 171, 0.48));
-  background-clip: padding-box;
 }
 
 .admin-auth-card,

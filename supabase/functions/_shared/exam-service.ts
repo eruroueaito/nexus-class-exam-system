@@ -48,6 +48,7 @@ export interface SubmitExamRequestData {
 export interface SaveExamDraftRequestData {
   examId: string
   examTitle: string
+  isPublished: boolean
   questions: Array<{
     id: string
     type: 'radio' | 'checkbox' | 'text'
@@ -660,6 +661,7 @@ export async function saveExamDraft(
     .from('exams')
     .update({
       title: request.examTitle,
+      is_active: request.isPublished,
     })
     .eq('id', request.examId)
 
@@ -764,6 +766,7 @@ export async function saveExamDraft(
       exam: {
         id: request.examId,
         title: request.examTitle,
+        is_active: request.isPublished,
       },
       saved_question_count: request.questions.length,
     },

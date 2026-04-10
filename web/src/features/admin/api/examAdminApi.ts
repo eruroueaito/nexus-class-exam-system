@@ -62,12 +62,14 @@ export interface ExamEditorSnapshot {
   examId: string
   examTitle: string
   examStatusLabel: string
+  isPublished: boolean
   questions: EditableQuestionSnapshot[]
 }
 
 export interface SaveExamEditorPayload {
   exam_id: string
   exam_title: string
+  is_active: boolean
   questions: Array<{
     id: string
     type: 'radio' | 'checkbox' | 'text'
@@ -142,6 +144,7 @@ const fallbackExamEditorData: ExamEditorSnapshot = {
   examId: FALLBACK_EXAM_ID,
   examTitle: 'Microeconomics - Midterm Assessment',
   examStatusLabel: 'Active',
+  isPublished: true,
   questions: [
     {
       id: '11111111-aaaa-aaaa-aaaa-111111111111',
@@ -195,6 +198,7 @@ export function mapExamEditorData({
     examId: exam.id,
     examTitle: exam.title,
     examStatusLabel: exam.is_active ? 'Active' : 'Draft',
+    isPublished: exam.is_active,
     questions: questions
       .slice()
       .sort((left, right) => left.order_index - right.order_index)
@@ -225,6 +229,7 @@ export function mapExamEditorSavePayload(
   return {
     exam_id: snapshot.examId,
     exam_title: snapshot.examTitle.trim(),
+    is_active: snapshot.isPublished,
     questions: snapshot.questions.map((question) => ({
       id: question.id,
       type: question.type,
@@ -373,6 +378,7 @@ export async function importExamFromJson(
     examId: createdExam.examId,
     examTitle: payload.exam_title,
     examStatusLabel: 'Draft',
+    isPublished: false,
     questions: relabelQuestions(
       payload.questions.map((question) => ({
         id: question.id ?? crypto.randomUUID(),
