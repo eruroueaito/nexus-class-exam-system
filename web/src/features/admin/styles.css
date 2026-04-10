@@ -1,10 +1,8 @@
 .admin-route-shell {
+  position: relative;
   height: 100vh;
   min-height: 100vh;
-  overflow-y: auto;
-  scrollbar-gutter: stable;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(78, 116, 177, 0.42) rgba(255, 255, 255, 0.28);
+  overflow: hidden;
 }
 
 .admin-route-shell .app-container {
@@ -12,20 +10,17 @@
   align-items: flex-start;
 }
 
-.admin-route-shell::-webkit-scrollbar,
 .admin-layout::-webkit-scrollbar,
 .analytics-table::-webkit-scrollbar {
   width: 0.75rem;
 }
 
-.admin-route-shell::-webkit-scrollbar-track,
 .admin-layout::-webkit-scrollbar-track,
 .analytics-table::-webkit-scrollbar-track {
   background: transparent;
   border-radius: 999px;
 }
 
-.admin-route-shell::-webkit-scrollbar-thumb,
 .admin-layout::-webkit-scrollbar-thumb,
 .analytics-table::-webkit-scrollbar-thumb {
   border: none;
@@ -79,12 +74,27 @@
 }
 
 .admin-layout {
+  position: relative;
   padding: 2rem;
   max-height: calc(100vh - 2.5rem);
   overflow-y: auto;
-  scrollbar-gutter: stable;
+  overflow-x: hidden;
+  scrollbar-gutter: stable both-edges;
   scrollbar-width: thin;
-  scrollbar-color: rgba(78, 116, 177, 0.42) rgba(255, 255, 255, 0.28);
+  scrollbar-color: rgba(78, 116, 177, 0.42) transparent;
+}
+
+.admin-layout::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0.875rem;
+  height: 100%;
+  border-radius: 0 2.25rem 2.25rem 0;
+  background: linear-gradient(180deg, rgba(245, 247, 252, 0.96), rgba(240, 244, 251, 0.96));
+  pointer-events: none;
+  z-index: 1;
 }
 
 .admin-layout__header {
@@ -181,6 +191,10 @@
   align-items: center;
   gap: 0.75rem;
   margin-top: 1rem;
+}
+
+.editor-back-row {
+  margin-bottom: 0.5rem;
 }
 
 .editor-creation-row {

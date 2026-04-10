@@ -244,10 +244,69 @@ describe('NexusShellPage', () => {
     })
 
     expect(await screen.findByText('Score Summary')).toBeInTheDocument()
-    expect(screen.getByText('100%')).toBeInTheDocument()
+    expect(screen.getAllByText('100%').length).toBeGreaterThan(0)
+    expect(screen.getByText('Performance Overview')).toBeInTheDocument()
+    expect(screen.getByText('Your Answer')).toBeInTheDocument()
+    expect(screen.getByText('Correct Answer')).toBeInTheDocument()
     expect(
       screen.getByText('Opportunity cost is the value of the next best option.'),
     ).toBeInTheDocument()
+  })
+
+  test('keeps the student in the quiz when submission fails instead of reopening access validation', async () => {
+    startExamMock.mockResolvedValue({
+      exam: {
+        id: 'exam-1',
+        title: 'Microeconomics - Midterm Assessment',
+      },
+      user_name: 'Alice',
+      questions: [
+        {
+          id: 'question-1',
+          type: 'radio',
+          content: {
+            stem: 'What does opportunity cost describe?',
+            options: [
+              { id: 'A', text: 'Money already spent' },
+              { id: 'B', text: 'The next best alternative foregone' },
+            ],
+          },
+        },
+      ],
+    })
+
+    submitExamMock.mockRejectedValue(new Error('Request failed with status 500'))
+
+    render(
+      <MemoryRouter>
+        <NexusShellPage />
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Student Access' }))
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: /Microeconomics - Midterm Assessment/,
+      }),
+    )
+    fireEvent.change(screen.getByLabelText('Your Name'), {
+      target: { value: 'Alice' },
+    })
+    fireEvent.change(screen.getByLabelText('Access Password'), {
+      target: { value: '123' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Start Assignment' }))
+
+    fireEvent.click(
+      await screen.findByRole('radio', {
+        name: 'The next best alternative foregone',
+      }),
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Submit Assignment' }))
+
+    expect(await screen.findByText('Request failed with status 500')).toBeInTheDocument()
+    expect(screen.getByText('What does opportunity cost describe?')).toBeInTheDocument()
+    expect(screen.queryByRole('dialog', { name: 'Assignment Access' })).not.toBeInTheDocument()
   })
 
   test('shows the assignment access form as a floating modal and closes it on cancel', async () => {

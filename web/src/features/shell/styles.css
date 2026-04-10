@@ -392,6 +392,44 @@ input[type='password'] {
   margin-bottom: 1.5rem;
 }
 
+.result-stat-grid {
+  margin-bottom: 1.25rem;
+}
+
+.result-overview-card {
+  margin-bottom: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 1.375rem;
+  background: linear-gradient(180deg, rgba(248, 251, 255, 0.8), rgba(237, 243, 252, 0.72));
+  padding: 1.5rem;
+}
+
+.result-overview-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.result-overview-card__title {
+  margin: 0.5rem 0 0;
+  font-size: 1.25rem;
+  letter-spacing: -0.03em;
+}
+
+.result-overview-card__score {
+  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.result-overview-card__copy {
+  margin: 1rem 0 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
 .result-list {
   display: flex;
   flex-direction: column;
@@ -445,6 +483,42 @@ input[type='password'] {
   font-size: 0.8125rem;
 }
 
+.result-card__prompt {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+.result-card__details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.875rem;
+  margin: 0 0 1rem;
+}
+
+.result-card__detail {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 1rem;
+  background: rgba(247, 249, 253, 0.75);
+  padding: 0.875rem 1rem;
+}
+
+.result-card__detail dt {
+  margin: 0 0 0.375rem;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.result-card__detail dd {
+  margin: 0;
+  color: var(--text-main);
+  line-height: 1.5;
+}
+
 .question-header {
   display: flex;
   justify-content: space-between;
@@ -478,6 +552,10 @@ input[type='password'] {
   display: flex;
   justify-content: flex-end;
   margin-top: 1.25rem;
+}
+
+.quiz-submit-error {
+  margin-top: 0.75rem;
 }
 
 .admin-header {
@@ -595,6 +673,15 @@ input[type='password'] {
   .result-header {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .result-overview-card__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .result-card__details {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .quiz-actions .btn,

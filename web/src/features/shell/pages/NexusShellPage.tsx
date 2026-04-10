@@ -51,6 +51,11 @@ interface ExamResult {
   items: ResultItem[]
 }
 
+interface ResultMetric {
+  label: string
+  value: string
+}
+
 const progressByView: Record<ViewId, number> = {
   login: 5,
   'exam-list': 35,
@@ -123,6 +128,18 @@ function normalizeQuestion(question: {
   }
 }
 
+function formatAnswerValue(value: AnswerValue | string | null) {
+  if (value === null || value === undefined) {
+    return 'No response'
+  }
+
+  if (Array.isArray(value)) {
+    return value.length > 0 ? value.join(', ') : 'No response'
+  }
+
+  return String(value).trim() || 'No response'
+}
+
 function buildPrototypeResult(answers: Record<string, AnswerValue>): ExamResult {
   const selectedAnswer = answers['prototype-question-1'] ?? []
   const isCorrect =
@@ -164,6 +181,7 @@ export function NexusShellPage() {
   const [answers, setAnswers] = useState<Record<string, AnswerValue>>({})
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
   const [submitPending, setSubmitPending] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const [result, setResult] = useState<ExamResult | null>(null)
   const questionDisplayedAt = useRef<number | null>(null)
   const [questionTimings, setQuestionTimings] = useState<Record<string, number>>({})
@@ -189,6 +207,27 @@ export function NexusShellPage() {
 
     return `${result.correct_count} of ${result.total_count} answers were correct.`
   }, [result])
+
+  const resultMetrics = useMemo<ResultMetric[]>(() => {
+    if (!result) {
+      return []
+    }
+
+    return [
+      {
+        label: 'Accuracy',
+        value: `${Math.round(result.score * 100)}%`,
+      },
+      {
+        label: 'Correct Answers',
+        value: `${result.correct_count} / ${result.total_count}`,
+      },
+      {
+        label: 'Duration',
+        value: formatDuration(elapsedSeconds),
+      },
+    ]
+  }, [elapsedSeconds, result])
 
   useEffect(() => {
     if (!activeExam || view !== 'quiz') {
@@ -235,6 +274,7 @@ export function NexusShellPage() {
     setAnswers({})
     setElapsedSeconds(0)
     setSubmitPending(false)
+    setSubmitError(null)
     setResult(null)
     setQuestionTimings({})
     questionDisplayedAt.current = null
@@ -290,6 +330,7 @@ export function NexusShellPage() {
 
     setAccessPending(true)
     setAccessError(null)
+    setSubmitError(null)
 
     try {
       const response = examApi
@@ -335,6 +376,7 @@ export function NexusShellPage() {
 
     flushCurrentQuestionTiming(activeExam, currentQuestionIndex)
     setSubmitPending(true)
+    setSubmitError(null)
 
     try {
       const response = examApi
@@ -355,10 +397,9 @@ export function NexusShellPage() {
       })
       setView('result')
     } catch (error) {
-      setAccessError(
+      setSubmitError(
         error instanceof Error ? error.message : 'Unable to submit the current assignment.',
       )
-      setView('exam-list')
     } finally {
       setSubmitPending(false)
     }
@@ -612,6 +653,7 @@ export function NexusShellPage() {
                 </button>
               </div>
             </div>
+            {submitError ? <p className="form-error quiz-submit-error">{submitError}</p> : null}
           </section>
 
           <section
@@ -628,6 +670,26 @@ export function NexusShellPage() {
             <p className="hero-copy result-summary">
               {resultSummary ?? 'The latest submission summary is unavailable.'}
             </p>
+            <section className="stat-grid result-stat-grid">
+              {resultMetrics.map((metric) => (
+                <article className="stat-item" key={metric.label}>
+                  <div className="stat-value">{metric.value}</div>
+                  <div className="stat-label">{metric.label}</div>
+                </article>
+              ))}
+            </section>
+            <section className="result-overview-card">
+              <div className="result-overview-card__header">
+                <div>
+                  <span className="quiz-label">Performance Overview</span>
+                  <h3 className="result-overview-card__title">{result?.exam.title}</h3>
+                </div>
+                <div className="result-overview-card__score">{scorePercent}</div>
+              </div>
+              <p className="result-overview-card__copy">
+                Review each response below. Incorrect answers include the expected answer and explanation so students can use the page as a post-assignment study sheet.
+              </p>
+            </section>
             <div className="scroll-area result-list">
               {result?.items.map((item, index) => {
                 const question = activeExam?.questions.find((q) => q.id === item.question_id)
@@ -656,6 +718,19 @@ export function NexusShellPage() {
                     <div className="result-card__timing">
                       Time: {formatDuration(timingSeconds)}
                     </div>
+                    <p className="result-card__prompt">
+                      {question?.content.stem ?? 'Question prompt unavailable.'}
+                    </p>
+                    <dl className="result-card__details">
+                      <div className="result-card__detail">
+                        <dt>Your Answer</dt>
+                        <dd>{formatAnswerValue(item.user_answer)}</dd>
+                      </div>
+                      <div className="result-card__detail">
+                        <dt>Correct Answer</dt>
+                        <dd>{formatAnswerValue(item.correct_answer)}</dd>
+                      </div>
+                    </dl>
                     <p className="result-explanation">{item.explanation}</p>
                   </article>
                 )

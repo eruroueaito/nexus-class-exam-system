@@ -145,6 +145,8 @@ Three categories of operations cannot safely run in the browser:
 - 原有 `Assignment Access` 浮层之所以看起来“粘在背景上”，根因是 overlay 仍然半透明并叠加 blur；将 overlay 改为近乎不透明后，modal 层级感明显更清晰。
 - admin 后台此前缺少显式发布语义，导致“后台可见”和“前台可见”的边界只能依赖隐式 `is_active` 数据状态。新增 `Publish / Unpublish` 后，这个边界才真正闭环。
 - 远端 `start-exam` 已通过生产烟测验证：当请求体中省略 `user_name` 时，当前生产函数会回退为 `Guest Student`，说明匿名姓名策略已经真正生效，而不仅是本地代码已改。
+- “提交后又回到 Assignment Access 并显示 500” 的直接根因是前端错误处理：`handleSubmitExam` 在 catch 分支里把错误写进 `accessError`，再把视图切回 `exam-list`，于是学生会看到 access modal 和一条与提交失败无关的验证错误。远端 `submit-exam` 本身对宏观经济学试卷已验证可用。
+- admin 视觉上的滚动条违和感，根因不是 thumb 颜色，而是外层 `admin-route-shell` 和内层 `admin-layout` 都可能参与滚动，导致滚动条贴在最外层背景边缘。将滚动责任收回到 `admin-layout` 后，遮罩层才能正确把滚动条压到玻璃面板之下。
 
 ---
 *Update this file after every 2 view/browser/search operations*

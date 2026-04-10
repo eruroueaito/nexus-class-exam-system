@@ -403,6 +403,32 @@ describe('ExamEditorPage', () => {
     expect(await screen.findByText('Admin Dashboard Route')).toBeInTheDocument()
   })
 
+  test('renders a back button that returns to the admin dashboard', async () => {
+    getAdminSessionMock.mockResolvedValue({
+      email: 'admin@example.com',
+    })
+    getExamEditorDataMock.mockResolvedValue({
+      examId: 'exam-1',
+      examTitle: 'Introductory Macroeconomics - Quiz 01',
+      examStatusLabel: 'Active',
+      isPublished: true,
+      questions: [],
+    })
+
+    render(
+      <MemoryRouter initialEntries={['/admin/exams/exam-1']}>
+        <Routes>
+          <Route path="/admin/exams/:examId" element={<ExamEditorPage />} />
+          <Route path="/admin" element={<div>Admin Dashboard Route</div>} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    await screen.findByDisplayValue('Introductory Macroeconomics - Quiz 01')
+    fireEvent.click(screen.getByRole('button', { name: '← Back to Dashboard' }))
+    expect(await screen.findByText('Admin Dashboard Route')).toBeInTheDocument()
+  })
+
   test('publishes a draft exam through the admin save API', async () => {
     getAdminSessionMock.mockResolvedValue({
       email: 'admin@example.com',

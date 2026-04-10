@@ -400,5 +400,18 @@
   - Verify published/unpublished exams on live GitHub Pages against the remote catalog.
   - Push the current frontend bundle to GitHub Pages so the live site reflects the student-list and publish-control fixes.
 
+### Session: 2026-04-09 (UI Polish + Submit Recovery)
+- **Status:** complete
+- Actions taken:
+  - Added a clear editor return control: `ExamEditorPage` now includes `← Back to Dashboard` above the question editor shell.
+  - Refined admin scrolling layers: the route shell no longer scrolls independently; the inner `admin-layout` owns scrolling and a masking overlay now pushes the scrollbar visually behind the glass edge.
+  - Fixed the misleading post-submit failure path in `NexusShellPage`: submit errors now stay in the quiz view and render as inline submit feedback instead of reopening the assignment access modal.
+  - Expanded the student result view into a richer review surface with metric cards, a performance overview panel, question prompts, user answers, correct answers, and explanations.
+  - Verified remote APIs directly with the publishable key: `start-exam` and `submit-exam` both succeed for `Introductory Macroeconomics - Quiz 01`, so the earlier “revalidation” symptom was frontend error handling rather than a persistent backend outage.
+- Verification:
+  - `cd web && npm test -- src/features/shell/pages/NexusShellPage.test.tsx src/features/admin/pages/ExamEditorPage.test.tsx` → 2 files / 15 passed / 1 skipped
+  - `cd web && npm test` → 10 files / 55 passed / 1 skipped
+  - `cd web && npm run build` → passed
+
 ---
 *Update after completing each phase or encountering errors*

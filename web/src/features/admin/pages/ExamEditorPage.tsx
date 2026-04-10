@@ -381,6 +381,15 @@ export function ExamEditorPage() {
       {editorData ? (
         <section className="editor-grid">
           <section className="admin-panel">
+            <div className="editor-back-row">
+              <button
+                className="btn btn-ghost"
+                type="button"
+                onClick={() => navigate('/admin')}
+              >
+                ← Back to Dashboard
+              </button>
+            </div>
             <h2 className="admin-panel__title">Question Editor</h2>
             <label className="form-field">
               <span className="form-label">Exam Title</span>

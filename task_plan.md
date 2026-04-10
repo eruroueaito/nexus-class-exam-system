@@ -147,4 +147,9 @@ Phase 5
 - 3. 学生名改为可选，后端空值统一回落到 `Guest Student`
 - 4. admin 滚动条轨道完全弱化，只保留更细的 thumb
 - 5. editor 增加 `Publish / Unpublish`，明确用 `is_active` 控制前台是否可见
+- 当前补丁轮的收尾范围已确认：
+- 1. editor 增加返回 dashboard 的明确入口
+- 2. admin 滚动条只保留内层滚动，并通过遮罩压回玻璃面板层级内
+- 3. submit 失败时保持在 quiz 视图，不再复用 access modal 错误通道
+- 4. 学生结果页升级为更接近 admin console 的详细回顾视图
 - 文档中会显式标记对原始需求的必要修正点，避免后续实现时返工。
