@@ -60,6 +60,7 @@ describe('ExamEditorPage', () => {
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
       isPublished: true,
+      hasAccessPasswordConfigured: true,
       accessPasswordDraft: '',
       questions: [
         {
@@ -91,6 +92,9 @@ describe('ExamEditorPage', () => {
 
     expect(screen.getByText('Question Editor')).toBeInTheDocument()
     expect(screen.getByText('Question 01')).toBeInTheDocument()
+    expect(
+      screen.getByText(/Password protection: Configured\./),
+    ).toBeInTheDocument()
     expect(screen.getByDisplayValue('What does opportunity cost describe?')).toBeInTheDocument()
     expect(screen.getByDisplayValue('Opportunity cost is the next best alternative that is given up.')).toBeInTheDocument()
     expect(screen.getByRole('radio', { name: 'Correct option B' })).toBeChecked()
@@ -105,6 +109,7 @@ describe('ExamEditorPage', () => {
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
       isPublished: true,
+      hasAccessPasswordConfigured: true,
       accessPasswordDraft: '',
       questions: [
         {
@@ -138,7 +143,7 @@ describe('ExamEditorPage', () => {
     const titleInput = await screen.findByDisplayValue('Microeconomics - Midterm Assessment')
     const stemInput = screen.getByDisplayValue('What does opportunity cost describe?')
     const explanationInput = screen.getByDisplayValue('Original explanation')
-    const passwordInput = screen.getByLabelText('Assignment Access Password')
+    const passwordInput = screen.getByLabelText('Rotate Assignment Access Password')
 
     fireEvent.change(titleInput, { target: { value: 'Updated Exam Title' } })
     fireEvent.change(stemInput, { target: { value: 'Updated question stem' } })
@@ -154,6 +159,7 @@ describe('ExamEditorPage', () => {
         examTitle: 'Updated Exam Title',
         examStatusLabel: 'Active',
         isPublished: true,
+        hasAccessPasswordConfigured: true,
         accessPasswordDraft: '456789',
         questions: [
           {
@@ -184,6 +190,7 @@ describe('ExamEditorPage', () => {
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
       isPublished: true,
+      hasAccessPasswordConfigured: true,
       accessPasswordDraft: '',
       questions: [
         {
@@ -223,6 +230,7 @@ describe('ExamEditorPage', () => {
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
       isPublished: true,
+      hasAccessPasswordConfigured: true,
       accessPasswordDraft: '',
       questions: [
         {
@@ -270,6 +278,7 @@ describe('ExamEditorPage', () => {
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
       isPublished: true,
+      hasAccessPasswordConfigured: true,
       accessPasswordDraft: '',
       questions: [
         {
@@ -332,6 +341,7 @@ describe('ExamEditorPage', () => {
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
       isPublished: true,
+      hasAccessPasswordConfigured: true,
       accessPasswordDraft: '',
       questions: [
         {
@@ -375,6 +385,7 @@ describe('ExamEditorPage', () => {
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
       isPublished: true,
+      hasAccessPasswordConfigured: true,
       accessPasswordDraft: '',
       questions: [
         {
@@ -422,6 +433,7 @@ describe('ExamEditorPage', () => {
       examTitle: 'Introductory Macroeconomics - Quiz 01',
       examStatusLabel: 'Active',
       isPublished: true,
+      hasAccessPasswordConfigured: true,
       accessPasswordDraft: '',
       questions: [],
     })
@@ -449,6 +461,7 @@ describe('ExamEditorPage', () => {
       examTitle: 'Game Theory - Midterm Assessment',
       examStatusLabel: 'Draft',
       isPublished: false,
+      hasAccessPasswordConfigured: true,
       accessPasswordDraft: '',
       questions: [
         {

@@ -40,6 +40,7 @@ interface QuestionRow {
 
 interface ExamEditorInput {
   exam: ExamRow
+  access_password_configured?: boolean
   questions: QuestionRow[]
 }
 
@@ -63,6 +64,7 @@ export interface ExamEditorSnapshot {
   examTitle: string
   examStatusLabel: string
   isPublished: boolean
+  hasAccessPasswordConfigured: boolean
   accessPasswordDraft: string
   questions: EditableQuestionSnapshot[]
 }
@@ -147,6 +149,7 @@ const fallbackExamEditorData: ExamEditorSnapshot = {
   examTitle: 'Microeconomics - Midterm Assessment',
   examStatusLabel: 'Active',
   isPublished: true,
+  hasAccessPasswordConfigured: true,
   accessPasswordDraft: '',
   questions: [
     {
@@ -195,6 +198,7 @@ const fallbackAdminExamList: AdminExamListItem[] = [
 
 export function mapExamEditorData({
   exam,
+  access_password_configured,
   questions,
 }: ExamEditorInput): ExamEditorSnapshot {
   return {
@@ -202,6 +206,7 @@ export function mapExamEditorData({
     examTitle: exam.title,
     examStatusLabel: exam.is_active ? 'Active' : 'Draft',
     isPublished: exam.is_active,
+    hasAccessPasswordConfigured: Boolean(access_password_configured),
     accessPasswordDraft: '',
     questions: questions
       .slice()
@@ -362,6 +367,7 @@ export async function importExamFromJson(
     examTitle: payload.exam_title,
     examStatusLabel: 'Draft',
     isPublished: false,
+    hasAccessPasswordConfigured: false,
     accessPasswordDraft: '',
     questions: relabelQuestions(
       payload.questions.map((question) => ({

@@ -518,11 +518,13 @@ export async function loadExamDraft(
   const questions = (questionResponse.data as Array<QuestionRow & { order_index?: number }>) ?? []
   const answerRows = await listExamAnswerRecords(client, request.examId)
   const answerMap = new Map(answerRows.map((row) => [row.question_id, row]))
+  const passwordHash = await getExamAccessPasswordHash(client, request.examId)
 
   return {
     status: 200,
     body: {
       exam,
+      access_password_configured: Boolean(passwordHash),
       questions: questions.map((question) => {
         const answerRecord = answerMap.get(question.id)
 

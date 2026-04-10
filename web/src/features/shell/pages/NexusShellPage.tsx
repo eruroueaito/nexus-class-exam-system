@@ -228,6 +228,8 @@ export function NexusShellPage() {
     ]
   }, [elapsedSeconds, result])
 
+  const shouldShowProgressBar = view !== 'exam-list'
+
   useEffect(() => {
     if (!activeExam || view !== 'quiz') {
       return
@@ -457,12 +459,14 @@ export function NexusShellPage() {
 
       <main className="app-container">
         <div className="glass-panel">
-          <div className="progress-bar" aria-hidden="true">
-            <div
-              className="progress-inner"
-              style={{ width: `${progressByView[view]}%` }}
-            />
-          </div>
+          {shouldShowProgressBar ? (
+            <div className="progress-bar" aria-hidden="true">
+              <div
+                className="progress-inner"
+                style={{ width: `${progressByView[view]}%` }}
+              />
+            </div>
+          ) : null}
 
           <section
             className={`view-section ${view === 'exam-list' ? 'active' : ''}`}

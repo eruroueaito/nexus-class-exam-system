@@ -292,6 +292,8 @@ export function ExamEditorPage() {
         examId: result.examId,
         examTitle: result.examTitle,
         examStatusLabel: editorData.isPublished ? 'Active' : 'Draft',
+        hasAccessPasswordConfigured:
+          editorData.hasAccessPasswordConfigured || Boolean(editorData.accessPasswordDraft.trim()),
         accessPasswordDraft: '',
       }
 
@@ -329,6 +331,9 @@ export function ExamEditorPage() {
         ...nextSnapshot,
         examId: result.examId,
         examTitle: result.examTitle,
+        hasAccessPasswordConfigured:
+          nextSnapshot.hasAccessPasswordConfigured ||
+          Boolean(nextSnapshot.accessPasswordDraft.trim()),
         accessPasswordDraft: '',
       }
 
@@ -424,15 +429,19 @@ export function ExamEditorPage() {
                 />
               </label>
               <label className="form-field">
-                <span className="form-label">Assignment Access Password</span>
+                <span className="form-label">Rotate Assignment Access Password</span>
                 <input
-                  aria-label="Assignment Access Password"
+                  aria-label="Rotate Assignment Access Password"
                   type="password"
                   value={editorData.accessPasswordDraft}
                   placeholder="Leave blank to keep the current password"
                   onChange={(event) => handleAccessPasswordChange(event.currentTarget.value)}
                 />
               </label>
+              <p className="admin-panel__copy">
+                Password protection: {editorData.hasAccessPasswordConfigured ? 'Configured' : 'Missing'}.
+                Enter a new password and save to rotate it. The current plaintext password is never shown again after hashing.
+              </p>
               <p className="admin-panel__copy">
                 Status: {editorData.examStatusLabel} • {editorData.questions.length} questions
               </p>

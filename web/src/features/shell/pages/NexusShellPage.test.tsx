@@ -113,6 +113,46 @@ describe('NexusShellPage', () => {
     expect(screen.getByRole('button', { name: /Game Theory - Midterm Assessment/ })).toBeInTheDocument()
   })
 
+  test('hides the global progress bar on the assignment list and only shows it after entering an exam', async () => {
+    startExamMock.mockResolvedValue({
+      exam: {
+        id: 'exam-1',
+        title: 'Microeconomics - Midterm Assessment',
+      },
+      user_name: 'Alice',
+      questions: [
+        {
+          id: 'question-1',
+          type: 'radio',
+          content: {
+            stem: 'What does opportunity cost describe?',
+            options: [
+              { id: 'A', text: 'Money already spent' },
+              { id: 'B', text: 'The next best alternative foregone' },
+            ],
+          },
+        },
+      ],
+    })
+
+    const { container } = render(
+      <MemoryRouter>
+        <NexusShellPage />
+      </MemoryRouter>,
+    )
+
+    expect(container.querySelector('.progress-bar')).toBeNull()
+
+    fireEvent.click(screen.getByRole('button', { name: /Microeconomics - Midterm Assessment/ }))
+    fireEvent.change(screen.getByLabelText('Access Password'), {
+      target: { value: '123' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Start Assignment' }))
+
+    await screen.findByText('What does opportunity cost describe?')
+    expect(container.querySelector('.progress-bar')).not.toBeNull()
+  })
+
   test('starts an exam even when the student leaves the name field blank', async () => {
     startExamMock.mockResolvedValue({
       exam: {

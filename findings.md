@@ -159,6 +159,8 @@ Three categories of operations cannot safely run in the browser:
 - 本轮代码审查后，未再发现新的阻塞级前后端联动 bug；当前剩余主要是 bundle 过大导致的 chunk size warning，属于性能优化项，不影响正确性。
 - 学生结果页“没有解析”的 P0 根因已确认不是后端。线上 `submit-exam` 对 `Game Theory - Midterm Assessment` 真实返回了 `12` 条 `items`，且每条都包含 `explanation`。问题出在前端结果页的嵌套 flex + 内层滚动壳层：结果列表被限制在不可见区域，但外层结果页本身又没有承担滚动责任，因此用户只能看到顶部摘要卡片。
 - 本次 P0 修复策略是反向简化布局：让 `view-section--result` 自己负责滚动，撤掉结果列表自身的独立滚动与高度竞争。对于长试卷结果页，这种“单滚动容器”比“外层固定 + 内层 flex 滚动壳”更稳健，尤其在 GitHub Pages 线上真实视口里不容易出现内容被吃掉但本地测试仍通过的假象。
+- 密码模块的正确安全模型不是“读写当前密码”，而是“显示是否已配置 + 输入新密码轮换”。当前系统只保存 hash，因此管理员界面不应也无法安全回显当前明文密码。
+- 代码审查后保留一个非阻塞风险：`getExamEditorData()` 在函数调用失败时仍会回退到本地 fallback snapshot，这对开发演示友好，但对严格生产诊断不够透明。若后续继续收尾，优先把它改成“仅在缺少环境变量时 fallback，远端错误则显式报错”。
 
 ---
 *Update this file after every 2 view/browser/search operations*

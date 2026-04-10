@@ -50,6 +50,7 @@ describe('examAdminApi', () => {
         created_at: '2026-04-09T18:00:00Z',
         is_active: true,
       },
+      access_password_configured: true,
       questions: [
         {
           id: 'question-1',
@@ -79,6 +80,7 @@ describe('examAdminApi', () => {
       explanation: 'Opportunity cost is the next best alternative that is given up.',
     })
     expect(result.isPublished).toBe(true)
+    expect(result.hasAccessPasswordConfigured).toBe(true)
     expect(result.accessPasswordDraft).toBe('')
   })
 
@@ -91,6 +93,7 @@ describe('examAdminApi', () => {
           created_at: '2026-04-09T18:00:00Z',
           is_active: true,
         },
+        access_password_configured: true,
         questions: [
           {
             id: 'question-1',
@@ -173,6 +176,7 @@ describe('examAdminApi', () => {
       examTitle: 'Updated Exam Title',
       examStatusLabel: 'Active',
       isPublished: true,
+      hasAccessPasswordConfigured: true,
       accessPasswordDraft: '123',
       questions: [
         {
@@ -217,6 +221,7 @@ describe('examAdminApi', () => {
       examTitle: 'Updated Exam Title',
       examStatusLabel: 'Active',
       isPublished: true,
+      hasAccessPasswordConfigured: true,
       accessPasswordDraft: '123',
       questions: [
         {
@@ -274,6 +279,7 @@ describe('examAdminApi', () => {
       examTitle: 'Updated Exam Title',
       examStatusLabel: 'Active',
       isPublished: true,
+      hasAccessPasswordConfigured: true,
       accessPasswordDraft: '',
       questions: [
         {
@@ -302,6 +308,7 @@ describe('examAdminApi', () => {
       examTitle: 'Updated Exam Title',
       examStatusLabel: 'Active',
       isPublished: true,
+      hasAccessPasswordConfigured: true,
       accessPasswordDraft: '',
       questions: [
         {
@@ -325,6 +332,7 @@ describe('examAdminApi', () => {
       examTitle: 'Updated Exam Title',
       examStatusLabel: 'Active',
       isPublished: true,
+      hasAccessPasswordConfigured: true,
       accessPasswordDraft: '',
       questions: [
         {

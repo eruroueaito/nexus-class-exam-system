@@ -430,6 +430,55 @@ describe('exam-service', () => {
     expect(result.body.questions).toHaveLength(2)
   })
 
+  test('rotates the exam access password through saveExamDraft and invalidates the old password', async () => {
+    const tables = createFixtureTables(await sha256Hex('123'))
+    const client = new FakeClient(tables)
+
+    const saveResult = await saveExamDraft(client, {
+      examId: 'exam-1',
+      examTitle: 'Microeconomics - Midterm Assessment',
+      isPublished: true,
+      accessPassword: '456789',
+      questions: [
+        {
+          id: 'question-1',
+          type: 'radio',
+          stem: 'What does opportunity cost describe?',
+          options: [
+            { id: 'A', text: 'Money already spent' },
+            { id: 'B', text: 'The next best alternative foregone' },
+          ],
+          correctAnswer: ['B'],
+          explanation: 'Opportunity cost is the next best alternative that is given up.',
+        },
+        {
+          id: 'question-2',
+          type: 'text',
+          stem: 'Name the market structure with many sellers and differentiated products.',
+          options: [],
+          correctAnswer: ['monopolistic competition'],
+          explanation: 'Monopolistic competition combines many firms with product differentiation.',
+        },
+      ],
+    })
+
+    expect(saveResult.status).toBe(200)
+
+    const oldPasswordResult = await startExam(client, {
+      examId: 'exam-1',
+      userName: 'Alice',
+      accessPassword: '123',
+    })
+    const newPasswordResult = await startExam(client, {
+      examId: 'exam-1',
+      userName: 'Alice',
+      accessPassword: '456789',
+    })
+
+    expect(oldPasswordResult.status).toBe(403)
+    expect(newPasswordResult.status).toBe(200)
+  })
+
   test('scores the submission and writes submission snapshots', async () => {
     const tables = createFixtureTables(await sha256Hex('123'))
     const client = new FakeClient(tables)
