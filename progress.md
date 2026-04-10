@@ -323,5 +323,34 @@
 | What have I learned? | 新仓库的 GitHub Pages 首次部署可能需要先手动创建 Pages site，之后 workflow 才能稳定工作；同时部署前最关键的后台补齐项是真实试卷列表而不是继续深挖局部编辑器细节 |
 | What have I done? | 已保存原型、实现 React 壳层、创建 schema 与 RLS migrations、完成学生端真实考试流、本地联调基础、管理员登录壳层、后台 analytics 第一版、管理员编辑器的安全读写与试卷级 create/delete，补上后台试卷列表，完成 GitHub 仓库初始化与 GitHub Pages 部署，并生成了一套真实英文博弈论测试卷 JSON |
 
+### Session: 2026-04-09 (Enhancement Round)
+- **Status:** complete
+- Actions taken:
+  - Fixed admin console vertical scroll: added `align-items: flex-start` override for `.admin-route-shell .app-container` so tall content scrolls instead of clipping.
+  - Fixed active student deduplication: `user_name.trim().toLowerCase()` normalization applied before counting unique students in `analyticsApi.ts`.
+  - Added per-exam analytics switcher: `getExamAnalytics(examId?)` now filters submissions and questions by exam. Dashboard renders "All Exams / Exam1 / …" button group; switching reloads analytics.
+  - Added wrong-answer drill-down: `QuestionHeatRow` now includes `wrongStudents?: string[]`. Clicking a row in `QuestionHeatTable` expands a pill list of students who answered incorrectly.
+  - Added data source explanation: note below analytics grid identifies `submissions` and `submission_items` as the data source.
+  - Added per-question time tracking: `NexusShellPage` now uses a `questionDisplayedAt` ref to accumulate per-question elapsed seconds. Timing flushes on navigation and before submit. Result page displays "Time: MM:SS" per result card.
+  - Added per-question scoring display: quiz shows a point badge if `question.content.points` is set; result page shows "earned / total pts" per card.
+  - Updated AI JSON import panel: default payload includes `"points": 10`; description notes the supported fields and question types.
+  - Updated `AdminDashboardPage.test.tsx` to use `getAllByText` for exam title assertions (now appears in both switcher and exam list).
+  - Committed (6842e6a) and pushed to `main`; GitHub Actions will redeploy to GitHub Pages.
+- Files modified:
+  - `web/src/features/admin/api/analyticsApi.ts` (dedup, wrongStudents, examId filter, sequential submission_items query)
+  - `web/src/features/admin/components/AiSyncPanel.tsx` (points in default payload, format note)
+  - `web/src/features/admin/components/QuestionHeatTable.tsx` (drill-down with Fragment + expandedQuestionId state)
+  - `web/src/features/admin/pages/AdminDashboardPage.test.tsx` (updated assertions for duplicate exam title text)
+  - `web/src/features/admin/pages/AdminDashboardPage.tsx` (exam switcher UI, data source note, selectedAnalyticsExamId state)
+  - `web/src/features/admin/styles.css` (scrollbar fix, exam-switcher, analytics-source-note, drill-down styles)
+  - `web/src/features/shell/pages/NexusShellPage.tsx` (useRef, questionTimings state, flushCurrentQuestionTiming, points display)
+  - `web/src/features/shell/styles.css` (result-card__meta, result-card__timing, result-card__points, question-header, question-points)
+
+## Test Results (Enhancement Round — 2026-04-09)
+| Test | Command | Expected | Actual | Status |
+|------|---------|----------|--------|--------|
+| Full regression after enhancement round | `npx vitest run` | All tests pass | 10 files / 48 passed / 1 skipped | ✓ |
+| TypeScript type check | `tsc --noEmit` | No type errors | No output (clean) | ✓ |
+
 ---
 *Update after completing each phase or encountering errors*
