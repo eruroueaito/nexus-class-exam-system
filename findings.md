@@ -157,6 +157,8 @@ Three categories of operations cannot safely run in the browser:
 - 管理员图表更适合展示分布而不是按日期趋势线。当前数据量较小时，折线趋势容易误导；成绩分布柱状图更符合“考试系统后台”这一语境。
 - `Question Heat` 中如果只展示 `A/B/C` 这类选项 ID，管理员仍然无法快速理解错误答案含义。当前 read model 已额外拼接对应选项文本，例如 `A · Money already spent`。
 - 本轮代码审查后，未再发现新的阻塞级前后端联动 bug；当前剩余主要是 bundle 过大导致的 chunk size warning，属于性能优化项，不影响正确性。
+- 学生结果页“没有解析”的 P0 根因已确认不是后端。线上 `submit-exam` 对 `Game Theory - Midterm Assessment` 真实返回了 `12` 条 `items`，且每条都包含 `explanation`。问题出在前端结果页的嵌套 flex + 内层滚动壳层：结果列表被限制在不可见区域，但外层结果页本身又没有承担滚动责任，因此用户只能看到顶部摘要卡片。
+- 本次 P0 修复策略是反向简化布局：让 `view-section--result` 自己负责滚动，撤掉结果列表自身的独立滚动与高度竞争。对于长试卷结果页，这种“单滚动容器”比“外层固定 + 内层 flex 滚动壳”更稳健，尤其在 GitHub Pages 线上真实视口里不容易出现内容被吃掉但本地测试仍通过的假象。
 
 ---
 *Update this file after every 2 view/browser/search operations*

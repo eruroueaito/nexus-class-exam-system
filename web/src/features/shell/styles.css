@@ -85,7 +85,24 @@
 }
 
 .view-section--result {
-  overflow: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(78, 116, 177, 0.42) transparent;
+}
+
+.view-section--result::-webkit-scrollbar {
+  width: 0.75rem;
+}
+
+.view-section--result::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 999px;
+}
+
+.view-section--result::-webkit-scrollbar-thumb {
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(96, 141, 216, 0.62), rgba(122, 135, 171, 0.48));
 }
 
 .hero-title {
@@ -401,10 +418,7 @@ input[type='password'] {
 }
 
 .result-body {
-  display: flex;
-  min-height: 0;
-  flex: 1;
-  flex-direction: column;
+  display: block;
 }
 
 .result-overview-card {
@@ -445,33 +459,11 @@ input[type='password'] {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  padding-right: 0.375rem;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(78, 116, 177, 0.42) transparent;
-}
-
-.result-list::-webkit-scrollbar {
-  width: 0.75rem;
-}
-
-.result-list::-webkit-scrollbar-track {
-  background: transparent;
-  border-radius: 999px;
-}
-
-.result-list::-webkit-scrollbar-thumb {
-  border: none;
-  border-radius: 999px;
-  background: linear-gradient(180deg, rgba(96, 141, 216, 0.62), rgba(122, 135, 171, 0.48));
+  overflow: visible;
 }
 
 .result-scroll-shell {
-  min-height: 0;
-  flex: 1;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .result-card {

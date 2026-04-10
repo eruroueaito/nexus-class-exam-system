@@ -456,5 +456,22 @@
   - Fixed the most important integration bug found during review: admin write APIs were previously swallowing function failures and returning fake success states.
   - No new blocking frontend-backend correctness issues remain after this fix; current residual issue is bundle size warning only.
 
+### Session: 2026-04-09 (P0 Result Explanation Visibility Fix)
+- **Status:** complete
+- Actions taken:
+  - Treated the missing student explanations as a P0 and directly verified the live production chain before patching UI assumptions.
+  - Confirmed the backend was healthy: the live `submit-exam` function for `Game Theory - Midterm Assessment` returns `total_count: 12`, `items.length: 12`, and per-question `explanation` text.
+  - Reworked the student result page scroll model in `web/src/features/shell/styles.css`:
+    - `view-section--result` now owns vertical scrolling and custom scrollbar styling
+    - `result-body` no longer uses a nested flex scroll shell as the primary height manager
+    - `result-list` and `result-scroll-shell` now render as visible content instead of competing for an inner constrained height
+  - Kept the existing result-card rendering logic intact because the live bundle inspection confirmed the cards and explanations were already present in the shipped JavaScript.
+- Verification:
+  - `cd web && npm test src/features/shell/pages/NexusShellPage.test.tsx` → 1 file / 6 passed / 1 skipped
+  - `cd web && npm run build` → passed
+  - Production API verification:
+    - `start-exam` for `33333333-3333-3333-3333-333333333333` with password `123` → `HTTP 200`
+    - `submit-exam` for the same exam → `HTTP 200`, `items.length = 12`, explanations present
+
 ---
 *Update after completing each phase or encountering errors*
