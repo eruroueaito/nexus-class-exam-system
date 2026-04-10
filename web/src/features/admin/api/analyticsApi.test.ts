@@ -23,36 +23,51 @@ describe('analyticsApi', () => {
           submission_id: 'submission-1',
           question_id: 'question-1',
           is_correct: true,
+          user_answer: ['B'],
         },
         {
           submission_id: 'submission-1',
           question_id: 'question-2',
           is_correct: true,
+          user_answer: ['A', 'B'],
         },
         {
           submission_id: 'submission-2',
           question_id: 'question-1',
           is_correct: false,
+          user_answer: ['A'],
         },
         {
           submission_id: 'submission-2',
           question_id: 'question-2',
           is_correct: true,
+          user_answer: ['A', 'B'],
         },
       ],
       questions: [
         {
           id: 'question-1',
           order_index: 1,
+          type: 'radio',
           content: {
             stem: 'What does opportunity cost describe?',
+            options: [
+              { id: 'A', text: 'Money already spent' },
+              { id: 'B', text: 'The next best alternative foregone' },
+            ],
           },
         },
         {
           id: 'question-2',
           order_index: 2,
+          type: 'checkbox',
           content: {
             stem: 'Select every characteristic that fits a perfectly competitive market.',
+            options: [
+              { id: 'A', text: 'Many buyers and sellers' },
+              { id: 'B', text: 'Identical products' },
+              { id: 'C', text: 'Strong barriers to entry' },
+            ],
           },
         },
       ],
@@ -69,6 +84,27 @@ describe('analyticsApi', () => {
       questionLabel: 'Q.01',
       incorrectRateLabel: '50.0%',
       attempts: 2,
+      wrongStudents: [
+        {
+          submissionId: 'submission-2',
+          name: 'David',
+          answerLabel: 'A',
+        },
+      ],
+      optionBreakdown: [
+        {
+          optionId: 'A',
+          optionText: 'Money already spent',
+          selectedCount: 1,
+          selectedRateLabel: '50.0%',
+        },
+        {
+          optionId: 'B',
+          optionText: 'The next best alternative foregone',
+          selectedCount: 1,
+          selectedRateLabel: '50.0%',
+        },
+      ],
     })
   })
 })

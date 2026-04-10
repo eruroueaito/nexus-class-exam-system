@@ -60,6 +60,7 @@ describe('ExamEditorPage', () => {
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
       isPublished: true,
+      accessPasswordDraft: '',
       questions: [
         {
           id: 'question-1',
@@ -104,6 +105,7 @@ describe('ExamEditorPage', () => {
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
       isPublished: true,
+      accessPasswordDraft: '',
       questions: [
         {
           id: 'question-1',
@@ -136,10 +138,12 @@ describe('ExamEditorPage', () => {
     const titleInput = await screen.findByDisplayValue('Microeconomics - Midterm Assessment')
     const stemInput = screen.getByDisplayValue('What does opportunity cost describe?')
     const explanationInput = screen.getByDisplayValue('Original explanation')
+    const passwordInput = screen.getByLabelText('Assignment Access Password')
 
     fireEvent.change(titleInput, { target: { value: 'Updated Exam Title' } })
     fireEvent.change(stemInput, { target: { value: 'Updated question stem' } })
     fireEvent.change(explanationInput, { target: { value: 'Updated explanation' } })
+    fireEvent.change(passwordInput, { target: { value: '456789' } })
     fireEvent.click(screen.getByRole('radio', { name: 'Correct option B' }))
 
     fireEvent.click(screen.getByRole('button', { name: 'Save Draft' }))
@@ -150,6 +154,7 @@ describe('ExamEditorPage', () => {
         examTitle: 'Updated Exam Title',
         examStatusLabel: 'Active',
         isPublished: true,
+        accessPasswordDraft: '456789',
         questions: [
           {
             id: 'question-1',
@@ -179,6 +184,7 @@ describe('ExamEditorPage', () => {
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
       isPublished: true,
+      accessPasswordDraft: '',
       questions: [
         {
           id: 'question-1',
@@ -217,6 +223,7 @@ describe('ExamEditorPage', () => {
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
       isPublished: true,
+      accessPasswordDraft: '',
       questions: [
         {
           id: 'question-1',
@@ -263,6 +270,7 @@ describe('ExamEditorPage', () => {
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
       isPublished: true,
+      accessPasswordDraft: '',
       questions: [
         {
           id: 'question-1',
@@ -324,6 +332,7 @@ describe('ExamEditorPage', () => {
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
       isPublished: true,
+      accessPasswordDraft: '',
       questions: [
         {
           id: 'question-1',
@@ -366,6 +375,7 @@ describe('ExamEditorPage', () => {
       examTitle: 'Microeconomics - Midterm Assessment',
       examStatusLabel: 'Active',
       isPublished: true,
+      accessPasswordDraft: '',
       questions: [
         {
           id: 'question-1',
@@ -412,6 +422,7 @@ describe('ExamEditorPage', () => {
       examTitle: 'Introductory Macroeconomics - Quiz 01',
       examStatusLabel: 'Active',
       isPublished: true,
+      accessPasswordDraft: '',
       questions: [],
     })
 
@@ -438,6 +449,7 @@ describe('ExamEditorPage', () => {
       examTitle: 'Game Theory - Midterm Assessment',
       examStatusLabel: 'Draft',
       isPublished: false,
+      accessPasswordDraft: '',
       questions: [
         {
           id: 'question-1',

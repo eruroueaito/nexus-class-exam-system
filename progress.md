@@ -424,8 +424,37 @@
 - Verification:
   - Remote smoke check: `start-exam` for exam `11111111-1111-1111-1111-111111111111` with password `123` now returns `HTTP 200`
   - `cd web && npm test -- src/features/admin/api/analyticsApi.test.ts src/features/admin/pages/AdminDashboardPage.test.tsx src/features/shell/pages/NexusShellPage.test.tsx` → 3 files / 13 passed / 1 skipped
-  - `cd web && npm test` → 10 files / 55 passed / 1 skipped
+- `cd web && npm test` → 10 files / 55 passed / 1 skipped
+- `cd web && npm run build` → passed
+
+### Session: 2026-04-09 (Advanced Analytics + Password Control + Integration Review)
+- **Status:** complete
+- Actions taken:
+  - Reworked the student result page into a real inner scroll shell: `view-section--result`, `result-body`, and `result-scroll-shell` now constrain long review content so the custom scrollbar actually appears.
+  - Expanded the admin analytics read model: `submission_items.user_answer`, question `type`, and `content.options` now flow into `QuestionHeatRow`, enabling original-prompt display, wrong-student answer drill-down, and per-option selection counts/rates.
+  - Redesigned `QuestionHeatTable` into a richer drill-down surface with:
+    - original prompt card
+    - selectable wrong-student pills
+    - selected-answer panel
+    - option distribution bars for radio/checkbox questions
+  - Improved anonymous analytics identity handling: guest submissions are no longer collapsed into one student; analytics now derive a unique display label from `submission_id` when the stored name is blank or `Guest Student`.
+  - Added admin-side password rotation UI in `ExamEditorPage` via `Assignment Access Password`, with save payload support in `examAdminApi.ts`.
+  - Added backend password rotation support:
+    - new migration `20260409221000_upsert_exam_access_password_hash.sql`
+    - `save-exam-draft` now accepts optional `access_password`
+    - shared service hashes the password and calls a new helper RPC instead of touching `app_private` directly
+  - Removed silent-success fallbacks from admin write APIs: failed save/create/delete actions now throw real errors instead of pretending the operation succeeded locally.
+  - Ran a local Playwright browser flow on `vite preview`: assignment list → access modal → start exam → answer → submit → result page.
+- Verification:
+  - `cd web && npm test` → 11 files / 60 passed / 1 skipped
   - `cd web && npm run build` → passed
+  - Local browser smoke flow completed successfully on `http://127.0.0.1:4173/`
+- Remote rollout:
+  - Applied migration `upsert_exam_access_password_hash` to the remote Supabase project
+  - Deployed `save-exam-draft` Edge Function v4 with password rotation support
+- Review result:
+  - Fixed the most important integration bug found during review: admin write APIs were previously swallowing function failures and returning fake success states.
+  - No new blocking frontend-backend correctness issues remain after this fix; current residual issue is bundle size warning only.
 
 ---
 *Update after completing each phase or encountering errors*

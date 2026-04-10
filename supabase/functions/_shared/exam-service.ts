@@ -49,6 +49,7 @@ export interface SaveExamDraftRequestData {
   examId: string
   examTitle: string
   isPublished: boolean
+  accessPassword?: string
   questions: Array<{
     id: string
     type: 'radio' | 'checkbox' | 'text'
@@ -249,6 +250,21 @@ async function listExamAnswerRecords(client: ServiceClient, examId: string) {
   }
 
   return (response.data as AnswerRow[]) ?? []
+}
+
+async function upsertExamAccessPasswordHash(
+  client: ServiceClient,
+  examId: string,
+  passwordHash: string,
+) {
+  const response = await client.rpc('upsert_exam_access_password_hash', {
+    target_exam_id: examId,
+    target_password_hash: passwordHash,
+  })
+
+  if (response.error) {
+    throw new Error(response.error.message)
+  }
 }
 
 export async function loadExamCatalog(client: ServiceClient) {
@@ -667,6 +683,11 @@ export async function saveExamDraft(
 
   if (examUpdateResponse.error) {
     throw new Error(examUpdateResponse.error.message)
+  }
+
+  if (request.accessPassword?.trim()) {
+    const passwordHash = await sha256Hex(request.accessPassword.trim())
+    await upsertExamAccessPasswordHash(client, request.examId, passwordHash)
   }
 
   const incomingQuestionIds = new Set(request.questions.map((question) => question.id))

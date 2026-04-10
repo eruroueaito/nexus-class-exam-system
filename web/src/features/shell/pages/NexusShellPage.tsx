@@ -631,7 +631,7 @@ export function NexusShellPage() {
           </section>
 
           <section
-            className={`view-section ${view === 'result' ? 'active' : ''}`}
+            className={`view-section view-section--result ${view === 'result' ? 'active' : ''}`}
             aria-hidden={view !== 'result'}
           >
             <header className="result-header">
@@ -644,80 +644,84 @@ export function NexusShellPage() {
             <p className="hero-copy result-summary">
               {resultSummary ?? 'The latest submission summary is unavailable.'}
             </p>
-            <section className="stat-grid result-stat-grid">
-              {resultMetrics.map((metric) => (
-                <article className="stat-item" key={metric.label}>
-                  <div className="stat-value">{metric.value}</div>
-                  <div className="stat-label">{metric.label}</div>
-                </article>
-              ))}
-            </section>
-            <section className="result-overview-card">
-              <div className="result-overview-card__header">
-                <div>
-                  <span className="quiz-label">Performance Overview</span>
-                  <h3 className="result-overview-card__title">{result?.exam.title}</h3>
-                </div>
-                <div className="result-overview-card__score">{scorePercent}</div>
-              </div>
-              <p className="result-overview-card__copy">
-                Review each response below. Incorrect answers include the expected answer and explanation so students can use the page as a post-assignment study sheet.
-              </p>
-            </section>
-            <div className="scroll-area result-list">
-              {result?.items.map((item, index) => {
-                const question = activeExam?.questions.find((q) => q.id === item.question_id)
-                const timingSeconds = questionTimings[item.question_id] ?? 0
-                return (
-                  <article className="result-card" key={item.question_id}>
-                    <div className="result-card__header">
-                      <span className="quiz-label">
-                        Question {String(index + 1).padStart(2, '0')}
-                      </span>
-                      <div className="result-card__meta">
-                        {question?.content.points !== undefined ? (
-                          <span className="result-card__points">
-                            {item.is_correct ? question.content.points : 0} / {question.content.points} pts
-                          </span>
-                        ) : null}
-                        <span
-                          className={`result-badge ${
-                            item.is_correct ? 'result-badge--correct' : 'result-badge--incorrect'
-                          }`}
-                        >
-                          {item.is_correct ? 'Correct' : 'Review'}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="result-card__timing">
-                      Time: {formatDuration(timingSeconds)}
-                    </div>
-                    <p className="result-card__prompt">
-                      {question?.content.stem ?? 'Question prompt unavailable.'}
-                    </p>
-                    <dl className="result-card__details">
-                      <div className="result-card__detail">
-                        <dt>Your Answer</dt>
-                        <dd>{formatAnswerValue(item.user_answer)}</dd>
-                      </div>
-                      <div className="result-card__detail">
-                        <dt>Correct Answer</dt>
-                        <dd>{formatAnswerValue(item.correct_answer)}</dd>
-                      </div>
-                    </dl>
-                    <p className="result-explanation">{item.explanation}</p>
+            <div className="result-body">
+              <section className="stat-grid result-stat-grid">
+                {resultMetrics.map((metric) => (
+                  <article className="stat-item" key={metric.label}>
+                    <div className="stat-value">{metric.value}</div>
+                    <div className="stat-label">{metric.label}</div>
                   </article>
-                )
-              })}
-            </div>
-            <div className="quiz-actions">
-              <button
-                className="btn"
-                type="button"
-                onClick={() => resetStudentFlow('exam-list')}
-              >
-                Return to Assignments
-              </button>
+                ))}
+              </section>
+              <section className="result-overview-card">
+                <div className="result-overview-card__header">
+                  <div>
+                    <span className="quiz-label">Performance Overview</span>
+                    <h3 className="result-overview-card__title">{result?.exam.title}</h3>
+                  </div>
+                  <div className="result-overview-card__score">{scorePercent}</div>
+                </div>
+                <p className="result-overview-card__copy">
+                  Review each response below. Incorrect answers include the expected answer and explanation so students can use the page as a post-assignment study sheet.
+                </p>
+              </section>
+              <div className="result-scroll-shell" data-testid="result-scroll-shell">
+                <div className="scroll-area result-list">
+                  {result?.items.map((item, index) => {
+                    const question = activeExam?.questions.find((q) => q.id === item.question_id)
+                    const timingSeconds = questionTimings[item.question_id] ?? 0
+                    return (
+                      <article className="result-card" key={item.question_id}>
+                        <div className="result-card__header">
+                          <span className="quiz-label">
+                            Question {String(index + 1).padStart(2, '0')}
+                          </span>
+                          <div className="result-card__meta">
+                            {question?.content.points !== undefined ? (
+                              <span className="result-card__points">
+                                {item.is_correct ? question.content.points : 0} / {question.content.points} pts
+                              </span>
+                            ) : null}
+                            <span
+                              className={`result-badge ${
+                                item.is_correct ? 'result-badge--correct' : 'result-badge--incorrect'
+                              }`}
+                            >
+                              {item.is_correct ? 'Correct' : 'Review'}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="result-card__timing">
+                          Time: {formatDuration(timingSeconds)}
+                        </div>
+                        <p className="result-card__prompt">
+                          {question?.content.stem ?? 'Question prompt unavailable.'}
+                        </p>
+                        <dl className="result-card__details">
+                          <div className="result-card__detail">
+                            <dt>Your Answer</dt>
+                            <dd>{formatAnswerValue(item.user_answer)}</dd>
+                          </div>
+                          <div className="result-card__detail">
+                            <dt>Correct Answer</dt>
+                            <dd>{formatAnswerValue(item.correct_answer)}</dd>
+                          </div>
+                        </dl>
+                        <p className="result-explanation">{item.explanation}</p>
+                      </article>
+                    )
+                  })}
+                </div>
+              </div>
+              <div className="quiz-actions">
+                <button
+                  className="btn"
+                  type="button"
+                  onClick={() => resetStudentFlow('exam-list')}
+                >
+                  Return to Assignments
+                </button>
+              </div>
             </div>
           </section>
 

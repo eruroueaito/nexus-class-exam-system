@@ -63,6 +63,7 @@ export interface ExamEditorSnapshot {
   examTitle: string
   examStatusLabel: string
   isPublished: boolean
+  accessPasswordDraft: string
   questions: EditableQuestionSnapshot[]
 }
 
@@ -70,6 +71,7 @@ export interface SaveExamEditorPayload {
   exam_id: string
   exam_title: string
   is_active: boolean
+  access_password?: string
   questions: Array<{
     id: string
     type: 'radio' | 'checkbox' | 'text'
@@ -145,6 +147,7 @@ const fallbackExamEditorData: ExamEditorSnapshot = {
   examTitle: 'Microeconomics - Midterm Assessment',
   examStatusLabel: 'Active',
   isPublished: true,
+  accessPasswordDraft: '',
   questions: [
     {
       id: '11111111-aaaa-aaaa-aaaa-111111111111',
@@ -199,6 +202,7 @@ export function mapExamEditorData({
     examTitle: exam.title,
     examStatusLabel: exam.is_active ? 'Active' : 'Draft',
     isPublished: exam.is_active,
+    accessPasswordDraft: '',
     questions: questions
       .slice()
       .sort((left, right) => left.order_index - right.order_index)
@@ -230,6 +234,7 @@ export function mapExamEditorSavePayload(
     exam_id: snapshot.examId,
     exam_title: snapshot.examTitle.trim(),
     is_active: snapshot.isPublished,
+    access_password: snapshot.accessPasswordDraft.trim() || undefined,
     questions: snapshot.questions.map((question) => ({
       id: question.id,
       type: question.type,
@@ -291,80 +296,58 @@ export async function listAdminExams(): Promise<AdminExamListItem[]> {
 export async function saveExamEditorData(
   snapshot: ExamEditorSnapshot,
 ): Promise<SaveExamEditorResult> {
-  try {
-    const client = getSupabaseBrowserClient()
-    const payload = mapExamEditorSavePayload(snapshot)
-    const { data, error } = await client.functions.invoke('save-exam-draft', {
-      body: payload,
-    })
+  const client = getSupabaseBrowserClient()
+  const payload = mapExamEditorSavePayload(snapshot)
+  const { data, error } = await client.functions.invoke('save-exam-draft', {
+    body: payload,
+  })
 
-    if (error) {
-      throw error
-    }
+  if (error) {
+    throw error
+  }
 
-    return {
-      examId: data.exam.id as string,
-      examTitle: data.exam.title as string,
-      savedQuestionCount: data.saved_question_count as number,
-    }
-  } catch {
-    return {
-      examId: snapshot.examId,
-      examTitle: snapshot.examTitle,
-      savedQuestionCount: snapshot.questions.length,
-    }
+  return {
+    examId: data.exam.id as string,
+    examTitle: data.exam.title as string,
+    savedQuestionCount: data.saved_question_count as number,
   }
 }
 
 export async function createExamDraft(examTitle = 'Untitled Exam'): Promise<CreateExamDraftResult> {
-  try {
-    const client = getSupabaseBrowserClient()
-    const { data, error } = await client.functions.invoke('create-exam-draft', {
-      body: {
-        exam_title: examTitle,
-      },
-    })
+  const client = getSupabaseBrowserClient()
+  const { data, error } = await client.functions.invoke('create-exam-draft', {
+    body: {
+      exam_title: examTitle,
+    },
+  })
 
-    if (error) {
-      throw error
-    }
+  if (error) {
+    throw error
+  }
 
-    return {
-      examId: data.exam.id as string,
-      examTitle: data.exam.title as string,
-    }
-  } catch {
-    return {
-      examId: FALLBACK_EXAM_ID,
-      examTitle,
-    }
+  return {
+    examId: data.exam.id as string,
+    examTitle: data.exam.title as string,
   }
 }
 
 export async function deleteExamDraft(
   examId: string,
 ): Promise<DeleteExamDraftResult> {
-  try {
-    const client = getSupabaseBrowserClient()
-    const { data, error } = await client.functions.invoke('delete-exam-draft', {
-      body: {
-        exam_id: examId,
-      },
-    })
+  const client = getSupabaseBrowserClient()
+  const { data, error } = await client.functions.invoke('delete-exam-draft', {
+    body: {
+      exam_id: examId,
+    },
+  })
 
-    if (error) {
-      throw error
-    }
+  if (error) {
+    throw error
+  }
 
-    return {
-      examId: data.exam.id as string,
-      deleted: Boolean(data.deleted),
-    }
-  } catch {
-    return {
-      examId,
-      deleted: true,
-    }
+  return {
+    examId: data.exam.id as string,
+    deleted: Boolean(data.deleted),
   }
 }
 
@@ -379,6 +362,7 @@ export async function importExamFromJson(
     examTitle: payload.exam_title,
     examStatusLabel: 'Draft',
     isPublished: false,
+    accessPasswordDraft: '',
     questions: relabelQuestions(
       payload.questions.map((question) => ({
         id: question.id ?? crypto.randomUUID(),

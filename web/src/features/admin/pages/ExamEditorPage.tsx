@@ -116,6 +116,21 @@ export function ExamEditorPage() {
     })
   }
 
+  function handleAccessPasswordChange(nextPassword: string) {
+    setSaveMessage(null)
+    setErrorMessage(null)
+    setEditorData((currentData) => {
+      if (!currentData) {
+        return currentData
+      }
+
+      return {
+        ...currentData,
+        accessPasswordDraft: nextPassword,
+      }
+    })
+  }
+
   function handleCorrectAnswerChange(questionId: string, nextValues: string[]) {
     setSaveMessage(null)
     setErrorMessage(null)
@@ -277,6 +292,7 @@ export function ExamEditorPage() {
         examId: result.examId,
         examTitle: result.examTitle,
         examStatusLabel: editorData.isPublished ? 'Active' : 'Draft',
+        accessPasswordDraft: '',
       }
 
       setEditorData(nextSnapshot)
@@ -313,6 +329,7 @@ export function ExamEditorPage() {
         ...nextSnapshot,
         examId: result.examId,
         examTitle: result.examTitle,
+        accessPasswordDraft: '',
       }
 
       setEditorData(savedSnapshot)
@@ -391,10 +408,10 @@ export function ExamEditorPage() {
               </button>
             </div>
             <h2 className="admin-panel__title">Question Editor</h2>
-            <label className="form-field">
-              <span className="form-label">Exam Title</span>
-              <input
-                type="text"
+              <label className="form-field">
+                <span className="form-label">Exam Title</span>
+                <input
+                  type="text"
                 value={editorData.examTitle}
                 onChange={(event) => {
                   setSaveMessage(null)
@@ -404,11 +421,21 @@ export function ExamEditorPage() {
                     examTitle: event.currentTarget.value,
                   })
                 }}
-              />
-            </label>
-            <p className="admin-panel__copy">
-              Status: {editorData.examStatusLabel} • {editorData.questions.length} questions
-            </p>
+                />
+              </label>
+              <label className="form-field">
+                <span className="form-label">Assignment Access Password</span>
+                <input
+                  aria-label="Assignment Access Password"
+                  type="password"
+                  value={editorData.accessPasswordDraft}
+                  placeholder="Leave blank to keep the current password"
+                  onChange={(event) => handleAccessPasswordChange(event.currentTarget.value)}
+                />
+              </label>
+              <p className="admin-panel__copy">
+                Status: {editorData.examStatusLabel} • {editorData.questions.length} questions
+              </p>
             <div className="button-row editor-creation-row">
               <button className="btn btn-secondary btn-small" type="button" onClick={() => handleAddQuestion('radio')}>
                 Add Radio Question

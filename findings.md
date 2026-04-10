@@ -92,6 +92,11 @@
 | 选项新增的最小实现可以按 `A/B/C/...` 顺序生成新 option ID | 这足够支撑当前后台维护流，后续若支持重排再考虑更复杂的稳定 ID 策略 |
 | 目标测试首次运行时把路径写成了仓库根相对路径，Vitest 在 `web/` 内无法匹配测试文件 | 改为 `tests/...` 和 `src/...` 的 `web` 目录内相对路径 |
 | GitHub Pages 首次 workflow 运行在 `Configure Pages` 失败 | 使用本地 `gh api -X POST repos/<owner>/<repo>/pages -f build_type=workflow` 先创建 Pages site，再重跑 workflow |
+| 学生结果页虽然给了滚动条样式，但若没有把结果内容包进 `flex: 1 / min-height: 0 / overflow: hidden` 的内层壳层，浏览器仍可能不出现实际滚动条 | 结果页新增 `result-body` 和 `result-scroll-shell`，把滚动责任收回到内部列表容器 |
+| `Question Heat` 只有错题率和错误学生名字时，管理员无法看出学生到底选了哪个选项 | `submission_items.user_answer` 进入 analytics read model，展开区显示原题、错误学生答案和选项分布 |
+| 管理员写操作在失败时静默回落为本地“成功”结果，会造成前端显示已保存但后台其实没写入 | `saveExamEditorData`、`createExamDraft`、`deleteExamDraft` 改为在 Edge Function 出错时直接抛错 |
+| 匿名学生统一回落成 `Guest Student` 后，analytics 会把多个匿名提交误合并成同一个人 | 后台 analytics 对匿名学生改用 `submission_id` 建唯一身份，并显示 `Guest Student • xxxx` |
+| 管理员密码设置不能直接读写 `app_private.exam_access`，否则会重现生产环境的私有 schema 访问问题 | 新增 `public.upsert_exam_access_password_hash(...)` 的 `SECURITY DEFINER` helper RPC，由 `save-exam-draft` 间接调用 |
 
 ## Resources
 - Frontend prototype: `/Users/Zhuanz/AI coding/Carol's test/docs/reference/nexus-class-prototype.html`
@@ -150,6 +155,8 @@ Three categories of operations cannot safely run in the browser:
 - 图四里微观试卷再次返回 `403` 的原因不是缓存或前端，而是线上 `app_private.exam_access` 对该试卷的密码哈希确实还没同步成 `123`。这个远端数据现已修正，`start-exam` 对三张卷都应接受 `123`。
 - 学生首页里“Student Access” 单独入口块会制造空白层级和视觉噪音。将首页直接收敛为试卷列表后，入口逻辑和视觉结构都更稳定，且不再需要额外的返回层级。
 - 管理员图表更适合展示分布而不是按日期趋势线。当前数据量较小时，折线趋势容易误导；成绩分布柱状图更符合“考试系统后台”这一语境。
+- `Question Heat` 中如果只展示 `A/B/C` 这类选项 ID，管理员仍然无法快速理解错误答案含义。当前 read model 已额外拼接对应选项文本，例如 `A · Money already spent`。
+- 本轮代码审查后，未再发现新的阻塞级前后端联动 bug；当前剩余主要是 bundle 过大导致的 chunk size warning，属于性能优化项，不影响正确性。
 
 ---
 *Update this file after every 2 view/browser/search operations*

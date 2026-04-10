@@ -21,6 +21,7 @@ interface SaveExamDraftPayload {
   exam_id?: string
   exam_title?: string
   is_active?: boolean
+  access_password?: string
   questions?: SaveExamQuestionPayload[]
 }
 
@@ -66,6 +67,7 @@ function parsePayload(payload: SaveExamDraftPayload) {
     examId: payload.exam_id,
     examTitle: payload.exam_title.trim(),
     isPublished: payload.is_active,
+    accessPassword: payload.access_password?.trim() || undefined,
     questions,
   }
 }

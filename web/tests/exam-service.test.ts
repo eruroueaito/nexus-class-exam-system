@@ -66,6 +66,21 @@ class FakeClient {
         })
         return { data: null, error: null }
       }
+      case 'upsert_exam_access_password_hash': {
+        const examAccessRows = this.tables['app_private.exam_access'] ?? []
+        const existing = examAccessRows.find((row) => row.exam_id === args?.target_exam_id)
+
+        if (existing) {
+          existing.password_hash = args?.target_password_hash
+        } else {
+          examAccessRows.push({
+            exam_id: args?.target_exam_id,
+            password_hash: args?.target_password_hash,
+          })
+        }
+
+        return { data: null, error: null }
+      }
       case 'upsert_answer_record': {
         const answers = this.tables['app_private.answers_library'] ?? []
         const existing = answers.find(
@@ -715,5 +730,47 @@ describe('exam-service', () => {
     expect(tables.questions[0]?.content).toMatchObject({
       options: [{ id: 'B', text: 'The next best alternative foregone' }],
     })
+  })
+
+  test('updates the exam access password hash when the admin saves a new password', async () => {
+    const tables = createFixtureTables(await sha256Hex('123'))
+    const client = new FakeClient(tables)
+
+    const result = await saveExamDraft(client, {
+      examId: 'exam-1',
+      examTitle: 'Microeconomics - Midterm Assessment',
+      isPublished: true,
+      accessPassword: '456789',
+      questions: [
+        {
+          id: 'question-1',
+          type: 'radio',
+          stem: 'What does opportunity cost describe?',
+          options: [
+            { id: 'A', text: 'Money already spent' },
+            { id: 'B', text: 'The next best alternative foregone' },
+          ],
+          correctAnswer: ['B'],
+          explanation: 'Opportunity cost is the next best alternative that is given up.',
+        },
+        {
+          id: 'question-2',
+          type: 'text',
+          stem: 'Name the market structure with many sellers and differentiated products.',
+          options: [],
+          correctAnswer: ['monopolistic competition'],
+          explanation: 'Monopolistic competition combines many firms with product differentiation.',
+        },
+      ],
+    })
+
+    expect(result.status).toBe(200)
+    await expect(
+      startExam(client, {
+        examId: 'exam-1',
+        userName: 'Alice',
+        accessPassword: '456789',
+      }),
+    ).resolves.toMatchObject({ status: 200 })
   })
 })

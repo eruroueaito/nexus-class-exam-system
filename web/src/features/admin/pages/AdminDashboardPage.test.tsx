@@ -82,8 +82,11 @@ describe('AdminDashboardPage', () => {
           questionId: 'question-1',
           questionLabel: 'Q.01',
           questionStem: 'What does opportunity cost describe?',
+          questionType: 'radio',
           incorrectRateLabel: '50.0%',
           attempts: 2,
+          wrongStudents: [],
+          optionBreakdown: [],
         },
       ],
     })
@@ -131,8 +134,11 @@ describe('AdminDashboardPage', () => {
           questionId: 'question-10',
           questionLabel: 'Q.10',
           questionStem: 'Which factors can help sustain collusion?',
+          questionType: 'checkbox',
           incorrectRateLabel: '100.0%',
           attempts: 3,
+          wrongStudents: [],
+          optionBreakdown: [],
         },
       ],
     })

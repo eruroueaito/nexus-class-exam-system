@@ -79,6 +79,7 @@ describe('examAdminApi', () => {
       explanation: 'Opportunity cost is the next best alternative that is given up.',
     })
     expect(result.isPublished).toBe(true)
+    expect(result.accessPasswordDraft).toBe('')
   })
 
   test('loads the secure editor snapshot through the restricted edge function', async () => {
@@ -172,6 +173,7 @@ describe('examAdminApi', () => {
       examTitle: 'Updated Exam Title',
       examStatusLabel: 'Active',
       isPublished: true,
+      accessPasswordDraft: '123',
       questions: [
         {
           id: 'question-1',
@@ -192,6 +194,7 @@ describe('examAdminApi', () => {
       exam_id: 'exam-1',
       exam_title: 'Updated Exam Title',
       is_active: true,
+      access_password: '123',
       questions: [
         {
           id: 'question-1',
@@ -214,6 +217,7 @@ describe('examAdminApi', () => {
       examTitle: 'Updated Exam Title',
       examStatusLabel: 'Active',
       isPublished: true,
+      accessPasswordDraft: '123',
       questions: [
         {
           id: 'question-1',
@@ -249,6 +253,7 @@ describe('examAdminApi', () => {
         exam_id: 'exam-1',
         exam_title: 'Updated Exam Title',
         is_active: true,
+        access_password: '123',
         questions: [
           {
             id: 'question-1',
@@ -263,12 +268,41 @@ describe('examAdminApi', () => {
     })
   })
 
+  test('throws when the secure admin save function fails instead of reporting a fake success', async () => {
+    const snapshot: ExamEditorSnapshot = {
+      examId: 'exam-1',
+      examTitle: 'Updated Exam Title',
+      examStatusLabel: 'Active',
+      isPublished: true,
+      accessPasswordDraft: '',
+      questions: [
+        {
+          id: 'question-1',
+          questionLabel: 'Question 01',
+          type: 'radio',
+          stem: 'Updated question stem',
+          options: [{ id: 'A', text: 'Option A' }],
+          correctAnswerValues: ['A'],
+          explanation: 'Updated explanation',
+        },
+      ],
+    }
+
+    invokeMock.mockResolvedValue({
+      data: null,
+      error: new Error('save failed'),
+    })
+
+    await expect(saveExamEditorData(snapshot)).rejects.toThrow('save failed')
+  })
+
   test('preserves locally generated draft question ids in the save payload', () => {
     const snapshot: ExamEditorSnapshot = {
       examId: 'exam-1',
       examTitle: 'Updated Exam Title',
       examStatusLabel: 'Active',
       isPublished: true,
+      accessPasswordDraft: '',
       questions: [
         {
           id: 'draft-question-3',
@@ -291,6 +325,7 @@ describe('examAdminApi', () => {
       examTitle: 'Updated Exam Title',
       examStatusLabel: 'Active',
       isPublished: true,
+      accessPasswordDraft: '',
       questions: [
         {
           id: 'question-1',
@@ -337,6 +372,15 @@ describe('examAdminApi', () => {
         exam_title: 'Untitled Exam',
       },
     })
+  })
+
+  test('throws when creating a new draft exam fails', async () => {
+    invokeMock.mockResolvedValue({
+      data: null,
+      error: new Error('create failed'),
+    })
+
+    await expect(createExamDraft()).rejects.toThrow('create failed')
   })
 
   test('parses a valid AI exam import payload', () => {
@@ -451,5 +495,14 @@ describe('examAdminApi', () => {
         exam_id: 'exam-2',
       },
     })
+  })
+
+  test('throws when deleting a draft exam fails', async () => {
+    invokeMock.mockResolvedValue({
+      data: null,
+      error: new Error('delete failed'),
+    })
+
+    await expect(deleteExamDraft('exam-2')).rejects.toThrow('delete failed')
   })
 })

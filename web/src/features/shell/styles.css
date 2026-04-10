@@ -84,6 +84,10 @@
   animation: slide-in 0.8s var(--ease-apple) forwards;
 }
 
+.view-section--result {
+  overflow: hidden;
+}
+
 .hero-title {
   margin: 0 0 0.5rem;
   font-size: clamp(2.5rem, 4vw, 3.125rem);
@@ -396,6 +400,13 @@ input[type='password'] {
   margin-bottom: 1.25rem;
 }
 
+.result-body {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
 .result-overview-card {
   margin-bottom: 1.25rem;
   border: 1px solid rgba(255, 255, 255, 0.5);
@@ -455,6 +466,12 @@ input[type='password'] {
   border: none;
   border-radius: 999px;
   background: linear-gradient(180deg, rgba(96, 141, 216, 0.62), rgba(122, 135, 171, 0.48));
+}
+
+.result-scroll-shell {
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
 }
 
 .result-card {

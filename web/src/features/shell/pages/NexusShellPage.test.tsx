@@ -243,6 +243,7 @@ describe('NexusShellPage', () => {
     expect(screen.getByText('Performance Overview')).toBeInTheDocument()
     expect(screen.getByText('Your Answer')).toBeInTheDocument()
     expect(screen.getByText('Correct Answer')).toBeInTheDocument()
+    expect(screen.getByTestId('result-scroll-shell')).toBeInTheDocument()
     expect(
       screen.getByText('Opportunity cost is the value of the next best option.'),
     ).toBeInTheDocument()
