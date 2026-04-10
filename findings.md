@@ -63,6 +63,7 @@
 | 真实测试题数据应先落成独立 JSON fixture，而不是直接塞进 seed 或硬编码 fallback | 这样便于后续 AI 导题、人工导入和回归测试复用，也不会污染默认演示数据 |
 | 远端 Supabase Edge Functions 通过 Data API 直接访问自定义 `app_private` schema 会触发 `Invalid schema: app_private` | 按官方建议改为通过 `public` schema 下的 `SECURITY DEFINER` helper RPC 间接访问私有表，避免直接暴露自定义 schema |
 | GitHub Pages 前端必须只使用 publishable key，而不是 secret key | 浏览器只负责 Auth、公开数据和函数调用；答案、访问码和管理员高权限写入必须经由 Edge Functions 或受限 RPC |
+| 后台页面内容增长后不能依赖全局页面滚动 | 当前全局 `body` 仍为 `overflow: hidden`，后台壳层必须自己提供 `overflow-y: auto` 才能稳定显示滚动条 |
 
 ## Issues Encountered
 | Issue | Resolution |

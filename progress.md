@@ -9,11 +9,13 @@
   - 读取 `supabase`、`writing-plans`、`planning-with-files`、`test-driven-development`、`verification-before-completion` 技能，收敛收尾流程。
   - 新建生产联调收尾计划文档 `docs/superpowers/plans/2026-04-09-production-finish.md`。
   - 将当前已知生产阻塞明确记录为：远端 Edge Functions 不能直接访问 `app_private` schema，必须改走 helper RPC。
+  - 修复后台壳层无滚动条的问题：为 `admin-route-shell` 和 `admin-layout` 增加垂直滚动能力，同时保持学生端壳层不变。
 - Files created/modified:
   - `docs/superpowers/plans/2026-04-09-production-finish.md` (created)
   - `task_plan.md` (updated)
   - `findings.md` (updated)
   - `progress.md` (updated)
+  - `web/src/features/admin/styles.css` (updated)
 
 ### Phase 1: Requirements & Discovery
 - **Status:** complete

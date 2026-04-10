@@ -1,8 +1,12 @@
 .admin-route-shell {
+  height: 100vh;
   min-height: 100vh;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
 }
 
 .admin-route-shell .app-container {
+  min-height: 100%;
   align-items: flex-start;
 }
 
@@ -53,6 +57,9 @@
 
 .admin-layout {
   padding: 2rem;
+  max-height: calc(100vh - 2.5rem);
+  overflow-y: auto;
+  scrollbar-gutter: stable;
 }
 
 .admin-layout__header {
