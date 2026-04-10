@@ -207,7 +207,7 @@ export function AdminDashboardPage() {
             </article>
           </section>
 
-          <section className="analytics-grid">
+          <section className="analytics-stack">
             <ScoreTrendChart points={analytics.scoreTrend} />
             <QuestionHeatTable rows={analytics.questionHeat} />
           </section>

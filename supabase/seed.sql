@@ -1,7 +1,6 @@
 -- Local development seed for the online exam system.
--- This seed creates one active exam with sample questions, answers, and a small
--- submission history so both the student flow and future analytics work can be
--- exercised against a real local Supabase stack.
+-- This seed creates two active exams with private answer records and no
+-- historical submissions so each local run starts from a clean grading state.
 
 insert into public.exams (id, title, created_at, is_active)
 values
@@ -13,16 +12,21 @@ values
   ),
   (
     '22222222-2222-2222-2222-222222222222',
-    'Macroeconomics - Exercise Set 04',
-    timezone('utc', now()) - interval '1 day',
-    false
+    'Introductory Macroeconomics - Quiz 01',
+    timezone('utc', now()) - interval '2 days',
+    true
   );
 
 insert into app_private.exam_access (exam_id, password_hash)
-values (
-  '11111111-1111-1111-1111-111111111111',
-  '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'
-);
+values
+  (
+    '11111111-1111-1111-1111-111111111111',
+    'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3'
+  ),
+  (
+    '22222222-2222-2222-2222-222222222222',
+    'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3'
+  );
 
 insert into public.questions (id, exam_id, content, type, order_index, created_at)
 values
@@ -74,6 +78,101 @@ values
     'text',
     3,
     timezone('utc', now()) - interval '3 days'
+  ),
+  (
+    '22222222-aaaa-aaaa-aaaa-222222222221',
+    '22222222-2222-2222-2222-222222222222',
+    jsonb_build_object(
+      'stem', 'What does GDP measure in macroeconomics?',
+      'options', jsonb_build_array(
+        jsonb_build_object('id', 'A', 'text', 'The value of total financial assets held by households'),
+        jsonb_build_object('id', 'B', 'text', 'The market value of final goods and services produced within a country'),
+        jsonb_build_object('id', 'C', 'text', 'Government tax revenue collected in a year'),
+        jsonb_build_object('id', 'D', 'text', 'The number of people employed by large firms')
+      ),
+      'media', jsonb_build_array(),
+      'hint', null,
+      'points', 1
+    ),
+    'radio',
+    1,
+    timezone('utc', now()) - interval '2 days'
+  ),
+  (
+    '22222222-bbbb-bbbb-bbbb-222222222221',
+    '22222222-2222-2222-2222-222222222222',
+    jsonb_build_object(
+      'stem', 'An increase in the overall price level is called:',
+      'options', jsonb_build_array(
+        jsonb_build_object('id', 'A', 'text', 'Inflation'),
+        jsonb_build_object('id', 'B', 'text', 'Recession'),
+        jsonb_build_object('id', 'C', 'text', 'Appreciation'),
+        jsonb_build_object('id', 'D', 'text', 'Productivity')
+      ),
+      'media', jsonb_build_array(),
+      'hint', null,
+      'points', 1
+    ),
+    'radio',
+    2,
+    timezone('utc', now()) - interval '2 days'
+  ),
+  (
+    '22222222-cccc-cccc-cccc-222222222221',
+    '22222222-2222-2222-2222-222222222222',
+    jsonb_build_object(
+      'stem', 'If the unemployment rate rises sharply during a downturn, the economy is most likely in a:',
+      'options', jsonb_build_array(
+        jsonb_build_object('id', 'A', 'text', 'Boom'),
+        jsonb_build_object('id', 'B', 'text', 'Recovery'),
+        jsonb_build_object('id', 'C', 'text', 'Recession'),
+        jsonb_build_object('id', 'D', 'text', 'Trade surplus')
+      ),
+      'media', jsonb_build_array(),
+      'hint', null,
+      'points', 1
+    ),
+    'radio',
+    3,
+    timezone('utc', now()) - interval '2 days'
+  ),
+  (
+    '22222222-dddd-dddd-dddd-222222222221',
+    '22222222-2222-2222-2222-222222222222',
+    jsonb_build_object(
+      'stem', 'Which institution is usually responsible for setting monetary policy?',
+      'options', jsonb_build_array(
+        jsonb_build_object('id', 'A', 'text', 'The central bank'),
+        jsonb_build_object('id', 'B', 'text', 'The labor union'),
+        jsonb_build_object('id', 'C', 'text', 'The stock exchange'),
+        jsonb_build_object('id', 'D', 'text', 'The census bureau')
+      ),
+      'media', jsonb_build_array(),
+      'hint', null,
+      'points', 1
+    ),
+    'radio',
+    4,
+    timezone('utc', now()) - interval '2 days'
+  ),
+  (
+    '22222222-eeee-eeee-eeee-222222222221',
+    '22222222-2222-2222-2222-222222222222',
+    jsonb_build_object(
+      'stem', 'When the government increases spending to support demand, it is using:',
+      'options', jsonb_build_array(
+        jsonb_build_object('id', 'A', 'text', 'Fiscal policy'),
+        jsonb_build_object('id', 'B', 'text', 'Comparative advantage'),
+        jsonb_build_object('id', 'C', 'text', 'Price discrimination'),
+        jsonb_build_object('id', 'D', 'text', 'Opportunity cost accounting')
+      ),
+      'media', jsonb_build_array(),
+      'hint', null,
+      'points', 1
+    ),
+    'radio',
+    5,
+    timezone('utc', now()) - interval '2 days'
   );
 
 insert into app_private.answers_library (id, question_id, correct_answer, explanation, created_at)
@@ -98,95 +197,39 @@ values
     jsonb_build_object('keywords', jsonb_build_array('monopolistic competition')),
     'Monopolistic competition combines many firms with product differentiation and relatively free entry.',
     timezone('utc', now()) - interval '3 days'
-  );
-
-insert into public.submissions (id, exam_id, user_name, score, duration, submitted_at)
-values
-  (
-    'aaaa4444-4444-4444-4444-444444444444',
-    '11111111-1111-1111-1111-111111111111',
-    'Alice Chen',
-    1,
-    782,
-    timezone('utc', now()) - interval '2 days'
   ),
   (
-    'bbbb5555-5555-5555-5555-555555555555',
-    '11111111-1111-1111-1111-111111111111',
-    'David Park',
-    0.6666666667,
-    901,
-    timezone('utc', now()) - interval '1 day'
-  );
-
-insert into public.submission_items (
-  id,
-  submission_id,
-  question_id,
-  user_answer,
-  is_correct,
-  correct_answer_snapshot,
-  explanation_snapshot,
-  answered_at
-)
-values
-  (
-    '44444444-1111-1111-1111-111111111111',
-    'aaaa4444-4444-4444-4444-444444444444',
-    '11111111-aaaa-aaaa-aaaa-111111111111',
+    'dddd4444-1111-1111-1111-111111111111',
+    '22222222-aaaa-aaaa-aaaa-222222222221',
     '["B"]'::jsonb,
-    true,
-    '["B"]'::jsonb,
-    'Opportunity cost is the value of the next best option that must be given up when a choice is made.',
+    'GDP tracks the market value of final goods and services produced within a country over a period.',
     timezone('utc', now()) - interval '2 days'
   ),
   (
-    '55555555-2222-2222-2222-222222222222',
-    'aaaa4444-4444-4444-4444-444444444444',
-    '22222222-bbbb-bbbb-bbbb-222222222222',
-    '["A","B"]'::jsonb,
-    true,
-    '["A","B"]'::jsonb,
-    'Perfect competition requires many firms and standardized products, but not barriers to entry.',
-    timezone('utc', now()) - interval '2 days'
-  ),
-  (
-    '66666666-3333-3333-3333-333333333333',
-    'aaaa4444-4444-4444-4444-444444444444',
-    '33333333-cccc-cccc-cccc-333333333333',
-    '"Monopolistic competition"'::jsonb,
-    true,
-    jsonb_build_object('keywords', jsonb_build_array('monopolistic competition')),
-    'Monopolistic competition combines many firms with product differentiation and relatively free entry.',
-    timezone('utc', now()) - interval '2 days'
-  ),
-  (
-    '77777777-4444-4444-4444-444444444444',
-    'bbbb5555-5555-5555-5555-555555555555',
-    '11111111-aaaa-aaaa-aaaa-111111111111',
+    'eeee5555-2222-2222-2222-222222222222',
+    '22222222-bbbb-bbbb-bbbb-222222222221',
     '["A"]'::jsonb,
-    false,
-    '["B"]'::jsonb,
-    'Opportunity cost is the value of the next best option that must be given up when a choice is made.',
-    timezone('utc', now()) - interval '1 day'
+    'Inflation means a sustained increase in the general price level.',
+    timezone('utc', now()) - interval '2 days'
   ),
   (
-    '88888888-5555-5555-5555-555555555555',
-    'bbbb5555-5555-5555-5555-555555555555',
-    '22222222-bbbb-bbbb-bbbb-222222222222',
-    '["A","B"]'::jsonb,
-    true,
-    '["A","B"]'::jsonb,
-    'Perfect competition requires many firms and standardized products, but not barriers to entry.',
-    timezone('utc', now()) - interval '1 day'
+    'ffff6666-3333-3333-3333-333333333333',
+    '22222222-cccc-cccc-cccc-222222222221',
+    '["C"]'::jsonb,
+    'Recessions are associated with falling output and rising unemployment.',
+    timezone('utc', now()) - interval '2 days'
   ),
   (
-    '99999999-6666-6666-6666-666666666666',
-    'bbbb5555-5555-5555-5555-555555555555',
-    '33333333-cccc-cccc-cccc-333333333333',
-    '"Oligopoly"'::jsonb,
-    false,
-    jsonb_build_object('keywords', jsonb_build_array('monopolistic competition')),
-    'Monopolistic competition combines many firms with product differentiation and relatively free entry.',
-    timezone('utc', now()) - interval '1 day'
+    'aaaa7777-4444-4444-4444-444444444444',
+    '22222222-dddd-dddd-dddd-222222222221',
+    '["A"]'::jsonb,
+    'Monetary policy is typically conducted by the central bank.',
+    timezone('utc', now()) - interval '2 days'
+  ),
+  (
+    'bbbb8888-5555-5555-5555-555555555555',
+    '22222222-eeee-eeee-eeee-222222222221',
+    '["A"]'::jsonb,
+    'Government spending and taxation decisions are part of fiscal policy.',
+    timezone('utc', now()) - interval '2 days'
   );

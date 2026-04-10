@@ -21,7 +21,7 @@ export function QuestionHeatTable({ rows }: QuestionHeatTableProps) {
   }
 
   return (
-    <section className="admin-panel">
+    <section className="admin-panel admin-panel--emphasis">
       <h2 className="admin-panel__title">Question Heat</h2>
       {rows.length === 0 ? (
         <p className="admin-panel__copy">Question-level analytics will appear after the first submissions.</p>

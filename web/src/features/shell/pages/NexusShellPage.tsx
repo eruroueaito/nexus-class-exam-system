@@ -497,8 +497,22 @@ export function NexusShellPage() {
               ) : null}
             </div>
 
-            {selectedExam ? (
-              <section className="access-panel">
+            <button
+              className="btn btn-ghost back-button"
+              type="button"
+              onClick={() => resetStudentFlow('login')}
+            >
+              ← Back
+            </button>
+          </section>
+          {view === 'exam-list' && selectedExam ? (
+            <div className="access-modal-overlay" role="presentation">
+              <section
+                className="access-panel access-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Assignment Access"
+              >
                 <div className="access-panel__header">
                   <span className="quiz-label">Assignment Access</span>
                   <span className="quiz-card__meta">{selectedExam.title}</span>
@@ -538,16 +552,8 @@ export function NexusShellPage() {
                   </button>
                 </div>
               </section>
-            ) : null}
-
-            <button
-              className="btn btn-ghost back-button"
-              type="button"
-              onClick={() => resetStudentFlow('login')}
-            >
-              ← Back
-            </button>
-          </section>
+            </div>
+          ) : null}
 
           <section
             className={`view-section ${view === 'quiz' ? 'active' : ''}`}

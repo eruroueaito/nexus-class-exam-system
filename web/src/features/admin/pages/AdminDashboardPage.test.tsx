@@ -117,6 +117,45 @@ describe('AdminDashboardPage', () => {
     expect(screen.getAllByText('Microeconomics - Midterm Assessment').length).toBeGreaterThan(0)
   })
 
+  test('renders score trend above a full-width question heat section', async () => {
+    getAdminSessionMock.mockResolvedValue({
+      email: 'admin@example.com',
+    })
+    getExamAnalyticsMock.mockResolvedValue({
+      averageAccuracyLabel: '83.3%',
+      activeStudents: 2,
+      commonErrorLabel: 'Q.01',
+      scoreTrend: [{ label: 'Apr 9', scorePercent: 75 }],
+      questionHeat: [
+        {
+          questionId: 'question-10',
+          questionLabel: 'Q.10',
+          questionStem: 'Which factors can help sustain collusion?',
+          incorrectRateLabel: '100.0%',
+          attempts: 3,
+        },
+      ],
+    })
+    listAdminExamsMock.mockResolvedValue([])
+
+    render(
+      <MemoryRouter initialEntries={['/admin']}>
+        <Routes>
+          <Route path="/admin" element={<AdminDashboardPage />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    const scoreTrend = await screen.findByRole('heading', { name: 'Score Trend' })
+    const questionHeat = screen.getByRole('heading', { name: 'Question Heat' })
+
+    expect(
+      scoreTrend.compareDocumentPosition(questionHeat) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy()
+    expect(scoreTrend.closest('.analytics-stack')).toBe(questionHeat.closest('.analytics-stack'))
+    expect(questionHeat.closest('.admin-panel')?.className).toContain('admin-panel--emphasis')
+  })
+
   test('creates a new exam draft and opens its editor route', async () => {
     getAdminSessionMock.mockResolvedValue({
       email: 'admin@example.com',

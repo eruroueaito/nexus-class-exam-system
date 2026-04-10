@@ -10,12 +10,31 @@
   - 新建生产联调收尾计划文档 `docs/superpowers/plans/2026-04-09-production-finish.md`。
   - 将当前已知生产阻塞明确记录为：远端 Edge Functions 不能直接访问 `app_private` schema，必须改走 helper RPC。
   - 修复后台壳层无滚动条的问题：为 `admin-route-shell` 和 `admin-layout` 增加垂直滚动能力，同时保持学生端壳层不变。
+  - 调整后台 analytics 视图为上下布局，让 `Question Heat` 作为全宽区域显示在 `Score Trend` 下方。
+  - 提高 `Question Heat` 每条题目玻璃卡片的背景和边框对比度，并为后台滚动容器加入更协调的自定义滚动条样式。
+  - 将学生端 `Assignment Access` 表单改成独立浮层 modal，而不是直接贴在页面内容里。
+  - 将本地联调用示例试卷访问码统一改为 `123`，并同步修正文档和测试。
+  - 将本地 fallback 和 `seed.sql` 扩展为第二张试卷 `Introductory Macroeconomics - Quiz 01`，包含 5 道初级宏观经济学单选题。
+  - 清空远端 Supabase 的 `submissions` 和 `submission_items`，并将第二张试卷同步到线上，访问码也统一为 `123`。
 - Files created/modified:
   - `docs/superpowers/plans/2026-04-09-production-finish.md` (created)
   - `task_plan.md` (updated)
   - `findings.md` (updated)
   - `progress.md` (updated)
   - `web/src/features/admin/styles.css` (updated)
+  - `web/src/features/admin/pages/AdminDashboardPage.tsx` (updated)
+  - `web/src/features/admin/pages/AdminDashboardPage.test.tsx` (updated)
+  - `web/src/features/admin/components/QuestionHeatTable.tsx` (updated)
+  - `web/src/features/shell/pages/NexusShellPage.tsx` (updated)
+  - `web/src/features/shell/pages/NexusShellPage.test.tsx` (updated)
+  - `web/src/features/shell/styles.css` (updated)
+  - `web/src/features/exams/api/examApi.test.ts` (updated)
+  - `web/tests/exam-service.test.ts` (updated)
+  - `supabase/seed.sql` (updated)
+  - `docs/local-supabase-development.md` (updated)
+  - `docs/online-exam-system-development-plan.md` (updated)
+  - `web/src/features/exams/hooks/useExamCatalog.ts` (updated)
+  - `web/src/features/admin/api/examAdminApi.ts` (updated)
 
 ### Phase 1: Requirements & Discovery
 - **Status:** complete

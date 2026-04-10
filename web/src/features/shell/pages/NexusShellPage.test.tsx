@@ -68,11 +68,12 @@ describe('NexusShellPage', () => {
         name: /Microeconomics - Midterm Assessment/,
       }),
     )
+    expect(screen.getByRole('dialog', { name: 'Assignment Access' })).toBeInTheDocument()
     fireEvent.change(screen.getByLabelText('Your Name'), {
       target: { value: 'Alice' },
     })
     fireEvent.change(screen.getByLabelText('Access Password'), {
-      target: { value: '123456' },
+      target: { value: '123' },
     })
     fireEvent.click(screen.getByRole('button', { name: 'Start Assignment' }))
 
@@ -80,7 +81,7 @@ describe('NexusShellPage', () => {
       expect(startExamMock).toHaveBeenCalledWith({
         examId: 'exam-1',
         userName: 'Alice',
-        accessPassword: '123456',
+        accessPassword: '123',
       })
     })
 
@@ -147,7 +148,7 @@ describe('NexusShellPage', () => {
       target: { value: 'Alice' },
     })
     fireEvent.change(screen.getByLabelText('Access Password'), {
-      target: { value: '123456' },
+      target: { value: '123' },
     })
     fireEvent.click(screen.getByRole('button', { name: 'Start Assignment' }))
 
@@ -175,6 +176,31 @@ describe('NexusShellPage', () => {
     expect(
       screen.getByText('Opportunity cost is the value of the next best option.'),
     ).toBeInTheDocument()
+  })
+
+  test('shows the assignment access form as a floating modal and closes it on cancel', async () => {
+    render(
+      <MemoryRouter>
+        <NexusShellPage />
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Student Access' }))
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: /Microeconomics - Midterm Assessment/,
+      }),
+    )
+
+    const dialog = screen.getByRole('dialog', { name: 'Assignment Access' })
+    expect(dialog).toBeInTheDocument()
+    expect(document.querySelector('.access-modal-overlay')).not.toBeNull()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: 'Assignment Access' })).not.toBeInTheDocument()
+    })
   })
 
   test.skip('prints the result summary on demand — removed: print button no longer shown to students', async () => {
@@ -234,7 +260,7 @@ describe('NexusShellPage', () => {
       target: { value: 'Alice' },
     })
     fireEvent.change(screen.getByLabelText('Access Password'), {
-      target: { value: '123456' },
+      target: { value: '123' },
     })
     fireEvent.click(screen.getByRole('button', { name: 'Start Assignment' }))
     fireEvent.click(await screen.findByRole('radio', { name: 'The next best alternative foregone' }))

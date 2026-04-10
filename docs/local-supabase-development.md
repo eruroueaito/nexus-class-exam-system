@@ -44,16 +44,18 @@ The local database seed file is:
 
 It creates:
 
-- one active exam: `Microeconomics - Midterm Assessment`
-- one inactive exam placeholder
-- three sample questions covering `radio`, `checkbox`, and `text`
+- two active exams: `Microeconomics - Midterm Assessment` and `Introductory Macroeconomics - Quiz 01`
+- three microeconomics sample questions covering `radio`, `checkbox`, and `text`
+- five introductory macroeconomics multiple-choice questions
 - private answer records with explanations
-- two historical submissions with `submission_items` snapshots for future analytics work
+- no historical submissions, so each local run starts with a clean answer history
 
 Local student access credentials:
 
 - Exam title: `Microeconomics - Midterm Assessment`
-- Access password: `123456`
+- Access password: `123`
+- Exam title: `Introductory Macroeconomics - Quiz 01`
+- Access password: `123`
 
 ## Frontend environment setup
 
@@ -79,10 +81,10 @@ npm run dev
 
 1. Run `npx supabase@2.88.1 status` and confirm the API URL is reachable.
 2. Confirm `web/.env.local` points to the local API URL and anon key.
-3. Open the frontend and start the seeded exam with password `123456`.
+3. Open the frontend and start the seeded exam with password `123`.
 4. Submit a test attempt and confirm a new row appears in `public.submissions`.
 
 ## Known limitations
 
 - The current frontend keeps a prototype fallback when the local environment variables are missing.
-- The current admin dashboard is still static, so the seeded historical submissions are primarily for the next analytics phase.
+- The current admin dashboard reads live submissions, so clearing local history will keep analytics empty until you generate new attempts.

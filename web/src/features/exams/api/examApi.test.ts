@@ -40,7 +40,7 @@ describe('examApi', () => {
     const payload: StartExamRequest = {
       examId: 'exam-1',
       userName: 'Alice',
-      accessPassword: '123456',
+      accessPassword: '123',
     }
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
@@ -64,7 +64,7 @@ describe('examApi', () => {
         body: JSON.stringify({
           exam_id: 'exam-1',
           user_name: 'Alice',
-          access_password: '123456',
+          access_password: '123',
         }),
       }),
     )

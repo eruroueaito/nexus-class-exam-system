@@ -179,6 +179,12 @@ const fallbackAdminExamList: AdminExamListItem[] = [
     createdAt: '2026-04-08T18:00:00Z',
     statusLabel: 'Active',
   },
+  {
+    examId: '22222222-2222-2222-2222-222222222222',
+    title: 'Introductory Macroeconomics - Quiz 01',
+    createdAt: '2026-04-09T18:00:00Z',
+    statusLabel: 'Active',
+  },
 ]
 
 export function mapExamEditorData({

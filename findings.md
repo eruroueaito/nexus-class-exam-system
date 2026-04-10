@@ -64,6 +64,10 @@
 | 远端 Supabase Edge Functions 通过 Data API 直接访问自定义 `app_private` schema 会触发 `Invalid schema: app_private` | 按官方建议改为通过 `public` schema 下的 `SECURITY DEFINER` helper RPC 间接访问私有表，避免直接暴露自定义 schema |
 | GitHub Pages 前端必须只使用 publishable key，而不是 secret key | 浏览器只负责 Auth、公开数据和函数调用；答案、访问码和管理员高权限写入必须经由 Edge Functions 或受限 RPC |
 | 后台页面内容增长后不能依赖全局页面滚动 | 当前全局 `body` 仍为 `overflow: hidden`，后台壳层必须自己提供 `overflow-y: auto` 才能稳定显示滚动条 |
+| `Question Heat` 与 `Score Trend` 并排时，长题干会把题目分析区压得太窄 | 对管理后台来说，题目热点比横向对称更重要，改成纵向堆叠并让 `Question Heat` 全宽更稳定 |
+| 学生端访问表单作为页面内嵌块时，视觉层级不够清晰 | 把 `Assignment Access` 提升为带遮罩的独立 modal，能更明确地区分“选试卷”和“输入凭证”两个步骤 |
+| 当前项目如果要重置 analytics 展示，最直接的方法是清空 `submissions` 与 `submission_items` | 统计全部来自这两张表，清空后前台和后台都会立即回到“无历史答题数据”的状态 |
+| 为了让本地 fallback、seed 数据和线上行为一致，新增试卷时需要同时改三层 | 至少要同步 `supabase/seed.sql`、前端 fallback catalog，以及远端 Supabase 数据 |
 
 ## Issues Encountered
 | Issue | Resolution |

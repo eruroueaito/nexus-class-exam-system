@@ -18,10 +18,10 @@ const prototypeCatalog: ExamCatalogItem[] = [
     isActive: true,
   },
   {
-    id: 'prototype-macroeconomics-exercise-04',
-    title: 'Macroeconomics - Exercise Set 04',
+    id: 'prototype-intro-macroeconomics-quiz-01',
+    title: 'Introductory Macroeconomics - Quiz 01',
     createdAt: '2026-04-08T18:00:00Z',
-    isActive: false,
+    isActive: true,
   },
 ]
 

@@ -3,11 +3,35 @@
   min-height: 100vh;
   overflow-y: auto;
   scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(78, 116, 177, 0.42) rgba(255, 255, 255, 0.28);
 }
 
 .admin-route-shell .app-container {
   min-height: 100%;
   align-items: flex-start;
+}
+
+.admin-route-shell::-webkit-scrollbar,
+.admin-layout::-webkit-scrollbar,
+.analytics-table::-webkit-scrollbar {
+  width: 0.75rem;
+}
+
+.admin-route-shell::-webkit-scrollbar-track,
+.admin-layout::-webkit-scrollbar-track,
+.analytics-table::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+}
+
+.admin-route-shell::-webkit-scrollbar-thumb,
+.admin-layout::-webkit-scrollbar-thumb,
+.analytics-table::-webkit-scrollbar-thumb {
+  border: 0.18rem solid transparent;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(96, 141, 216, 0.62), rgba(122, 135, 171, 0.48));
+  background-clip: padding-box;
 }
 
 .admin-auth-card,
@@ -60,6 +84,8 @@
   max-height: calc(100vh - 2.5rem);
   overflow-y: auto;
   scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(78, 116, 177, 0.42) rgba(255, 255, 255, 0.28);
 }
 
 .admin-layout__header {
@@ -81,6 +107,12 @@
   border-radius: 1.375rem;
   background: rgba(255, 255, 255, 0.42);
   padding: 1.5rem;
+}
+
+.admin-panel--emphasis {
+  background: linear-gradient(180deg, rgba(248, 250, 255, 0.72), rgba(233, 239, 251, 0.68));
+  border-color: rgba(160, 182, 224, 0.45);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .admin-stat-grid {
@@ -129,9 +161,9 @@
   font-family: "SF Mono", Menlo, monospace;
 }
 
-.analytics-grid {
+.analytics-stack {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.25rem;
 }
 
@@ -227,6 +259,9 @@
   flex-direction: column;
   gap: 0.75rem;
   margin-top: 1rem;
+  max-height: 31rem;
+  overflow-y: auto;
+  padding-right: 0.35rem;
 }
 
 .analytics-table__head,
@@ -246,8 +281,13 @@
 }
 
 .analytics-table__row {
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  padding-top: 0.75rem;
+  border: 1px solid rgba(152, 173, 214, 0.34);
+  border-radius: 1.125rem;
+  background: linear-gradient(180deg, rgba(238, 243, 253, 0.88), rgba(226, 234, 248, 0.82));
+  padding: 1rem 1.125rem;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 0.625rem 1.25rem rgba(135, 158, 205, 0.12);
 }
 
 .analytics-table__label {
@@ -323,13 +363,17 @@
 }
 
 .analytics-table__row--clickable:hover {
-  background: rgba(255, 255, 255, 0.45);
+  background: linear-gradient(180deg, rgba(233, 240, 254, 0.96), rgba(216, 227, 247, 0.9));
 }
 
 .analytics-drill-down {
   padding: 0.75rem 0.5rem 0.75rem 1rem;
   border-top: 1px solid rgba(0, 0, 0, 0.06);
   font-size: 0.875rem;
+  margin-top: -0.25rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  border-left: 2px solid rgba(0, 113, 227, 0.12);
 }
 
 .analytics-drill-down__label {
@@ -370,10 +414,6 @@
   .admin-layout__header {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .analytics-grid {
-    grid-template-columns: 1fr;
   }
 
   .admin-exam-list__item {

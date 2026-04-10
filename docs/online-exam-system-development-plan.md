@@ -341,7 +341,7 @@
 {
   "exam_id": "uuid",
   "user_name": "Alice",
-  "access_password": "123456"
+  "access_password": "123"
 }
 ```
 

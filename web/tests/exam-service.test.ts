@@ -379,7 +379,7 @@ function createFixtureTables(passwordHash: string): TableStore {
 
 describe('exam-service', () => {
   test('returns 403 when the access password is invalid', async () => {
-    const client = new FakeClient(createFixtureTables(await sha256Hex('123456')))
+    const client = new FakeClient(createFixtureTables(await sha256Hex('123')))
 
     const result = await startExam(client, {
       examId: 'exam-1',
@@ -397,12 +397,12 @@ describe('exam-service', () => {
   })
 
   test('returns the exam payload when the access password is valid', async () => {
-    const client = new FakeClient(createFixtureTables(await sha256Hex('123456')))
+    const client = new FakeClient(createFixtureTables(await sha256Hex('123')))
 
     const result = await startExam(client, {
       examId: 'exam-1',
       userName: 'Alice',
-      accessPassword: '123456',
+      accessPassword: '123',
     })
 
     if (!('exam' in result.body)) {
@@ -416,7 +416,7 @@ describe('exam-service', () => {
   })
 
   test('scores the submission and writes submission snapshots', async () => {
-    const tables = createFixtureTables(await sha256Hex('123456'))
+    const tables = createFixtureTables(await sha256Hex('123'))
     const client = new FakeClient(tables)
 
     const result = await submitExam(client, {
@@ -453,7 +453,7 @@ describe('exam-service', () => {
   })
 
   test('loads the admin exam draft with private answers and explanations', async () => {
-    const tables = createFixtureTables(await sha256Hex('123456'))
+    const tables = createFixtureTables(await sha256Hex('123'))
     const client = new FakeClient(tables)
 
     const result = await loadExamDraft(client, {
@@ -479,7 +479,7 @@ describe('exam-service', () => {
   })
 
   test('creates a new draft exam with a private access record', async () => {
-    const tables = createFixtureTables(await sha256Hex('123456'))
+    const tables = createFixtureTables(await sha256Hex('123'))
     const client = new FakeClient(tables)
 
     const result = await createExamDraft(client, {
@@ -504,7 +504,7 @@ describe('exam-service', () => {
   })
 
   test('deletes an exam draft and cascades related question and access records', async () => {
-    const tables = createFixtureTables(await sha256Hex('123456'))
+    const tables = createFixtureTables(await sha256Hex('123'))
     const client = new FakeClient(tables)
 
     const result = await deleteExamDraft(client, {
@@ -525,7 +525,7 @@ describe('exam-service', () => {
   })
 
   test('updates the exam title and question stems for the admin draft save flow', async () => {
-    const tables = createFixtureTables(await sha256Hex('123456'))
+    const tables = createFixtureTables(await sha256Hex('123'))
     const client = new FakeClient(tables)
 
     const result = await saveExamDraft(client, {
@@ -559,7 +559,7 @@ describe('exam-service', () => {
   })
 
   test('creates a new question and matching private answer record during draft save', async () => {
-    const tables = createFixtureTables(await sha256Hex('123456'))
+    const tables = createFixtureTables(await sha256Hex('123'))
     const client = new FakeClient(tables)
 
     const result = await saveExamDraft(client, {
@@ -611,7 +611,7 @@ describe('exam-service', () => {
   })
 
   test('deletes removed questions and cascades their answer records during draft save', async () => {
-    const tables = createFixtureTables(await sha256Hex('123456'))
+    const tables = createFixtureTables(await sha256Hex('123'))
     const client = new FakeClient(tables)
 
     const result = await saveExamDraft(client, {
@@ -640,7 +640,7 @@ describe('exam-service', () => {
   })
 
   test('persists updated option text during draft save', async () => {
-    const tables = createFixtureTables(await sha256Hex('123456'))
+    const tables = createFixtureTables(await sha256Hex('123'))
     const client = new FakeClient(tables)
 
     const result = await saveExamDraft(client, {
@@ -679,7 +679,7 @@ describe('exam-service', () => {
   })
 
   test('persists removed options during draft save', async () => {
-    const tables = createFixtureTables(await sha256Hex('123456'))
+    const tables = createFixtureTables(await sha256Hex('123'))
     const client = new FakeClient(tables)
 
     const result = await saveExamDraft(client, {
