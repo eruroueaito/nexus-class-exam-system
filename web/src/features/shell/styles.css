@@ -406,6 +406,47 @@ input[type='password'] {
   color: #b42318;
 }
 
+.result-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.result-card__points {
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.result-card__timing {
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+}
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.question-copy {
+  margin: 0;
+}
+
+.question-points {
+  flex-shrink: 0;
+  background: rgba(88, 80, 236, 0.1);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .result-explanation {
   margin: 0;
   color: var(--text-main);

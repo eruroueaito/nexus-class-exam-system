@@ -18,6 +18,7 @@ const defaultPayload = `{
     {
       "type": "radio",
       "stem": "What is a dominant strategy?",
+      "points": 10,
       "options": [
         { "id": "A", "text": "A weak response" },
         { "id": "B", "text": "A best response for every opponent action" }
@@ -60,6 +61,8 @@ export function AiSyncPanel({ onImport }: AiSyncPanelProps) {
       <h2 className="admin-panel__title">AI JSON Import</h2>
       <p className="admin-panel__copy">
         Paste a normalized exam JSON payload to create a new draft exam automatically.
+        Each question supports <code style={{ fontFamily: 'monospace', background: 'rgba(0,0,0,0.06)', borderRadius: '0.25rem', padding: '0.1em 0.35em' }}>points</code> for weighted scoring.
+        Supported types: <code style={{ fontFamily: 'monospace', background: 'rgba(0,0,0,0.06)', borderRadius: '0.25rem', padding: '0.1em 0.35em' }}>radio</code>, <code style={{ fontFamily: 'monospace', background: 'rgba(0,0,0,0.06)', borderRadius: '0.25rem', padding: '0.1em 0.35em' }}>checkbox</code>, <code style={{ fontFamily: 'monospace', background: 'rgba(0,0,0,0.06)', borderRadius: '0.25rem', padding: '0.1em 0.35em' }}>text</code>.
       </p>
       <label className="form-field">
         <span className="form-label">JSON Payload</span>

@@ -46,6 +46,7 @@ export interface QuestionHeatRow {
   questionStem: string
   incorrectRateLabel: string
   attempts: number
+  wrongStudents?: string[]
 }
 
 export interface AdminAnalyticsSnapshot {
@@ -71,6 +72,7 @@ const fallbackAnalytics: AdminAnalyticsSnapshot = {
       questionStem: 'What does opportunity cost describe?',
       incorrectRateLabel: '50.0%',
       attempts: 2,
+      wrongStudents: [],
     },
   ],
 }
@@ -104,7 +106,11 @@ export function mapAnalyticsData({
   const averageScore =
     submissions.reduce((sum, submission) => sum + submission.score, 0) / submissions.length
 
-  const activeStudents = new Set(submissions.map((submission) => submission.user_name)).size
+  // Case-insensitive, trimmed deduplication: same student submitting under slightly
+  // different capitalizations or with leading/trailing spaces counts as one active student.
+  const activeStudents = new Set(submissions.map((s) => s.user_name.trim().toLowerCase())).size
+
+  const submissionUserMap = new Map(submissions.map((s) => [s.id, s.user_name.trim()]))
 
   const questionIndex = new Map(
     questions.map((question) => [
@@ -121,6 +127,7 @@ export function mapAnalyticsData({
     {
       attempts: number
       incorrect: number
+      wrongStudentNames: string[]
     }
   >()
 
@@ -128,11 +135,16 @@ export function mapAnalyticsData({
     const currentStats = questionStats.get(row.question_id) ?? {
       attempts: 0,
       incorrect: 0,
+      wrongStudentNames: [],
     }
 
     currentStats.attempts += 1
     if (!row.is_correct) {
       currentStats.incorrect += 1
+      const userName = submissionUserMap.get(row.submission_id)
+      if (userName && !currentStats.wrongStudentNames.includes(userName)) {
+        currentStats.wrongStudentNames.push(userName)
+      }
     }
 
     questionStats.set(row.question_id, currentStats)
@@ -151,6 +163,7 @@ export function mapAnalyticsData({
         incorrectRate,
         incorrectRateLabel: formatPercent(incorrectRate),
         attempts: stats.attempts,
+        wrongStudents: stats.wrongStudentNames,
       }
     })
     .sort((left, right) => {
@@ -179,40 +192,55 @@ export function mapAnalyticsData({
   }
 }
 
-export async function getExamAnalytics(): Promise<AdminAnalyticsSnapshot> {
+export async function getExamAnalytics(examId?: string): Promise<AdminAnalyticsSnapshot> {
   try {
     const client = getSupabaseBrowserClient()
 
-    const [{ data: submissions, error: submissionsError }, { data: questionResults, error: questionResultsError }, { data: questions, error: questionsError }] =
-      await Promise.all([
-        client
-          .from('submissions')
-          .select('id,user_name,score,submitted_at')
-          .order('submitted_at', { ascending: true }),
-        client
-          .from('submission_items')
-          .select('submission_id,question_id,is_correct'),
-        client
-          .from('questions')
-          .select('id,order_index,content')
-          .order('order_index', { ascending: true }),
-      ])
+    let submissionsQuery = client
+      .from('submissions')
+      .select('id,user_name,score,submitted_at')
+      .order('submitted_at', { ascending: true })
+
+    let questionsQuery = client
+      .from('questions')
+      .select('id,order_index,content')
+      .order('order_index', { ascending: true })
+
+    if (examId) {
+      submissionsQuery = submissionsQuery.eq('exam_id', examId)
+      questionsQuery = questionsQuery.eq('exam_id', examId)
+    }
+
+    const [{ data: submissions, error: submissionsError }, { data: questions, error: questionsError }] =
+      await Promise.all([submissionsQuery, questionsQuery])
 
     if (submissionsError) {
       throw submissionsError
-    }
-
-    if (questionResultsError) {
-      throw questionResultsError
     }
 
     if (questionsError) {
       throw questionsError
     }
 
+    const submissionIds = (submissions ?? []).map((s) => s.id)
+
+    let questionResultsData: QuestionResultRow[] = []
+    if (submissionIds.length > 0) {
+      const { data: qr, error: qrError } = await client
+        .from('submission_items')
+        .select('submission_id,question_id,is_correct')
+        .in('submission_id', submissionIds)
+
+      if (qrError) {
+        throw qrError
+      }
+
+      questionResultsData = (qr ?? []) as QuestionResultRow[]
+    }
+
     return mapAnalyticsData({
       submissions: (submissions ?? []) as SubmissionRow[],
-      questionResults: (questionResults ?? []) as QuestionResultRow[],
+      questionResults: questionResultsData,
       questions: (questions ?? []) as QuestionRow[],
     })
   } catch {

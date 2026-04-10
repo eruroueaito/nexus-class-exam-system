@@ -6,7 +6,7 @@
  * Notes: The student flow keeps a local prototype fallback so the UI remains usable before runtime env values are configured
  */
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createBrowserExamApi } from '../../../lib/exam-api'
 import type { ExamQuestionContent, QuestionType } from '../../exams/types'
@@ -165,6 +165,8 @@ export function NexusShellPage() {
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
   const [submitPending, setSubmitPending] = useState(false)
   const [result, setResult] = useState<ExamResult | null>(null)
+  const questionDisplayedAt = useRef<number | null>(null)
+  const [questionTimings, setQuestionTimings] = useState<Record<string, number>>({})
 
   const availableExams = examCatalogQuery.data ?? []
   const selectedExam = availableExams.find((exam) => exam.id === selectedExamId) ?? null
@@ -205,6 +207,22 @@ export function NexusShellPage() {
     }
   }, [activeExam, view])
 
+  function flushCurrentQuestionTiming(exam: StartedExam, questionIndex: number) {
+    if (questionDisplayedAt.current === null) {
+      return
+    }
+    const question = exam.questions[questionIndex]
+    if (!question) {
+      return
+    }
+    const elapsed = Math.max(0, Math.floor((Date.now() - questionDisplayedAt.current) / 1000))
+    setQuestionTimings((prev) => ({
+      ...prev,
+      [question.id]: (prev[question.id] ?? 0) + elapsed,
+    }))
+    questionDisplayedAt.current = Date.now()
+  }
+
   function resetStudentFlow(nextView: ViewId = 'exam-list') {
     setView(nextView)
     setSelectedExamId(null)
@@ -218,6 +236,8 @@ export function NexusShellPage() {
     setElapsedSeconds(0)
     setSubmitPending(false)
     setResult(null)
+    setQuestionTimings({})
+    questionDisplayedAt.current = null
   }
 
   function openAccessForm(examId: string) {
@@ -296,6 +316,8 @@ export function NexusShellPage() {
       setCurrentQuestionIndex(0)
       setElapsedSeconds(0)
       setResult(null)
+      setQuestionTimings({})
+      questionDisplayedAt.current = Date.now()
       setView('quiz')
     } catch (error) {
       setAccessError(
@@ -311,6 +333,7 @@ export function NexusShellPage() {
       return
     }
 
+    flushCurrentQuestionTiming(activeExam, currentQuestionIndex)
     setSubmitPending(true)
 
     try {
@@ -535,9 +558,14 @@ export function NexusShellPage() {
               <span className="quiz-timer">{formatDuration(elapsedSeconds)}</span>
             </header>
             <div className="quiz-body">
-              <p className="question-copy">
-                {activeQuestion?.content.stem ?? 'The current question is unavailable.'}
-              </p>
+              <div className="question-header">
+                <p className="question-copy">
+                  {activeQuestion?.content.stem ?? 'The current question is unavailable.'}
+                </p>
+                {activeQuestion?.content.points !== undefined ? (
+                  <span className="question-points">{activeQuestion.content.points} pts</span>
+                ) : null}
+              </div>
               {activeQuestion ? renderQuestionOptions(activeQuestion) : null}
             </div>
             <div className="quiz-actions quiz-actions--between">
@@ -545,9 +573,10 @@ export function NexusShellPage() {
                 className="btn btn-ghost"
                 type="button"
                 disabled={currentQuestionIndex === 0}
-                onClick={() =>
+                onClick={() => {
+                  if (activeExam) flushCurrentQuestionTiming(activeExam, currentQuestionIndex)
                   setCurrentQuestionIndex((currentIndex) => Math.max(0, currentIndex - 1))
-                }
+                }}
               >
                 Previous Question
               </button>
@@ -556,11 +585,12 @@ export function NexusShellPage() {
                   <button
                     className="btn btn-secondary"
                     type="button"
-                    onClick={() =>
+                    onClick={() => {
+                      if (activeExam) flushCurrentQuestionTiming(activeExam, currentQuestionIndex)
                       setCurrentQuestionIndex((currentIndex) =>
                         Math.min(activeExam.questions.length - 1, currentIndex + 1),
                       )
-                    }
+                    }}
                   >
                     Next Question
                   </button>
@@ -592,23 +622,37 @@ export function NexusShellPage() {
               {resultSummary ?? 'The latest submission summary is unavailable.'}
             </p>
             <div className="scroll-area result-list">
-              {result?.items.map((item, index) => (
-                <article className="result-card" key={item.question_id}>
-                  <div className="result-card__header">
-                    <span className="quiz-label">
-                      Question {String(index + 1).padStart(2, '0')}
-                    </span>
-                    <span
-                      className={`result-badge ${
-                        item.is_correct ? 'result-badge--correct' : 'result-badge--incorrect'
-                      }`}
-                    >
-                      {item.is_correct ? 'Correct' : 'Review'}
-                    </span>
-                  </div>
-                  <p className="result-explanation">{item.explanation}</p>
-                </article>
-              ))}
+              {result?.items.map((item, index) => {
+                const question = activeExam?.questions.find((q) => q.id === item.question_id)
+                const timingSeconds = questionTimings[item.question_id] ?? 0
+                return (
+                  <article className="result-card" key={item.question_id}>
+                    <div className="result-card__header">
+                      <span className="quiz-label">
+                        Question {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <div className="result-card__meta">
+                        {question?.content.points !== undefined ? (
+                          <span className="result-card__points">
+                            {item.is_correct ? question.content.points : 0} / {question.content.points} pts
+                          </span>
+                        ) : null}
+                        <span
+                          className={`result-badge ${
+                            item.is_correct ? 'result-badge--correct' : 'result-badge--incorrect'
+                          }`}
+                        >
+                          {item.is_correct ? 'Correct' : 'Review'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="result-card__timing">
+                      Time: {formatDuration(timingSeconds)}
+                    </div>
+                    <p className="result-explanation">{item.explanation}</p>
+                  </article>
+                )
+              })}
             </div>
             <div className="quiz-actions">
               <button

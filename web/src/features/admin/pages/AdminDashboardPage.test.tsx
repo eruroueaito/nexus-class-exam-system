@@ -114,7 +114,7 @@ describe('AdminDashboardPage', () => {
     expect(screen.getByText('Score Trend')).toBeInTheDocument()
     expect(screen.getByText('Question Heat')).toBeInTheDocument()
     expect(screen.getByText('What does opportunity cost describe?')).toBeInTheDocument()
-    expect(screen.getByText('Microeconomics - Midterm Assessment')).toBeInTheDocument()
+    expect(screen.getAllByText('Microeconomics - Midterm Assessment').length).toBeGreaterThan(0)
   })
 
   test('creates a new exam draft and opens its editor route', async () => {
@@ -187,7 +187,7 @@ describe('AdminDashboardPage', () => {
       </MemoryRouter>,
     )
 
-    expect(await screen.findByText('Game Theory - Problem Set 01')).toBeInTheDocument()
+    expect((await screen.findAllByText('Game Theory - Problem Set 01'))[0]).toBeInTheDocument()
     expect(screen.getByText('Draft')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Open Game Theory - Problem Set 01' })).toHaveAttribute(
       'href',

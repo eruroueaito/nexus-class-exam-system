@@ -31,6 +31,7 @@ export function AdminDashboardPage() {
   const [analytics, setAnalytics] = useState<AdminAnalyticsSnapshot | null>(null)
   const [adminExams, setAdminExams] = useState<AdminExamListItem[]>([])
   const [isCreatingExam, setIsCreatingExam] = useState(false)
+  const [selectedAnalyticsExamId, setSelectedAnalyticsExamId] = useState<string | null>(null)
 
   useEffect(() => {
     let isActive = true
@@ -62,7 +63,7 @@ export function AdminDashboardPage() {
 
     let isActive = true
 
-    void getExamAnalytics()
+    void getExamAnalytics(selectedAnalyticsExamId ?? undefined)
       .then((nextAnalytics) => {
         if (isActive) {
           setAnalytics(nextAnalytics)
@@ -79,7 +80,7 @@ export function AdminDashboardPage() {
     return () => {
       isActive = false
     }
-  }, [session])
+  }, [session, selectedAnalyticsExamId])
 
   useEffect(() => {
     if (!session) {
@@ -166,6 +167,31 @@ export function AdminDashboardPage() {
     <AdminLayout adminEmail={session.email} onSignOut={() => void handleSignOut()}>
       {analytics ? (
         <>
+          {adminExams.length > 0 ? (
+            <div className="exam-switcher">
+              <span className="exam-switcher__label">Scope:</span>
+              <div className="exam-switcher__buttons">
+                <button
+                  className={`btn btn-small ${!selectedAnalyticsExamId ? '' : 'btn-ghost'}`}
+                  type="button"
+                  onClick={() => setSelectedAnalyticsExamId(null)}
+                >
+                  All Exams
+                </button>
+                {adminExams.map((exam) => (
+                  <button
+                    key={exam.examId}
+                    className={`btn btn-small ${selectedAnalyticsExamId === exam.examId ? '' : 'btn-ghost'}`}
+                    type="button"
+                    onClick={() => setSelectedAnalyticsExamId(exam.examId)}
+                  >
+                    {exam.title}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
           <section className="stat-grid admin-stat-grid">
             <article className="stat-item">
               <div className="stat-value">{analytics.averageAccuracyLabel}</div>
@@ -185,6 +211,10 @@ export function AdminDashboardPage() {
             <ScoreTrendChart points={analytics.scoreTrend} />
             <QuestionHeatTable rows={analytics.questionHeat} />
           </section>
+          <p className="analytics-source-note">
+            Data sourced from <code>submissions</code> and <code>submission_items</code> tables.
+            Active student count deduplicates names by trimming spaces and ignoring letter case.
+          </p>
 
           <section className="admin-panel">
             <h2 className="admin-panel__title">Content Workspace</h2>

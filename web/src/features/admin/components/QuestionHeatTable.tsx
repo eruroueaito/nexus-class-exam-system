@@ -2,10 +2,11 @@
  * Module: question heat table
  * Responsibility: Render the highest-friction questions for the admin dashboard
  * Inputs/Outputs: Accepts normalized question heat rows and returns a compact table or empty state
- * Dependencies: Depends on the shared admin styles
- * Notes: The table uses labels and rates instead of raw booleans so the dashboard stays readable at a glance
+ * Dependencies: Depends on React state and shared admin styles
+ * Notes: Rows with wrong student data can be clicked to reveal a drill-down of which students answered incorrectly
  */
 
+import { Fragment, useState } from 'react'
 import type { QuestionHeatRow } from '../api/analyticsApi'
 
 interface QuestionHeatTableProps {
@@ -13,6 +14,12 @@ interface QuestionHeatTableProps {
 }
 
 export function QuestionHeatTable({ rows }: QuestionHeatTableProps) {
+  const [expandedQuestionId, setExpandedQuestionId] = useState<string | null>(null)
+
+  function toggleDrillDown(questionId: string) {
+    setExpandedQuestionId((prev) => (prev === questionId ? null : questionId))
+  }
+
   return (
     <section className="admin-panel">
       <h2 className="admin-panel__title">Question Heat</h2>
@@ -25,16 +32,37 @@ export function QuestionHeatTable({ rows }: QuestionHeatTableProps) {
             <span>Incorrect Rate</span>
             <span>Attempts</span>
           </div>
-          {rows.map((row) => (
-            <div className="analytics-table__row" key={row.questionId}>
-              <div>
-                <div className="analytics-table__label">{row.questionLabel}</div>
-                <div className="analytics-table__stem">{row.questionStem}</div>
-              </div>
-              <span>{row.incorrectRateLabel}</span>
-              <span>{row.attempts}</span>
-            </div>
-          ))}
+          {rows.map((row) => {
+            const hasWrongStudents = (row.wrongStudents?.length ?? 0) > 0
+            const isExpanded = expandedQuestionId === row.questionId
+
+            return (
+              <Fragment key={row.questionId}>
+                <div
+                  className={`analytics-table__row ${hasWrongStudents ? 'analytics-table__row--clickable' : ''}`}
+                  onClick={hasWrongStudents ? () => toggleDrillDown(row.questionId) : undefined}
+                  title={hasWrongStudents ? 'Click to see which students answered incorrectly' : undefined}
+                >
+                  <div>
+                    <div className="analytics-table__label">{row.questionLabel}</div>
+                    <div className="analytics-table__stem">{row.questionStem}</div>
+                  </div>
+                  <span>{row.incorrectRateLabel}</span>
+                  <span>{row.attempts}{hasWrongStudents ? (isExpanded ? ' ▲' : ' ▼') : ''}</span>
+                </div>
+                {isExpanded && hasWrongStudents ? (
+                  <div className="analytics-drill-down">
+                    <span className="analytics-drill-down__label">Incorrect answers from:</span>
+                    <ul className="analytics-drill-down__list">
+                      {row.wrongStudents!.map((name) => (
+                        <li key={name}>{name}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+              </Fragment>
+            )
+          })}
         </div>
       )}
     </section>
