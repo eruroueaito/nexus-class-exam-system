@@ -53,18 +53,18 @@ These are environment-bound and are not portable from the original deployment.
 
 Read these before changing anything:
 
-1. [`README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/README.md)
-2. [`docs/online-exam-system-development-plan.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/docs/online-exam-system-development-plan.md)
-3. [`findings.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/findings.md)
-4. [`progress.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/progress.md)
-5. [`docs/local-supabase-development.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/docs/local-supabase-development.md)
+1. [`README.md`](../README.md)
+2. [`docs/online-exam-system-development-plan.md`](online-exam-system-development-plan.md)
+3. [`findings.md`](../findings.md)
+4. [`progress.md`](../progress.md)
+5. [`docs/local-supabase-development.md`](local-supabase-development.md)
 
 Then inspect:
 
-- [`supabase/migrations/`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase/migrations)
-- [`supabase/functions/`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase/functions)
-- [`web/src/`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/web/src)
-- [`.github/workflows/deploy-pages.yml`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/.github/workflows/deploy-pages.yml)
+- [`supabase/migrations/`](../supabase/migrations/)
+- [`supabase/functions/`](../supabase/functions/)
+- [`web/src/`](../web/src/)
+- [`.github/workflows/deploy-pages.yml`](../.github/workflows/deploy-pages.yml)
 
 ---
 
@@ -150,7 +150,7 @@ From the Supabase dashboard:
 
 Apply every SQL file in:
 
-- [`supabase/migrations/`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase/migrations)
+- [`supabase/migrations/`](../supabase/migrations/)
 
 Important migrations include:
 
@@ -173,7 +173,7 @@ If you are using the SQL editor manually:
 
 Default seed file:
 
-- [`supabase/seed.sql`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase/seed.sql)
+- [`supabase/seed.sql`](../supabase/seed.sql)
 
 Apply it if you want the current economics demo data and password `123`.
 
@@ -197,8 +197,8 @@ Deploy these functions:
 
 Shared logic lives in:
 
-- [`supabase/functions/_shared/exam-service.ts`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase/functions/_shared/exam-service.ts)
-- [`supabase/functions/_shared/http.ts`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase/functions/_shared/http.ts)
+- [`supabase/functions/_shared/exam-service.ts`](../supabase/functions/_shared/exam-service.ts)
+- [`supabase/functions/_shared/http.ts`](../supabase/functions/_shared/http.ts)
 
 ### 8.1 Required function secrets
 
@@ -232,7 +232,7 @@ The admin UI accepts a logged-in Supabase Auth user only if:
 
 This check is enforced by:
 
-- [`supabase/functions/_shared/http.ts`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase/functions/_shared/http.ts)
+- [`supabase/functions/_shared/http.ts`](../supabase/functions/_shared/http.ts)
 
 ### 9.2 How to create the admin user
 
@@ -286,7 +286,7 @@ The Pages workflow expects repository variables:
 
 These are read in:
 
-- [`.github/workflows/deploy-pages.yml`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/.github/workflows/deploy-pages.yml)
+- [`.github/workflows/deploy-pages.yml`](../.github/workflows/deploy-pages.yml)
 
 ### 10.3 Base path handling
 
@@ -296,7 +296,7 @@ Vite uses:
 
 via:
 
-- [`web/vite.config.ts`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/web/vite.config.ts)
+- [`web/vite.config.ts`](../web/vite.config.ts)
 
 If your forked repository name changes, the GitHub Pages base path changes automatically through the workflow.
 

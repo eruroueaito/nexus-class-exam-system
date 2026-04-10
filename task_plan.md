@@ -181,4 +181,9 @@ Phase 5
 - 2. 为 `supabase/`、`supabase/migrations/`、`supabase/functions/`、`supabase/functions/_shared/` 补充目录级 README，明确后端边界与迁移纪律
 - 3. 为 `web/src/` 和 `web/tests/` 补充目录级 README，明确前端源码与共享测试的职责
 - 4. 在仓库根 `README.md` 中新增 “Directory Guides” 入口，降低新 AI 接手时的仓库导航成本
+- 当前 GitHub 文档兼容性补丁已完成：
+- 1. 重新核对 GitHub 仓库页面报错，确认根因是仓库 Markdown 中残留了本地绝对路径链接
+- 2. 将 `README.md`、`docs/agent-migration-guide.md`、`progress.md` 里的 `/Users/...` 链接全部改为仓库内相对路径
+- 3. 重新扫描仓库 Markdown，确认不再存在会导致 GitHub 网页端跳转失败的本地路径链接
+- 4. 将这次 GitHub 兼容性问题记录进规划和发现文件，避免后续再次把“本地引用格式”写进仓库文档
 - 文档中会显式标记对原始需求的必要修正点，避免后续实现时返工。

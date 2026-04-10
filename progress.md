@@ -10,12 +10,12 @@
 ## Completed Milestones
 
 ### 1. Architecture and Planning
-- Wrote the main implementation document in [docs/online-exam-system-development-plan.md](/Users/Zhuanz/AI%20coding/Carol%27s%20test/docs/online-exam-system-development-plan.md).
+- Wrote the main implementation document in [docs/online-exam-system-development-plan.md](docs/online-exam-system-development-plan.md).
 - Established file-based planning in:
-  - [task_plan.md](/Users/Zhuanz/AI%20coding/Carol%27s%20test/task_plan.md)
-  - [findings.md](/Users/Zhuanz/AI%20coding/Carol%27s%20test/findings.md)
-  - [progress.md](/Users/Zhuanz/AI%20coding/Carol%27s%20test/progress.md)
-- Recorded the Apple-style prototype as the visual baseline in [docs/reference/nexus-class-prototype.html](/Users/Zhuanz/AI%20coding/Carol%27s%20test/docs/reference/nexus-class-prototype.html).
+  - [task_plan.md](task_plan.md)
+  - [findings.md](findings.md)
+  - [progress.md](progress.md)
+- Recorded the Apple-style prototype as the visual baseline in [docs/reference/nexus-class-prototype.html](docs/reference/nexus-class-prototype.html).
 
 ### 2. Database and Security Foundation
 - Created the base schema migrations for:
@@ -55,8 +55,8 @@
   - the editor only supports password rotation, not password readback
 
 ### 5. Deployment and Production Integration
-- Added GitHub Pages deployment workflow in [.github/workflows/deploy-pages.yml](/Users/Zhuanz/AI%20coding/Carol%27s%20test/.github/workflows/deploy-pages.yml).
-- Configured Vite base-path support in [web/vite.config.ts](/Users/Zhuanz/AI%20coding/Carol%27s%20test/web/vite.config.ts).
+- Added GitHub Pages deployment workflow in [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml).
+- Configured Vite base-path support in [web/vite.config.ts](web/vite.config.ts).
 - Verified the live frontend uses:
   - `VITE_SUPABASE_URL`
   - `VITE_SUPABASE_PUBLISHABLE_KEY`
@@ -77,7 +77,7 @@
 - Plaintext passwords are not stored in `public.exams`.
 - Plaintext passwords are not returned by `load-exam-draft`.
 - Password rotation is preserved by tests in:
-  - [web/tests/exam-service.test.ts](/Users/Zhuanz/AI%20coding/Carol%27s%20test/web/tests/exam-service.test.ts)
+  - [web/tests/exam-service.test.ts](web/tests/exam-service.test.ts)
 
 ## Key Verification Evidence
 
@@ -103,15 +103,15 @@
 ## Important Files
 
 - Main design and implementation doc:
-  - [docs/online-exam-system-development-plan.md](/Users/Zhuanz/AI%20coding/Carol%27s%20test/docs/online-exam-system-development-plan.md)
+  - [docs/online-exam-system-development-plan.md](docs/online-exam-system-development-plan.md)
 - Local Supabase setup note:
-  - [docs/local-supabase-development.md](/Users/Zhuanz/AI%20coding/Carol%27s%20test/docs/local-supabase-development.md)
+  - [docs/local-supabase-development.md](docs/local-supabase-development.md)
 - Frontend app:
-  - [web](/Users/Zhuanz/AI%20coding/Carol%27s%20test/web)
+  - [web](web)
 - Supabase project:
-  - [supabase](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase)
+  - [supabase](supabase)
 
 ## Last Significant Update
 
 - Date: 2026-04-10
-- Theme: repository documentation hardening through directory-level README guides for docs, Supabase, and frontend/testing folders
+- Theme: repository documentation hardening plus GitHub-compatible link cleanup to remove broken `/Users/...` paths from tracked Markdown files

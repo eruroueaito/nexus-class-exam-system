@@ -163,6 +163,8 @@ Three categories of operations cannot safely run in the browser:
 - 代码审查后保留一个非阻塞风险：`getExamEditorData()` 在函数调用失败时仍会回退到本地 fallback snapshot，这对开发演示友好，但对严格生产诊断不够透明。若后续继续收尾，优先把它改成“仅在缺少环境变量时 fallback，远端错误则显式报错”。
 - 仓库根 `README.md` 虽然已经描述了关键目录，但多个高价值目录缺少目录级 `README.md`，导致新 AI 只能依靠文件名猜测用途，尤其是 `supabase/migrations/`、`supabase/functions/` 和 `web/tests/` 这类需要明确边界与规则的目录。
 - 这类“目录存在但缺说明”的问题不会立即破坏运行，但会显著降低二次迁移、代码审查和 agent handoff 的效率；最合适的修复方式不是扩写根 README，而是给每个关键目录增加就地说明文件。
+- 本轮 GitHub 仓库页报错的根因不是“文件不存在”，而是仓库 Markdown 中混入了 `/Users/...` 形式的本地绝对路径链接。它们在本地客户端里可解析，但在 GitHub 网页端会落到无效目标并触发 “Error loading page”。
+- 修复这类问题时，不能只补文件本身；还必须把仓库内文档统一改成相对路径链接，否则即使文件已经创建，GitHub 仍然会表现得像“找不到文件”。
 
 ---
 *Update this file after every 2 view/browser/search operations*

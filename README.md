@@ -4,9 +4,9 @@ Agent-oriented migration and operations guide for a static GitHub Pages frontend
 
 This repository contains a production-style online exam system with:
 
-- a static React frontend in [`web/`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/web)
-- a Supabase project in [`supabase/`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase)
-- architecture and execution notes in [`docs/`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/docs)
+- a static React frontend in [`web/`](web/)
+- a Supabase project in [`supabase/`](supabase/)
+- architecture and execution notes in [`docs/`](docs/)
 
 The system is intentionally split so that:
 
@@ -20,11 +20,11 @@ This document is written for another AI agent or engineer who forks this reposit
 
 If you are taking over the project, read these in order:
 
-1. [`README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/README.md)
-2. [`docs/agent-migration-guide.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/docs/agent-migration-guide.md)
-3. [`docs/online-exam-system-development-plan.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/docs/online-exam-system-development-plan.md)
-4. [`progress.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/progress.md)
-5. [`findings.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/findings.md)
+1. [`README.md`](README.md)
+2. [`docs/agent-migration-guide.md`](docs/agent-migration-guide.md)
+3. [`docs/online-exam-system-development-plan.md`](docs/online-exam-system-development-plan.md)
+4. [`progress.md`](progress.md)
+5. [`findings.md`](findings.md)
 
 ## What Is Decoupled vs What Must Be Rewritten
 
@@ -85,9 +85,9 @@ These parts are not portable and must be reconfigured:
 If you need the shortest safe path after a fork:
 
 1. Create a new Supabase project.
-2. Apply all SQL migrations from [`supabase/migrations/`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase/migrations).
-3. Deploy all Edge Functions from [`supabase/functions/`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase/functions).
-4. Seed the database using [`supabase/seed.sql`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase/seed.sql) or replace it with your own data.
+2. Apply all SQL migrations from [`supabase/migrations/`](supabase/migrations/).
+3. Deploy all Edge Functions from [`supabase/functions/`](supabase/functions/).
+4. Seed the database using [`supabase/seed.sql`](supabase/seed.sql) or replace it with your own data.
 5. Create an admin user in Supabase Auth and set `app_metadata.role = "admin"`.
 6. Set GitHub repository variables for `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`.
 7. Enable GitHub Pages and push to `main`.
@@ -124,15 +124,15 @@ If you need the shortest safe path after a fork:
 
 These directory-level guides exist so a new maintainer or agent can open a folder and immediately understand its purpose:
 
-- [`docs/README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/docs/README.md)
-- [`docs/reference/README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/docs/reference/README.md)
-- [`docs/test-data/README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/docs/test-data/README.md)
-- [`supabase/README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase/README.md)
-- [`supabase/migrations/README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase/migrations/README.md)
-- [`supabase/functions/README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase/functions/README.md)
-- [`supabase/functions/_shared/README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/supabase/functions/_shared/README.md)
-- [`web/src/README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/web/src/README.md)
-- [`web/tests/README.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/web/tests/README.md)
+- [`docs/README.md`](docs/README.md)
+- [`docs/reference/README.md`](docs/reference/README.md)
+- [`docs/test-data/README.md`](docs/test-data/README.md)
+- [`supabase/README.md`](supabase/README.md)
+- [`supabase/migrations/README.md`](supabase/migrations/README.md)
+- [`supabase/functions/README.md`](supabase/functions/README.md)
+- [`supabase/functions/_shared/README.md`](supabase/functions/_shared/README.md)
+- [`web/src/README.md`](web/src/README.md)
+- [`web/tests/README.md`](web/tests/README.md)
 
 ## Security Model Summary
 
@@ -157,13 +157,13 @@ That is intentional:
 
 The full migration playbook is here:
 
-- [`docs/agent-migration-guide.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/docs/agent-migration-guide.md)
+- [`docs/agent-migration-guide.md`](docs/agent-migration-guide.md)
 
 ## Local Development
 
 For local Supabase usage, read:
 
-- [`docs/local-supabase-development.md`](/Users/Zhuanz/AI%20coding/Carol%27s%20test/docs/local-supabase-development.md)
+- [`docs/local-supabase-development.md`](docs/local-supabase-development.md)
 
 ## Current Known Non-Blocking Issues
 
