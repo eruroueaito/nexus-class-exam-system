@@ -181,6 +181,8 @@ Three categories of operations cannot safely run in the browser:
 - 2. `public.upsert_answer_record(...)`
 - 3. `public.upsert_exam_access_password_hash(...)`
 - 因此 `sync-bundles` 最低限度也需要把底层 PostgREST / RPC 缺失错误翻译成可执行的 migration 指引，否则 CI 只会给出“column does not exist”或“function not found”这类低信号日志。
+- 在补齐 `public.exams.slug` / `metadata` 迁移后，`Sync Exam Bundles` 暴露出的下一层真实根因是 importer 把 bundle 里的 `q01` 之类外部题目 ID 直接写进 `public.questions.id`。数据库该列是 UUID 主键，所以同步会在题目 upsert 阶段失败。
+- 对 bundle 工作流来说，最稳妥的建模不是强迫作者写 UUID，而是保留人类可读的外部题号，并在导入层基于 `exam slug + question id` 派生稳定 UUID。这样既满足数据库约束，也保证重复同步时题目身份稳定，不会每次重建新题。
 
 ---
 *Update this file after every 2 view/browser/search operations*

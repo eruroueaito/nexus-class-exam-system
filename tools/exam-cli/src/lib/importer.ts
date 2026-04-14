@@ -6,6 +6,8 @@
  * Notes: This module only uses public tables and helper RPCs, never direct custom-schema writes
  */
 
+import { createHash } from 'node:crypto'
+
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 import type { ExamBundle } from './schema'
@@ -43,6 +45,16 @@ interface ExamRow {
   id: string
 }
 
+function deriveStableQuestionId(examSlug: string, bundleQuestionId: string) {
+  const seed = `${examSlug}:${bundleQuestionId}`
+  const hex = createHash('sha1').update(seed).digest('hex').slice(0, 32).split('')
+
+  hex[12] = '5'
+  hex[16] = ((parseInt(hex[16] ?? '0', 16) & 0x3) | 0x8).toString(16)
+
+  return `${hex.slice(0, 8).join('')}-${hex.slice(8, 12).join('')}-${hex.slice(12, 16).join('')}-${hex.slice(16, 20).join('')}-${hex.slice(20, 32).join('')}`
+}
+
 function toStoredCorrectAnswer(question: ExamBundle['questions'][number]) {
   if (question.type === 'text') {
     return {
@@ -54,6 +66,13 @@ function toStoredCorrectAnswer(question: ExamBundle['questions'][number]) {
 }
 
 export function buildImportPlan(bundle: ExamBundle): ImportPlan {
+  const questionIdMap = new Map(
+    bundle.questions.map((question) => [
+      question.id,
+      deriveStableQuestionId(bundle.exam.slug, question.id),
+    ]),
+  )
+
   return {
     exam: {
       title: bundle.exam.title,
@@ -66,7 +85,7 @@ export function buildImportPlan(bundle: ExamBundle): ImportPlan {
       randomizeOptions: bundle.exam.randomize_options,
     },
     questions: bundle.questions.map((question, index) => ({
-      id: question.id,
+      id: questionIdMap.get(question.id) ?? deriveStableQuestionId(bundle.exam.slug, question.id),
       type: question.type,
       orderIndex: index + 1,
       content: {
@@ -76,7 +95,8 @@ export function buildImportPlan(bundle: ExamBundle): ImportPlan {
       },
     })),
     answers: bundle.questions.map((question) => ({
-      questionId: question.id,
+      questionId:
+        questionIdMap.get(question.id) ?? deriveStableQuestionId(bundle.exam.slug, question.id),
       correctAnswer: toStoredCorrectAnswer(question),
       explanation: question.explanation,
     })),

@@ -176,3 +176,11 @@
   - [supabase/migrations/20260414012000_add_exam_slug_and_metadata.sql](supabase/migrations/20260414012000_add_exam_slug_and_metadata.sql)
 - Confirmed the current GitHub Actions workflow does not apply Supabase migrations before bundle sync, so a remote project can drift behind the CLI contract.
 - Added targeted exam CLI tests and a minimal sync-layer fix so missing remote schema / helper RPCs now produce actionable migration guidance instead of raw PostgREST errors.
+
+## 2026-04-14 Website Publish Recovery
+
+- Applied the missing production migration `20260414012000_add_exam_slug_and_metadata.sql` to the remote Supabase project after confirming `public.exams.slug` and `public.exams.metadata` were absent remotely.
+- Re-ran `Sync Exam Bundles` for [content/exams/intro-macroeconomics-basics-01.yaml](content/exams/intro-macroeconomics-basics-01.yaml) and captured the next blocking error: `invalid input syntax for type uuid: "q01"`.
+- Traced the root cause to the exam CLI importer, which was writing bundle question ids directly into `public.questions.id` even though the database requires UUID primary keys.
+- Added a failing importer test for stable UUID mapping from bundle ids, then fixed the importer so `exam slug + bundle question id` now deterministically derives a legal UUID for both question rows and answer RPC payloads.
+- Verified the fix with `npm test -- tools/exam-cli/tests/importer.test.ts` and `npm test`, both passing.

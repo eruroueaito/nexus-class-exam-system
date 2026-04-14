@@ -226,4 +226,7 @@ Phase 5
 - 1. 已定位 GitHub Actions 失败根因：远端 Supabase 缺少 `public.exams.slug`
 - 2. 已发散排查出同类远端兼容性风险：`public.exams.metadata`、`public.upsert_answer_record(...)`、`public.upsert_exam_access_password_hash(...)`
 - 3. 已为 `sync-bundles` 增加更高信号的 migration / RPC 缺失报错，并用测试锁定
-- 4. 下一步是提交并重新推送，让 CI 以更可操作的错误信息再次执行
+- 4. 已补齐远端 `public.exams.slug` / `metadata` migration，并确认该层阻塞解除
+- 5. 已定位第二层根因：bundle question id 被错误当作数据库 UUID 主键
+- 6. 已补 importer 测试并实现稳定 UUID 派生修复
+- 7. 下一步是提交并推送修复，然后重新执行 `Sync Exam Bundles`
