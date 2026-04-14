@@ -12,8 +12,7 @@ The CLI will standardize:
 - YAML exam-bundle authoring
 - schema validation
 - human review summaries
-- controlled Supabase import
-- publish control
-- Git commit and push automation
+- GitHub Actions-triggered controlled Supabase import
+- GitHub Actions-triggered publish control
 
-Implementation has not started yet. This file exists to give future maintainers a stable top-level pointer.
+The local operator surface is intentionally limited to generate, validate, preview, and review. Remote apply and publish are reserved for the GitHub Actions sync workflow. This file exists to give future maintainers a stable top-level pointer.

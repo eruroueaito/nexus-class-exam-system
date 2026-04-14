@@ -197,20 +197,28 @@ Phase 5
 - 4. 当前仍处于设计阶段，尚未开始 CLI 实现
 - 当前 exam CLI 第一批实现已完成：
 - 1. 已新增根级 Node/TypeScript CLI 运行时和 `npm run exam -- ...` 入口
-- 2. 已实现 `validate`、`preview`、`review`、`apply`、`publish`、`unpublish`、`full-pipeline` 命令骨架
+- 2. 已实现 `validate`、`preview`、`review` 以及供 GitHub Actions 使用的 `sync-bundles` 命令
 - 3. 已新增英文 YAML schema 文档、operator guide 和 prompt contract
 - 4. 已新增示例 bundle 与 review 文件
 - 5. 已新增 `exams.slug` 和 `exams.metadata` 所需 migration，以对齐内容文件工作流
-- 6. 当前第一版仍保留一个明确限制：语义题目生成由 AI 会话负责，CLI 负责确定性校验、导入、发布和 Git 交付
+- 6. 当前第一版仍保留一个明确限制：语义题目生成由 AI 会话负责；本地 CLI 只负责确定性校验/预览/review，远端导入与发布交给 GitHub Actions
 - 当前方案 A 落地切片已完成：
 - 1. 新增 GitHub Actions workflow：`.github/workflows/sync-exam-bundles.yml`
 - 2. 自动同步只监听 `content/exams/*.yaml`，不会误触 `examples/` 目录
 - 3. 新增 `sync-bundles` CLI 命令，供 GitHub Actions 在云端执行 apply/publish
 - 4. workflow 已增加 secrets preflight，缺少 `SUPABASE_URL` 或 `SUPABASE_SERVICE_ROLE_KEY` 时会明确失败
 - 5. 本地仍负责生成、校验、预览和 review；云端负责 apply 和 publish
+- 当前 exam CLI 收口切片已完成：
+- 1. 已删除对外暴露的本地 `full-pipeline` 发布路径和对应 env 模板
+- 2. `sync-bundles` 现已限制为 GitHub Actions 内部命令，本地 shell 不能再直接触发远端写库
+- 3. README、operator guide、prompt contract、design spec、implementation plan 已统一改写成 CI-first 模型
 - 当前仓库说明文档同步切片已完成：
 - 1. 根 `README.md` 已补充 exam CLI、content layer 和 GitHub Actions sync workflow
 - 2. `docs/README.md` 已补充 CLI 相关英文规范文档入口
 - 3. `content/exams/README.md` 已写明 production bundles 与 examples 的边界
 - 4. `supabase/README.md`、`supabase/migrations/README.md`、`supabase/functions/README.md` 已补充 CLI 和新 migration 的关系说明
 - 文档中会显式标记对原始需求的必要修正点，避免后续实现时返工。
+- 当前 2026-04-14 宏观经济学题集发布切片状态：
+- 1. 已生成 `content/exams/intro-macroeconomics-basics-01.yaml`
+- 2. 已通过本地 `validate`、`preview`、`review`
+- 3. 本地直接 `apply` / `publish` 被环境缺失阻塞：当前 shell 未提供 `SUPABASE_URL` 和 `SUPABASE_SERVICE_ROLE_KEY`

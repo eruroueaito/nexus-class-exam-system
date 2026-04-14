@@ -177,7 +177,7 @@ Supporting docs:
 - The browser never reads those tables directly.
 - Edge Functions use service-role credentials server-side.
 - Private table access from functions is routed through `public` helper RPCs.
-- The exam CLI uses a trusted service-role client only in local tooling or GitHub Actions, never in the browser.
+- The exam CLI uses a trusted service-role client only inside GitHub Actions, never in the browser and no longer from a documented local operator path.
 
 ## Password Control Boundary
 
@@ -205,7 +205,7 @@ For local Supabase usage, read:
 
 - Frontend bundle size is still larger than ideal.
 - Some admin secure-load flows still fall back to local mock data if the remote function call fails.
-- The first exam CLI version still relies on AI conversation flow for semantic question generation; the CLI currently owns deterministic validation, preview, review, import, publish, and Git-oriented delivery steps.
+- The first exam CLI version still relies on AI conversation flow for semantic question generation; the CLI currently owns deterministic validation, preview, review, and CI-triggered remote synchronization.
 
 ## Current Demo Expectations
 

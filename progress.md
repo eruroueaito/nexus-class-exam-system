@@ -68,10 +68,7 @@
   - `npm run exam -- validate`
   - `npm run exam -- preview`
   - `npm run exam -- review`
-  - `npm run exam -- apply`
-  - `npm run exam -- publish`
-  - `npm run exam -- unpublish`
-  - `npm run exam -- full-pipeline`
+  - `npm run exam -- sync-bundles` as a CI-only internal command
 - Added the YAML bundle schema and operator docs:
   - [docs/exam-content-schema.md](docs/exam-content-schema.md)
   - [docs/exam-cli-operator-guide.md](docs/exam-cli-operator-guide.md)
@@ -91,6 +88,10 @@
 - Added an explicit secrets preflight for:
   - `SUPABASE_URL`
   - `SUPABASE_SERVICE_ROLE_KEY`
+- Removed the documented local remote-write path:
+  - deleted local `full-pipeline`
+  - deleted the local env template for remote writes
+  - restricted `sync-bundles` to GitHub Actions only
 
 ## Password Chain Audit
 
@@ -118,7 +119,7 @@
 - `npm run exam -- validate content/exams/examples/intro-macro-quiz-01.yaml` passes
 - `npm run exam -- preview content/exams/examples/intro-macro-quiz-01.yaml` passes
 - `npm run exam -- review content/exams/examples/intro-macro-quiz-01.yaml` passes
-- `npm run exam -- sync-bundles ...` correctly fails locally without secrets, which confirms the GitHub Actions execution boundary
+- `npm run exam -- sync-bundles ...` now fails locally with a GitHub-Actions-only guard, which confirms the remote-write boundary is no longer exposed through the public local CLI path
 
 ### Targeted Regressions Locked
 - Homepage progress bar is hidden on the assignment list and appears only after entering an exam.
@@ -134,7 +135,7 @@
 - Bundle size warning remains during Vite production build.
 - Admin secure-load flow still uses a local fallback when function invocation fails; this is usable for development but not ideal for strict production observability.
 - End-to-end remote admin password rotation smoke testing still depends on a valid admin login credential, not just the admin email.
-- CLI v1 does not embed a standalone LLM provider. AI-generated exam drafting remains conversation-driven; the CLI owns deterministic validation, preview, import, publish, and Git delivery.
+- CLI v1 does not embed a standalone LLM provider. AI-generated exam drafting remains conversation-driven; the local CLI owns deterministic validation, preview, and review, while GitHub Actions owns import and publish synchronization.
 - GitHub Actions sync mode still requires repository secrets to be configured before the first real production bundle push.
 
 ## Important Files
@@ -152,3 +153,17 @@
 
 - Date: 2026-04-10
 - Theme: repository documentation sync for the exam CLI era, including content-layer docs, migration notes, and GitHub Actions-based remote exam bundle execution
+
+## 2026-04-14 Content Operation
+
+- Generated a new production bundle at [content/exams/intro-macroeconomics-basics-01.yaml](content/exams/intro-macroeconomics-basics-01.yaml).
+- Local CLI verification passed:
+  - `npm run exam -- validate content/exams/intro-macroeconomics-basics-01.yaml`
+  - `npm run exam -- preview content/exams/intro-macroeconomics-basics-01.yaml`
+  - `npm run exam -- review content/exams/intro-macroeconomics-basics-01.yaml`
+
+## 2026-04-14 Workflow Tightening
+
+- Removed the documented local `apply/publish/full-pipeline` release path.
+- Kept GitHub Actions as the only supported remote-write boundary for exam bundles.
+- Updated the README, operator guide, content guide, design spec, and implementation plan so they all describe the same CI-first publishing model.

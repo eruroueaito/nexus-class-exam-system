@@ -48,8 +48,10 @@ The AI should produce:
 
 ## Review Rule
 
-The operator must review the generated bundle and summary before running:
+The operator must review the generated bundle and summary before pushing the approved bundle to `main`.
 
-- `npm run exam -- apply <bundle>`
-- `npm run exam -- publish <bundle>`
-- `npm run exam -- full-pipeline <bundle> --approved`
+After the push, GitHub Actions is the only supported path for remote mutation:
+
+- `.github/workflows/sync-exam-bundles.yml` validates changed bundles
+- GitHub Actions applies the bundle remotely
+- GitHub Actions synchronizes the publish state from the bundle file

@@ -3,7 +3,7 @@
  * Responsibility: Execute the CI-oriented bundle sync flow for one or more reviewed exam bundles
  * Inputs/Outputs: Accepts bundle paths and applies validate, review, import, and publish-state updates
  * Dependencies: Depends on validate, review, apply, and publish commands
- * Notes: This command is intended for GitHub Actions so it never performs Git commit or push operations
+ * Notes: This command is restricted to GitHub Actions so remote writes cannot be triggered from an arbitrary local shell
  */
 
 import { applyBundleFile } from './apply'
@@ -46,6 +46,10 @@ export async function syncBundle(
 }
 
 export async function syncBundles(bundlePaths: string[]) {
+  if (process.env.GITHUB_ACTIONS !== 'true') {
+    throw new Error('sync-bundles is restricted to GitHub Actions.')
+  }
+
   const results = []
 
   for (const bundlePath of bundlePaths) {

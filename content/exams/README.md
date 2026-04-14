@@ -25,3 +25,8 @@ Recommended operator flow:
    - `npm run exam -- review <bundle>`
 3. Push the approved bundle to `main`
 4. Let `.github/workflows/sync-exam-bundles.yml` apply and publish remotely
+
+Remote-write boundary:
+
+- Local operators do not run `apply`, `publish`, or any all-in-one release command
+- GitHub Actions is the only supported path that imports bundles into Supabase

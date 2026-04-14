@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build a repository-local CLI that validates, previews, imports, publishes, and pushes exam bundles, while using an English-only YAML content format designed for AI-assisted generation and human review.
+**Goal:** Build a repository-local CLI that validates, previews, and reviews exam bundles, while using an English-only YAML content format designed for AI-assisted generation and human review, and leaving remote writes to GitHub Actions.
 
-**Architecture:** The CLI runs as a local trusted operator tool in Node.js and TypeScript. AI remains responsible for semantic question generation, while the CLI handles deterministic validation, review rendering, Supabase import, publish control, and Git automation. The CLI uses the Supabase service-role key locally plus existing helper RPCs for private answer and password writes.
+**Architecture:** The CLI runs in Node.js and TypeScript. AI remains responsible for semantic question generation, while the local CLI handles deterministic validation, preview, and review rendering. GitHub Actions owns Supabase import and publish-state synchronization by using repository secrets and the internal `sync-bundles` command.
 
 **Tech Stack:** Node.js, TypeScript, tsx, Vitest, Zod, js-yaml, Supabase JS
 
@@ -18,7 +18,6 @@
 - Create: `tools/exam-cli/src/index.ts`
 - Create: `tools/exam-cli/src/lib/paths.ts`
 - Create: `content/exams/.gitkeep`
-- Create: `.env.exam-cli.example`
 - Test: `tools/exam-cli/tests/paths.test.ts`
 
 - [ ] Step 1: Write a failing test for CLI path helpers.
@@ -53,7 +52,7 @@
 - [ ] Step 3: Implement bundle validation and preview rendering.
 - [ ] Step 4: Re-run the preview test and confirm pass.
 
-### Task 4: Implement Supabase Apply Logic
+### Task 4: Implement CI-Oriented Supabase Apply Logic
 
 **Files:**
 - Create: `tools/exam-cli/src/lib/supabase-admin.ts`
@@ -63,7 +62,7 @@
 
 - [ ] Step 1: Write a failing test for import payload normalization and update sequencing.
 - [ ] Step 2: Run the importer test and confirm failure.
-- [ ] Step 3: Implement local trusted import logic using:
+- [ ] Step 3: Implement GitHub Actions-invoked import logic using:
   - `public.exams`
   - `public.questions`
   - `public.upsert_answer_record(...)`
@@ -81,25 +80,22 @@
 - [ ] Step 3: Implement exam publish and unpublish helpers.
 - [ ] Step 4: Re-run the publish test and confirm pass.
 
-### Task 6: Implement Full Pipeline Orchestration
+### Task 6: Implement GitHub Actions Sync Orchestration
 
 **Files:**
-- Create: `tools/exam-cli/src/lib/git.ts`
-- Create: `tools/exam-cli/src/commands/full-pipeline.ts`
+- Create: `tools/exam-cli/src/commands/sync-bundles.ts`
 - Create: `docs/exam-cli-operator-guide.md`
-- Test: `tools/exam-cli/tests/full-pipeline.test.ts`
+- Test: `tools/exam-cli/tests/sync-bundles.test.ts`
 
-- [ ] Step 1: Write a failing test for pipeline approval gating.
-- [ ] Step 2: Run the pipeline test and confirm failure.
+- [ ] Step 1: Write a failing test for CI-only sync gating.
+- [ ] Step 2: Run the sync test and confirm failure.
 - [ ] Step 3: Implement orchestration:
   - validate
-  - preview
-  - require `--approved`
   - apply
   - publish if requested
-  - commit and push selected files
-- [ ] Step 4: Re-run the pipeline test and confirm pass.
-- [ ] Step 5: Document operator usage and review gates.
+- [ ] Step 4: Block local execution outside GitHub Actions.
+- [ ] Step 5: Re-run the sync test and confirm pass.
+- [ ] Step 6: Document operator usage and review gates.
 
 ### Task 7: Add Command Wiring And Example Output
 
@@ -126,4 +122,4 @@
 
 ## Known First-Version Limitation
 
-The first delivered CLI will not embed a standalone LLM provider. AI-assisted question generation remains agent-driven at the conversation layer. The CLI owns the deterministic parts of the workflow: schema, preview, import, publish, and Git delivery.
+The first delivered CLI will not embed a standalone LLM provider. AI-assisted question generation remains agent-driven at the conversation layer. The local CLI owns deterministic validation, preview, and review; GitHub Actions owns import and publish synchronization.

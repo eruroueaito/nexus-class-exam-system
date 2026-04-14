@@ -1,7 +1,11 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { syncBundle } from '../src/commands/sync-bundles'
+import { syncBundle, syncBundles } from '../src/commands/sync-bundles'
 import { parseExamBundle } from '../src/lib/schema'
+
+afterEach(() => {
+  vi.unstubAllEnvs()
+})
 
 describe('sync bundle orchestration', () => {
   it('runs validate, review, apply, and publish for published bundles', async () => {
@@ -110,5 +114,13 @@ describe('sync bundle orchestration', () => {
     })
 
     expect(events).toEqual(['validate', 'review', 'apply', 'unpublish'])
+  })
+
+  it('rejects local sync-bundles execution outside GitHub Actions', async () => {
+    vi.stubEnv('GITHUB_ACTIONS', 'false')
+
+    await expect(syncBundles(['content/exams/intro-macro-quiz-01.yaml'])).rejects.toThrow(
+      'sync-bundles is restricted to GitHub Actions.',
+    )
   })
 })

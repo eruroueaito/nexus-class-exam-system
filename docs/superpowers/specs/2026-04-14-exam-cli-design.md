@@ -2,7 +2,7 @@
 
 ## Status
 
-Approved design baseline. Not yet implemented.
+Approved design baseline. Later narrowed so remote writes run only in GitHub Actions.
 
 ## Objective
 
@@ -13,11 +13,11 @@ Introduce a repository-local CLI that standardizes the full exam-content workflo
 3. validate the bundle deterministically
 4. render a human-review summary
 5. pause for approval
-6. import the approved bundle into Supabase
-7. publish the exam
-8. commit and push the repository changes
+6. commit and push the approved bundle
+7. let GitHub Actions import the approved bundle into Supabase
+8. let GitHub Actions synchronize the publish state
 
-The CLI must make content operations reproducible, reviewable, and safe for AI-driven usage.
+The CLI must make content operations reproducible, reviewable, and safe for AI-driven usage while avoiding documented local high-privilege release commands.
 
 ## Non-Goals
 
@@ -44,7 +44,7 @@ The CLI becomes the canonical content-operations layer, while the web admin edit
 1. English-only content rules
 2. File-first reviewability
 3. Deterministic validation before any remote mutation
-4. Explicit approval before import and publish
+4. Explicit approval before any remote mutation
 5. Server-side enforcement for password and answer security
 6. Git-tracked content as the source of truth
 7. Minimal operator surface area
@@ -88,7 +88,7 @@ Output:
 
 No publish or import happens here.
 
-### Phase C: Apply
+### Phase C: Sync
 
 Input:
 
@@ -96,10 +96,10 @@ Input:
 
 Output:
 
-- imported or updated exam in Supabase
-- rotated password if provided
-- published or unpublished state updated
 - Git commit and Git push completed
+- GitHub Actions imports or updates the exam in Supabase
+- GitHub Actions rotates the password if provided
+- GitHub Actions updates the published or unpublished state
 
 ## Repository Structure
 
@@ -124,9 +124,7 @@ tools/
         generate.ts
         validate.ts
         preview.ts
-        apply.ts
-        publish.ts
-        full-pipeline.ts
+        sync-bundles.ts
       lib/
         schema.ts
         slug.ts
@@ -134,7 +132,6 @@ tools/
         prompt-builder.ts
         review-summary.ts
         supabase-admin.ts
-        git.ts
       templates/
         exam-template.yaml
 ```
@@ -259,26 +256,22 @@ Preview fields:
 - password configured yes or no
 - publish target state
 
-### `npm run exam -- apply <bundle>`
+### `npm run exam -- sync-bundles <bundle...>`
 
 Purpose:
 
-- import the validated bundle into Supabase
-- create or update exam metadata, questions, answers, and password state
+- internal CI-only command
+- validate approved bundles inside GitHub Actions
+- import or update exam metadata, questions, answers, and password state
+- synchronize publish state from the bundle file
 
-This command must fail loudly on any remote mismatch or schema error.
+This command must fail loudly on any remote mismatch or schema error and must reject execution outside GitHub Actions.
 
-### `npm run exam -- publish <bundle-or-slug>`
-
-Purpose:
-
-- publish an already-imported exam
-
-### `npm run exam -- full-pipeline --prompt "..."`
+### Push-Triggered Delivery Flow
 
 Purpose:
 
-- run the complete workflow
+- run the complete reviewed delivery workflow through GitHub Actions
 
 Required sequence:
 
@@ -286,12 +279,12 @@ Required sequence:
 2. validate
 3. preview
 4. stop for approval
-5. apply
-6. publish
-7. Git commit
-8. Git push
+5. Git commit
+6. Git push
+7. GitHub Actions sync
+8. GitHub Actions publish-state update
 
-This command must include an explicit human review gate before `apply`.
+The review gate happens before the push. No documented local command may bypass that gate and mutate production directly.
 
 ## Supabase Integration Strategy
 
@@ -345,10 +338,9 @@ The system should then:
 1. generate YAML
 2. generate review summary
 3. present both for approval
-4. after approval, import to Supabase
-5. publish
-6. commit
-7. push
+4. after approval, commit and push
+5. GitHub Actions imports to Supabase
+6. GitHub Actions synchronizes publish state
 
 ## Acceptance Criteria
 
@@ -358,10 +350,10 @@ The CLI design is acceptable only if it supports all of the following:
 - English-only exam output
 - deterministic validation
 - secure password rotation
-- publish control
+- CI-controlled publish control
 - Git-backed audit trail
 - operator-friendly preview
-- a single-command end-to-end flow after approval
+- a single reviewed path from bundle push to GitHub Actions sync
 
 ## Recommended Delivery Phases
 
@@ -379,16 +371,15 @@ The CLI design is acceptable only if it supports all of the following:
 
 ### Phase 3: Delivery Pipeline
 
-- implement backend import endpoint
-- implement `apply`
-- implement `publish`
-- implement `full-pipeline`
+- implement backend import endpoint or service-role-backed CI sync
+- implement `sync-bundles`
+- implement the GitHub Actions workflow
 
 ## Open Decisions Already Resolved
 
 - Tool shape: repository-local CLI
 - Input style: both natural language and structured file
-- End-to-end target: generate, review, import, publish, commit, push
+- End-to-end target: generate, review, commit, push, then let GitHub Actions import and publish
 - Language rule: English-only content and specs
 
 ## Immediate Next Step

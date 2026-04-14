@@ -13,22 +13,33 @@ Recommended flow:
 7. Commit and push the approved bundle to `main`.
 8. Let GitHub Actions run `sync-exam-bundles.yml` to apply and publish the bundle remotely.
 
-Environment:
-
-- `SUPABASE_URL`
-- `SUPABASE_SERVICE_ROLE_KEY`
-
-The CLI is a trusted local operator tool. Do not expose these secrets to the browser.
-
 ## GitHub Actions Mode
 
-The recommended production path is GitHub Actions execution:
+The only supported remote-write path is GitHub Actions execution:
 
 - the local machine handles generation, validation, preview, and review
 - GitHub Actions handles `apply` and publish-state synchronization
 - secrets live in GitHub Actions secrets instead of local shell history
+- `npm run exam -- sync-bundles ...` is a CI-only command and refuses to run outside GitHub Actions
 
 Required repository secrets:
 
 - `SUPABASE_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`
+
+## Local CLI Boundary
+
+Supported local commands:
+
+- `npm run exam -- validate <bundle>`
+- `npm run exam -- preview <bundle>`
+- `npm run exam -- review <bundle>`
+
+Unsupported local commands:
+
+- direct `apply`
+- direct `publish`
+- direct `unpublish`
+- all-in-one local pipeline execution
+
+Those write operations were intentionally removed from the public local operator path to reduce secret sprawl and eliminate environment-specific release drift.
