@@ -25,23 +25,51 @@ const defaultDependencies: SyncBundleDependencies = {
   setBundlePublishState,
 }
 
+function toActionableSyncError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error)
+
+  if (
+    message.includes('column exams.slug does not exist')
+    || message.includes('column exams.metadata does not exist')
+  ) {
+    return new Error(
+      'Remote Supabase schema is missing public.exams.slug and/or public.exams.metadata. Apply migration 20260414012000_add_exam_slug_and_metadata.sql before running sync-bundles.',
+    )
+  }
+
+  if (
+    message.includes('public.upsert_answer_record')
+    || message.includes('public.upsert_exam_access_password_hash')
+  ) {
+    return new Error(
+      'Remote Supabase schema is missing required helper RPCs for exam sync. Ensure migrations 20260409193000_private_helper_functions.sql and 20260409221000_upsert_exam_access_password_hash.sql are applied before running sync-bundles.',
+    )
+  }
+
+  return error instanceof Error ? error : new Error(message)
+}
+
 export async function syncBundle(
   bundlePath: string,
   dependencies: SyncBundleDependencies = defaultDependencies,
 ) {
-  const bundle = dependencies.validateBundleFile(bundlePath)
-  dependencies.reviewBundleFile(bundlePath, true)
-  const applied = await dependencies.applyBundleFile(bundlePath)
-  const publishState = await dependencies.setBundlePublishState(
-    bundlePath,
-    bundle.exam.publish,
-  )
+  try {
+    const bundle = dependencies.validateBundleFile(bundlePath)
+    dependencies.reviewBundleFile(bundlePath, true)
+    const applied = await dependencies.applyBundleFile(bundlePath)
+    const publishState = await dependencies.setBundlePublishState(
+      bundlePath,
+      bundle.exam.publish,
+    )
 
-  return {
-    bundlePath,
-    examSlug: bundle.exam.slug,
-    applied,
-    publishState,
+    return {
+      bundlePath,
+      examSlug: bundle.exam.slug,
+      applied,
+      publishState,
+    }
+  } catch (error) {
+    throw toActionableSyncError(error)
   }
 }
 

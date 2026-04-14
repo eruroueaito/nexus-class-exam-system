@@ -222,3 +222,8 @@ Phase 5
 - 1. 已生成 `content/exams/intro-macroeconomics-basics-01.yaml`
 - 2. 已通过本地 `validate`、`preview`、`review`
 - 3. 本地直接 `apply` / `publish` 被环境缺失阻塞：当前 shell 未提供 `SUPABASE_URL` 和 `SUPABASE_SERVICE_ROLE_KEY`
+- 当前 2026-04-14 题库同步故障修复切片状态：
+- 1. 已定位 GitHub Actions 失败根因：远端 Supabase 缺少 `public.exams.slug`
+- 2. 已发散排查出同类远端兼容性风险：`public.exams.metadata`、`public.upsert_answer_record(...)`、`public.upsert_exam_access_password_hash(...)`
+- 3. 已为 `sync-bundles` 增加更高信号的 migration / RPC 缺失报错，并用测试锁定
+- 4. 下一步是提交并重新推送，让 CI 以更可操作的错误信息再次执行

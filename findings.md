@@ -174,6 +174,13 @@ Three categories of operations cannot safely run in the browser:
 - 方案 A 仍然依赖 GitHub Secrets 中的 `SUPABASE_URL` 和 `SUPABASE_SERVICE_ROLE_KEY`。这不是公开明文存储，但确实属于托管高权限密钥方案，因此 workflow 必须限制触发范围并避免把 secrets 打进日志。
 - 当仓库工作流发生实质变化时，只更新根 README 还不够。`content/`、`supabase/`、`migrations/`、`functions/` 这些“第二入口文档”如果不一起同步，后续接手者仍会按旧流程理解系统。
 - 当决定“只保留 GitHub Actions 这条发布线”时，不能只改 README；还必须同时删除 CLI 入口里的本地发布命令、删掉本地 env 模板，并给 `sync-bundles` 增加 GitHub-Actions-only 保护。否则操作者仍会误以为本地 shell 是受支持的生产发布入口。
+- 本次 `Sync Exam Bundles` 失败的直接根因不是 secrets，而是远端 Supabase schema 落后于当前 CLI 约定：远端 `public.exams` 缺少 `slug` 列，导致导入器在 `getExamBySlug(...).eq('slug', slug)` 的第一步就失败。
+- 该问题的结构性原因是：仓库已有 `20260414012000_add_exam_slug_and_metadata.sql`，但当前 GitHub Actions 只会执行题库同步，不会自动对远端 Supabase 应用 migrations。
+- 与这次失败同类的远端兼容性风险不只 `public.exams.slug` 一个，还包括：
+- 1. `public.exams.metadata`
+- 2. `public.upsert_answer_record(...)`
+- 3. `public.upsert_exam_access_password_hash(...)`
+- 因此 `sync-bundles` 最低限度也需要把底层 PostgREST / RPC 缺失错误翻译成可执行的 migration 指引，否则 CI 只会给出“column does not exist”或“function not found”这类低信号日志。
 
 ---
 *Update this file after every 2 view/browser/search operations*

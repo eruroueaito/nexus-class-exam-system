@@ -167,3 +167,12 @@
 - Removed the documented local `apply/publish/full-pipeline` release path.
 - Kept GitHub Actions as the only supported remote-write boundary for exam bundles.
 - Updated the README, operator guide, content guide, design spec, and implementation plan so they all describe the same CI-first publishing model.
+
+## 2026-04-14 Sync Failure Debugging
+
+- Investigated the failed `Sync Exam Bundles` run for `intro-macroeconomics-basics-01`.
+- Confirmed the remote-write failure happens before question import, at the exam lookup step that filters on `public.exams.slug`.
+- Confirmed the repository already contains the required schema migration:
+  - [supabase/migrations/20260414012000_add_exam_slug_and_metadata.sql](supabase/migrations/20260414012000_add_exam_slug_and_metadata.sql)
+- Confirmed the current GitHub Actions workflow does not apply Supabase migrations before bundle sync, so a remote project can drift behind the CLI contract.
+- Added targeted exam CLI tests and a minimal sync-layer fix so missing remote schema / helper RPCs now produce actionable migration guidance instead of raw PostgREST errors.
