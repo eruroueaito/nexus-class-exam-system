@@ -202,4 +202,10 @@ Phase 5
 - 4. 已新增示例 bundle 与 review 文件
 - 5. 已新增 `exams.slug` 和 `exams.metadata` 所需 migration，以对齐内容文件工作流
 - 6. 当前第一版仍保留一个明确限制：语义题目生成由 AI 会话负责，CLI 负责确定性校验、导入、发布和 Git 交付
+- 当前方案 A 落地切片已完成：
+- 1. 新增 GitHub Actions workflow：`.github/workflows/sync-exam-bundles.yml`
+- 2. 自动同步只监听 `content/exams/*.yaml`，不会误触 `examples/` 目录
+- 3. 新增 `sync-bundles` CLI 命令，供 GitHub Actions 在云端执行 apply/publish
+- 4. workflow 已增加 secrets preflight，缺少 `SUPABASE_URL` 或 `SUPABASE_SERVICE_ROLE_KEY` 时会明确失败
+- 5. 本地仍负责生成、校验、预览和 review；云端负责 apply 和 publish
 - 文档中会显式标记对原始需求的必要修正点，避免后续实现时返工。

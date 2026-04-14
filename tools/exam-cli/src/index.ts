@@ -11,13 +11,14 @@ import { runFullPipeline } from './commands/full-pipeline'
 import { setBundlePublishState } from './commands/publish'
 import { previewBundleFile } from './commands/preview'
 import { reviewBundleFile } from './commands/review'
+import { syncBundles } from './commands/sync-bundles'
 import { validateBundleFile } from './commands/validate'
 
 async function main() {
   const [, , command, bundlePath, ...restArgs] = process.argv
 
   if (!command || !bundlePath) {
-    console.log('Usage: npm run exam -- <validate|preview|review|apply|publish|unpublish|full-pipeline> <bundle> [--approved]')
+    console.log('Usage: npm run exam -- <validate|preview|review|apply|publish|unpublish|sync-bundles|full-pipeline> <bundle> [--approved]')
     process.exit(1)
   }
 
@@ -53,6 +54,11 @@ async function main() {
     case 'full-pipeline': {
       const approved = restArgs.includes('--approved')
       const result = await runFullPipeline(bundlePath, approved)
+      console.log(JSON.stringify(result, null, 2))
+      return
+    }
+    case 'sync-bundles': {
+      const result = await syncBundles([bundlePath, ...restArgs])
       console.log(JSON.stringify(result, null, 2))
       return
     }

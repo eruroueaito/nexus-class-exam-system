@@ -82,6 +82,16 @@
 - Added the schema extension migration:
   - [supabase/migrations/20260414012000_add_exam_slug_and_metadata.sql](supabase/migrations/20260414012000_add_exam_slug_and_metadata.sql)
 
+### 7. GitHub Actions Sync Mode
+- Added the GitHub Actions workflow:
+  - [.github/workflows/sync-exam-bundles.yml](.github/workflows/sync-exam-bundles.yml)
+- Added the CI-oriented command:
+  - `npm run exam -- sync-bundles <bundle...>`
+- Limited automatic syncing to `content/exams/*.yaml` so example files do not trigger production writes.
+- Added an explicit secrets preflight for:
+  - `SUPABASE_URL`
+  - `SUPABASE_SERVICE_ROLE_KEY`
+
 ## Password Chain Audit
 
 ### Secure Path
@@ -108,6 +118,7 @@
 - `npm run exam -- validate content/exams/examples/intro-macro-quiz-01.yaml` passes
 - `npm run exam -- preview content/exams/examples/intro-macro-quiz-01.yaml` passes
 - `npm run exam -- review content/exams/examples/intro-macro-quiz-01.yaml` passes
+- `npm run exam -- sync-bundles ...` correctly fails locally without secrets, which confirms the GitHub Actions execution boundary
 
 ### Targeted Regressions Locked
 - Homepage progress bar is hidden on the assignment list and appears only after entering an exam.
@@ -124,6 +135,7 @@
 - Admin secure-load flow still uses a local fallback when function invocation fails; this is usable for development but not ideal for strict production observability.
 - End-to-end remote admin password rotation smoke testing still depends on a valid admin login credential, not just the admin email.
 - CLI v1 does not embed a standalone LLM provider. AI-generated exam drafting remains conversation-driven; the CLI owns deterministic validation, preview, import, publish, and Git delivery.
+- GitHub Actions sync mode still requires repository secrets to be configured before the first real production bundle push.
 
 ## Important Files
 
@@ -139,4 +151,4 @@
 ## Last Significant Update
 
 - Date: 2026-04-10
-- Theme: repository documentation hardening, English planning docs, and the first executable slice of the repository-local exam CLI workflow
+- Theme: repository documentation hardening, the first executable slice of the repository-local exam CLI, and GitHub Actions-based remote sync execution

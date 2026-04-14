@@ -170,6 +170,8 @@ Three categories of operations cannot safely run in the browser:
 - 在真正实现时，最简单且足够安全的第一版不是新增远端导入 Edge Function，而是让本地 trusted CLI 使用 `service_role` 配合现有 helper RPC 写入答案与密码。这满足“脚本优先”的原则，也避免了为单一运营工具新增一层远端编排。
 - 为了让内容文件有稳定外部标识，`public.exams` 需要显式引入 `slug` 字段，而不是继续把标题当作唯一标识。题库文件工作流天然依赖一个稳定 slug。
 - YAML 示例里一旦题干含有 `:` 且未加引号，`js-yaml` 会直接解析失败。这个问题必须写进内容规范，而不能只靠操作者记忆。
+- 在方案 A 下，最佳职责切分是：本地负责生成与审核，GitHub Actions 负责导入和发布。这样可以减少本地环境卡点，同时避免把高权限 key 暴露到浏览器或仓库文件中。
+- 方案 A 仍然依赖 GitHub Secrets 中的 `SUPABASE_URL` 和 `SUPABASE_SERVICE_ROLE_KEY`。这不是公开明文存储，但确实属于托管高权限密钥方案，因此 workflow 必须限制触发范围并避免把 secrets 打进日志。
 
 ---
 *Update this file after every 2 view/browser/search operations*
