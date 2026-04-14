@@ -153,6 +153,62 @@ describe('NexusShellPage', () => {
     expect(container.querySelector('.progress-bar')).not.toBeNull()
   })
 
+  test('updates the quiz progress bar as the student moves between questions', async () => {
+    startExamMock.mockResolvedValue({
+      exam: {
+        id: 'exam-1',
+        title: 'Microeconomics - Midterm Assessment',
+      },
+      user_name: 'Alice',
+      questions: [
+        {
+          id: 'question-1',
+          type: 'radio',
+          content: {
+            stem: 'Question one?',
+            options: [
+              { id: 'A', text: 'Option A1' },
+              { id: 'B', text: 'Option B1' },
+            ],
+          },
+        },
+        {
+          id: 'question-2',
+          type: 'radio',
+          content: {
+            stem: 'Question two?',
+            options: [
+              { id: 'A', text: 'Option A2' },
+              { id: 'B', text: 'Option B2' },
+            ],
+          },
+        },
+      ],
+    })
+
+    const { container } = render(
+      <MemoryRouter>
+        <NexusShellPage />
+      </MemoryRouter>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: /Microeconomics - Midterm Assessment/ }))
+    fireEvent.change(screen.getByLabelText('Access Password'), {
+      target: { value: '123' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Start Assignment' }))
+
+    await screen.findByText('Question one?')
+
+    const progressInner = container.querySelector('.progress-inner') as HTMLDivElement | null
+    expect(progressInner?.style.width).toBe('50%')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Next Question' }))
+
+    await screen.findByText('Question two?')
+    expect(progressInner?.style.width).toBe('100%')
+  })
+
   test('starts an exam even when the student leaves the name field blank', async () => {
     startExamMock.mockResolvedValue({
       exam: {

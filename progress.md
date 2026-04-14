@@ -184,3 +184,11 @@
 - Traced the root cause to the exam CLI importer, which was writing bundle question ids directly into `public.questions.id` even though the database requires UUID primary keys.
 - Added a failing importer test for stable UUID mapping from bundle ids, then fixed the importer so `exam slug + bundle question id` now deterministically derives a legal UUID for both question rows and answer RPC payloads.
 - Verified the fix with `npm test -- tools/exam-cli/tests/importer.test.ts` and `npm test`, both passing.
+
+## 2026-04-14 Quiz Progress Bar Regression
+
+- Investigated the student quiz progress bar after the user reported it no longer moved with question navigation.
+- Confirmed the regression was in [web/src/features/shell/pages/NexusShellPage.tsx](/Users/Zhuanz/AI coding/Carol's test/web/src/features/shell/pages/NexusShellPage.tsx): the top bar width was bound to `progressByView[view]`, so `quiz` always rendered as a fixed `70%`.
+- Added a failing UI test in [web/src/features/shell/pages/NexusShellPage.test.tsx](/Users/Zhuanz/AI coding/Carol's test/web/src/features/shell/pages/NexusShellPage.test.tsx) that starts a two-question exam and asserts the bar moves from `50%` to `100%` after clicking `Next Question`.
+- Fixed the quiz progress computation so only non-quiz views use the old static stage values; the quiz view now derives width from `(currentQuestionIndex + 1) / activeExam.questions.length`.
+- Verified with `cd web && npm test -- src/features/shell/pages/NexusShellPage.test.tsx` and `cd web && npm test -- src/features/shell/pages`.

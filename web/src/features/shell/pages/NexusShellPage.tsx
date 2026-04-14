@@ -63,6 +63,18 @@ const progressByView: Record<ViewId, number> = {
   admin: 100,
 }
 
+function getProgressPercent(
+  view: ViewId,
+  activeExam: StartedExam | null,
+  currentQuestionIndex: number,
+) {
+  if (view !== 'quiz' || !activeExam || activeExam.questions.length === 0) {
+    return progressByView[view]
+  }
+
+  return ((currentQuestionIndex + 1) / activeExam.questions.length) * 100
+}
+
 const prototypeExamSession: StartedExam = {
   exam: {
     id: 'prototype-microeconomics-midterm',
@@ -196,6 +208,7 @@ export function NexusShellPage() {
         activeExam.questions.length,
       ).padStart(2, '0')}`
     : 'Question 00 / 00'
+  const progressPercent = getProgressPercent(view, activeExam, currentQuestionIndex)
 
   const scorePercent = result ? `${Math.round(result.score * 100)}%` : null
 
@@ -463,7 +476,7 @@ export function NexusShellPage() {
             <div className="progress-bar" aria-hidden="true">
               <div
                 className="progress-inner"
-                style={{ width: `${progressByView[view]}%` }}
+                style={{ width: `${progressPercent}%` }}
               />
             </div>
           ) : null}

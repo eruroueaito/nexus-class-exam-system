@@ -183,6 +183,8 @@ Three categories of operations cannot safely run in the browser:
 - 因此 `sync-bundles` 最低限度也需要把底层 PostgREST / RPC 缺失错误翻译成可执行的 migration 指引，否则 CI 只会给出“column does not exist”或“function not found”这类低信号日志。
 - 在补齐 `public.exams.slug` / `metadata` 迁移后，`Sync Exam Bundles` 暴露出的下一层真实根因是 importer 把 bundle 里的 `q01` 之类外部题目 ID 直接写进 `public.questions.id`。数据库该列是 UUID 主键，所以同步会在题目 upsert 阶段失败。
 - 对 bundle 工作流来说，最稳妥的建模不是强迫作者写 UUID，而是保留人类可读的外部题号，并在导入层基于 `exam slug + question id` 派生稳定 UUID。这样既满足数据库约束，也保证重复同步时题目身份稳定，不会每次重建新题。
+- 当前学生端顶部进度条“不随题号变化”的根因不是样式动画失效，而是状态绑定错误：`quiz` 视图把顶部条宽度绑定到了 `progressByView.quiz = 70`，所以无论是第 1 题还是第 7 题，宽度都恒定在 `70%`。
+- 正确模型是把“页面阶段进度”和“题目答题进度”拆开：`exam-list/result/admin` 可以继续使用阶段型固定值，但 `quiz` 必须按 `currentQuestionIndex + 1` 与总题数计算百分比，否则 UI 文案会显示 `Question 07 / 10`，而顶部进度却停在常量值，形成明显自相矛盾。
 
 ---
 *Update this file after every 2 view/browser/search operations*
