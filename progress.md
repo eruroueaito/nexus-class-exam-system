@@ -114,4 +114,4 @@
 ## Last Significant Update
 
 - Date: 2026-04-10
-- Theme: repository documentation hardening, GitHub-compatible link cleanup, and full English translation of the main development plan for GitHub readers
+- Theme: repository documentation hardening, GitHub-compatible link cleanup, English planning docs, and a new approved design spec for the repository-local exam CLI workflow

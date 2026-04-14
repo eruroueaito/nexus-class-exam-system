@@ -190,4 +190,9 @@ Phase 5
 - 1. `progress.md` 已确认保持英文，不再重复改写
 - 2. `docs/online-exam-system-development-plan.md` 已重写为完整英文版，供 GitHub 阅读与 AI 迁移使用
 - 3. 本轮仅调整 GitHub-facing 文档，不改动本地临时文件或运行配置
+- 当前 exam CLI 设计切片已完成：
+- 1. 用户已批准“仓库内工具 + 自然语言生成 + 标准文件审核 + 自动导入/发布/推送”的总体方向
+- 2. 已写出英文设计 spec：`docs/superpowers/specs/2026-04-14-exam-cli-design.md`
+- 3. 已新增仓库入口文档：`docs/exam-cli-spec.md`
+- 4. 当前仍处于设计阶段，尚未开始 CLI 实现
 - 文档中会显式标记对原始需求的必要修正点，避免后续实现时返工。

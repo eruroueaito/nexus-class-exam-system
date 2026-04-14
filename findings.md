@@ -165,6 +165,8 @@ Three categories of operations cannot safely run in the browser:
 - 这类“目录存在但缺说明”的问题不会立即破坏运行，但会显著降低二次迁移、代码审查和 agent handoff 的效率；最合适的修复方式不是扩写根 README，而是给每个关键目录增加就地说明文件。
 - 本轮 GitHub 仓库页报错的根因不是“文件不存在”，而是仓库 Markdown 中混入了 `/Users/...` 形式的本地绝对路径链接。它们在本地客户端里可解析，但在 GitHub 网页端会落到无效目标并触发 “Error loading page”。
 - 修复这类问题时，不能只补文件本身；还必须把仓库内文档统一改成相对路径链接，否则即使文件已经创建，GitHub 仍然会表现得像“找不到文件”。
+- 对这个项目来说，新增整套试题最适合走“内容文件 + CLI + 受控导入”模式，而不是继续依赖后台手工编辑。后台编辑器应保留为应急修改入口，但不应继续承担主要内容运营工作流。
+- CLI 的最佳第一版形态是仓库内的 TypeScript 工具，配合 `content/exams/*.yaml` 作为题库真相源，并通过一个专用后端导入接口而不是模拟 editor 的多次保存调用。
 
 ---
 *Update this file after every 2 view/browser/search operations*
