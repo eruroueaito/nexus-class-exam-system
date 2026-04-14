@@ -195,4 +195,11 @@ Phase 5
 - 2. 已写出英文设计 spec：`docs/superpowers/specs/2026-04-14-exam-cli-design.md`
 - 3. 已新增仓库入口文档：`docs/exam-cli-spec.md`
 - 4. 当前仍处于设计阶段，尚未开始 CLI 实现
+- 当前 exam CLI 第一批实现已完成：
+- 1. 已新增根级 Node/TypeScript CLI 运行时和 `npm run exam -- ...` 入口
+- 2. 已实现 `validate`、`preview`、`review`、`apply`、`publish`、`unpublish`、`full-pipeline` 命令骨架
+- 3. 已新增英文 YAML schema 文档、operator guide 和 prompt contract
+- 4. 已新增示例 bundle 与 review 文件
+- 5. 已新增 `exams.slug` 和 `exams.metadata` 所需 migration，以对齐内容文件工作流
+- 6. 当前第一版仍保留一个明确限制：语义题目生成由 AI 会话负责，CLI 负责确定性校验、导入、发布和 Git 交付
 - 文档中会显式标记对原始需求的必要修正点，避免后续实现时返工。

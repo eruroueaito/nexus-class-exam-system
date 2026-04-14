@@ -33,6 +33,8 @@ web/node_modules/
 web/dist/
 web/.env
 web/.env.local
+node_modules/
+.env.exam-cli
 supabase/.temp/
 skills/
 skills-lock.json

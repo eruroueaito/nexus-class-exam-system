@@ -167,6 +167,9 @@ Three categories of operations cannot safely run in the browser:
 - 修复这类问题时，不能只补文件本身；还必须把仓库内文档统一改成相对路径链接，否则即使文件已经创建，GitHub 仍然会表现得像“找不到文件”。
 - 对这个项目来说，新增整套试题最适合走“内容文件 + CLI + 受控导入”模式，而不是继续依赖后台手工编辑。后台编辑器应保留为应急修改入口，但不应继续承担主要内容运营工作流。
 - CLI 的最佳第一版形态是仓库内的 TypeScript 工具，配合 `content/exams/*.yaml` 作为题库真相源，并通过一个专用后端导入接口而不是模拟 editor 的多次保存调用。
+- 在真正实现时，最简单且足够安全的第一版不是新增远端导入 Edge Function，而是让本地 trusted CLI 使用 `service_role` 配合现有 helper RPC 写入答案与密码。这满足“脚本优先”的原则，也避免了为单一运营工具新增一层远端编排。
+- 为了让内容文件有稳定外部标识，`public.exams` 需要显式引入 `slug` 字段，而不是继续把标题当作唯一标识。题库文件工作流天然依赖一个稳定 slug。
+- YAML 示例里一旦题干含有 `:` 且未加引号，`js-yaml` 会直接解析失败。这个问题必须写进内容规范，而不能只靠操作者记忆。
 
 ---
 *Update this file after every 2 view/browser/search operations*

@@ -6,6 +6,7 @@
 - Frontend status: student flow, admin auth flow, analytics, exam editor, and password rotation UI are implemented
 - Backend status: Supabase schema, RLS, helper RPCs, and Edge Functions are implemented
 - Deployment status: GitHub Pages workflow is configured; Supabase migrations and functions exist in-repo
+- Content operations status: repository-local exam CLI v1 scaffolding is implemented for validation, preview, review, import planning, publish control, and pipeline gating
 
 ## Completed Milestones
 
@@ -62,6 +63,25 @@
   - `VITE_SUPABASE_PUBLISHABLE_KEY`
 - Verified the live backend returns explanation-bearing `submit-exam` payloads.
 
+### 6. Exam CLI v1
+- Added a root-level Node.js + TypeScript CLI runtime with:
+  - `npm run exam -- validate`
+  - `npm run exam -- preview`
+  - `npm run exam -- review`
+  - `npm run exam -- apply`
+  - `npm run exam -- publish`
+  - `npm run exam -- unpublish`
+  - `npm run exam -- full-pipeline`
+- Added the YAML bundle schema and operator docs:
+  - [docs/exam-content-schema.md](docs/exam-content-schema.md)
+  - [docs/exam-cli-operator-guide.md](docs/exam-cli-operator-guide.md)
+  - [docs/exam-generation-prompt-contract.md](docs/exam-generation-prompt-contract.md)
+- Added example content:
+  - [content/exams/examples/intro-macro-quiz-01.yaml](content/exams/examples/intro-macro-quiz-01.yaml)
+  - [content/exams/examples/intro-macro-quiz-01.review.md](content/exams/examples/intro-macro-quiz-01.review.md)
+- Added the schema extension migration:
+  - [supabase/migrations/20260414012000_add_exam_slug_and_metadata.sql](supabase/migrations/20260414012000_add_exam_slug_and_metadata.sql)
+
 ## Password Chain Audit
 
 ### Secure Path
@@ -84,6 +104,10 @@
 ### Local Quality Gates
 - `cd web && npm test` passes
 - `cd web && npm run build` passes
+- `npm test` passes for exam CLI tests
+- `npm run exam -- validate content/exams/examples/intro-macro-quiz-01.yaml` passes
+- `npm run exam -- preview content/exams/examples/intro-macro-quiz-01.yaml` passes
+- `npm run exam -- review content/exams/examples/intro-macro-quiz-01.yaml` passes
 
 ### Targeted Regressions Locked
 - Homepage progress bar is hidden on the assignment list and appears only after entering an exam.
@@ -99,6 +123,7 @@
 - Bundle size warning remains during Vite production build.
 - Admin secure-load flow still uses a local fallback when function invocation fails; this is usable for development but not ideal for strict production observability.
 - End-to-end remote admin password rotation smoke testing still depends on a valid admin login credential, not just the admin email.
+- CLI v1 does not embed a standalone LLM provider. AI-generated exam drafting remains conversation-driven; the CLI owns deterministic validation, preview, import, publish, and Git delivery.
 
 ## Important Files
 
@@ -114,4 +139,4 @@
 ## Last Significant Update
 
 - Date: 2026-04-10
-- Theme: repository documentation hardening, GitHub-compatible link cleanup, English planning docs, and a new approved design spec for the repository-local exam CLI workflow
+- Theme: repository documentation hardening, English planning docs, and the first executable slice of the repository-local exam CLI workflow

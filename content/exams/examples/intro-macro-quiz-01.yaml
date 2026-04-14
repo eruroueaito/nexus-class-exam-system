@@ -1,0 +1,46 @@
+version: 1
+exam:
+  slug: intro-macro-quiz-01
+  title: Introductory Macroeconomics - Quiz 01
+  language: en
+  topic: introductory macroeconomics
+  access_password: "123"
+  publish: false
+  randomize_questions: true
+  randomize_options: false
+  time_limit_minutes: 15
+
+questions:
+  - id: q01
+    type: radio
+    stem: What does GDP measure?
+    options:
+      - id: A
+        text: Total exports only
+      - id: B
+        text: The market value of final goods and services produced domestically
+      - id: C
+        text: Government revenue only
+      - id: D
+        text: Household savings only
+    correct_answer:
+      - B
+    explanation: GDP measures the market value of final goods and services produced within a country over a period.
+    points: 1
+
+  - id: q02
+    type: radio
+    stem: "Inflation refers to:"
+    options:
+      - id: A
+        text: A sustained increase in the general price level
+      - id: B
+        text: A fall in all prices
+      - id: C
+        text: A permanent increase in real GDP
+      - id: D
+        text: A rise in unemployment
+    correct_answer:
+      - A
+    explanation: Inflation is a sustained increase in the overall price level rather than a one-time change in a single market.
+    points: 1

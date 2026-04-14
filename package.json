@@ -1,0 +1,21 @@
+{
+  "name": "nexus-class-tooling",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "exam": "tsx tools/exam-cli/src/index.ts",
+    "test": "vitest run tools/exam-cli/tests"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.103.0",
+    "js-yaml": "^4.1.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^24.12.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.4"
+  }
+}
