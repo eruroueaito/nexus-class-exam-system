@@ -1,0 +1,182 @@
+version: 1
+exam:
+  slug: intro-macroeconomics-basics-01
+  title: Introduction to Macroeconomics - Basics 01
+  language: en
+  topic: introduction to macroeconomics
+  access_password: "123"
+  publish: true
+  randomize_questions: true
+  randomize_options: false
+  time_limit_minutes: 20
+
+questions:
+  - id: q01
+    type: radio
+    stem: What does gross domestic product GDP primarily measure?
+    options:
+      - id: A
+        text: The total value of all intermediate and final goods produced in the world
+      - id: B
+        text: The market value of final goods and services produced within a country during a period
+      - id: C
+        text: The total amount of money held by households
+      - id: D
+        text: The total profit earned by domestic firms
+    correct_answer:
+      - B
+    explanation: GDP measures the market value of final goods and services produced within a country's borders during a given period.
+    points: 1
+
+  - id: q02
+    type: radio
+    stem: Which of the following is most directly included in the unemployment rate?
+    options:
+      - id: A
+        text: Retired adults who are no longer seeking work
+      - id: B
+        text: Full-time students who do not want a job
+      - id: C
+        text: People without jobs who are actively looking for work
+      - id: D
+        text: Workers who are employed part time by choice
+    correct_answer:
+      - C
+    explanation: The unemployment rate counts people in the labor force who do not have a job and are actively seeking one.
+    points: 1
+
+  - id: q03
+    type: radio
+    stem: Inflation is best defined as which of the following?
+    options:
+      - id: A
+        text: A sustained increase in the general price level
+      - id: B
+        text: A one-time increase in the price of gasoline
+      - id: C
+        text: A sustained fall in real GDP
+      - id: D
+        text: A rise in stock market prices
+    correct_answer:
+      - A
+    explanation: Inflation refers to a sustained increase in the overall price level rather than a change in one specific price.
+    points: 1
+
+  - id: q04
+    type: radio
+    stem: "In a simple macroeconomic model, a recession is typically associated with:"
+    options:
+      - id: A
+        text: Rising output and falling unemployment
+      - id: B
+        text: Falling output and rising unemployment
+      - id: C
+        text: Stable prices and constant output
+      - id: D
+        text: Rising exports only
+    correct_answer:
+      - B
+    explanation: Recessions usually involve declining real output and weaker labor demand, which tends to increase unemployment.
+    points: 1
+
+  - id: q05
+    type: radio
+    stem: What is the main role of central banks in macroeconomics?
+    options:
+      - id: A
+        text: To write national tax laws
+      - id: B
+        text: To control fiscal deficits directly
+      - id: C
+        text: To conduct monetary policy and influence interest rates and liquidity
+      - id: D
+        text: To produce all government goods and services
+    correct_answer:
+      - C
+    explanation: Central banks primarily conduct monetary policy, using tools that influence interest rates, credit conditions, and money supply.
+    points: 1
+
+  - id: q06
+    type: radio
+    stem: "Expansionary fiscal policy usually involves:"
+    options:
+      - id: A
+        text: Higher taxes and lower government spending
+      - id: B
+        text: Lower taxes or higher government spending to raise aggregate demand
+      - id: C
+        text: Selling government bonds to reduce money supply
+      - id: D
+        text: Reducing imports through tariffs only
+    correct_answer:
+      - B
+    explanation: Expansionary fiscal policy raises aggregate demand through increased government spending, reduced taxes, or both.
+    points: 1
+
+  - id: q07
+    type: radio
+    stem: "If a country's real GDP rises while its population stays unchanged, the best conclusion is that:"
+    options:
+      - id: A
+        text: Real GDP per person has increased
+      - id: B
+        text: Inflation must have fallen
+      - id: C
+        text: Nominal GDP must have fallen
+      - id: D
+        text: Unemployment must be zero
+    correct_answer:
+      - A
+    explanation: With population unchanged, a rise in real GDP implies a rise in real GDP per capita.
+    points: 1
+
+  - id: q08
+    type: radio
+    stem: Which statement best describes aggregate demand?
+    options:
+      - id: A
+        text: The total quantity of labor firms want to hire
+      - id: B
+        text: The total planned spending on domestic final goods and services at different price levels
+      - id: C
+        text: The amount of money households save at different incomes
+      - id: D
+        text: The total number of firms in the economy
+    correct_answer:
+      - B
+    explanation: Aggregate demand represents planned total spending on domestic final output across different overall price levels.
+    points: 1
+
+  - id: q09
+    type: radio
+    stem: Which of the following is an example of structural unemployment?
+    options:
+      - id: A
+        text: A worker is temporarily between seasonal jobs
+      - id: B
+        text: A worker loses a job because a recession reduced demand economy-wide
+      - id: C
+        text: A worker's skills no longer match jobs available in the economy
+      - id: D
+        text: A worker chooses to leave one job before starting another next week
+    correct_answer:
+      - C
+    explanation: Structural unemployment happens when worker skills or location do not match available job openings.
+    points: 1
+
+  - id: q10
+    type: radio
+    stem: Why do economists often focus on real GDP instead of nominal GDP when comparing output over time?
+    options:
+      - id: A
+        text: Real GDP excludes services
+      - id: B
+        text: Real GDP adjusts for price changes, making output comparisons more meaningful
+      - id: C
+        text: Real GDP includes imports but nominal GDP does not
+      - id: D
+        text: Real GDP is always larger than nominal GDP
+    correct_answer:
+      - B
+    explanation: Real GDP removes the effect of price changes, so it better reflects changes in actual production over time.
+    points: 1
