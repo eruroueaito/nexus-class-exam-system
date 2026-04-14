@@ -25,6 +25,16 @@ This directory contains the backend HTTP entry points for sensitive runtime oper
 - `_shared/`
   - Shared helpers for request handling, auth checks, service clients, and exam business logic.
 
+## Relationship To The Exam CLI
+
+The first exam CLI version does not add a new Edge Function import endpoint.
+
+Instead:
+
+- local trusted tooling or GitHub Actions uses `service_role`
+- answer and password writes still go through helper RPCs
+- the live student and admin web flows continue to use the existing functions in this directory
+
 ## Security Reminder
 
 Do not bypass the helper RPC pattern just because a direct table query appears simpler. Private answer and password access must stay behind server-side code paths.

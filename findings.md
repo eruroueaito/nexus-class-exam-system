@@ -172,6 +172,7 @@ Three categories of operations cannot safely run in the browser:
 - YAML 示例里一旦题干含有 `:` 且未加引号，`js-yaml` 会直接解析失败。这个问题必须写进内容规范，而不能只靠操作者记忆。
 - 在方案 A 下，最佳职责切分是：本地负责生成与审核，GitHub Actions 负责导入和发布。这样可以减少本地环境卡点，同时避免把高权限 key 暴露到浏览器或仓库文件中。
 - 方案 A 仍然依赖 GitHub Secrets 中的 `SUPABASE_URL` 和 `SUPABASE_SERVICE_ROLE_KEY`。这不是公开明文存储，但确实属于托管高权限密钥方案，因此 workflow 必须限制触发范围并避免把 secrets 打进日志。
+- 当仓库工作流发生实质变化时，只更新根 README 还不够。`content/`、`supabase/`、`migrations/`、`functions/` 这些“第二入口文档”如果不一起同步，后续接手者仍会按旧流程理解系统。
 
 ---
 *Update this file after every 2 view/browser/search operations*

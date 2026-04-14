@@ -151,4 +151,4 @@
 ## Last Significant Update
 
 - Date: 2026-04-10
-- Theme: repository documentation hardening, the first executable slice of the repository-local exam CLI, and GitHub Actions-based remote sync execution
+- Theme: repository documentation sync for the exam CLI era, including content-layer docs, migration notes, and GitHub Actions-based remote exam bundle execution

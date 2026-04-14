@@ -23,6 +23,15 @@ This directory stores ordered SQL migrations for the backend database.
 - RLS and `exam_catalog`
 - private helper RPCs
 - password hash upsert helper
+- exam CLI support fields such as stable `slug` and portable `metadata`
+
+## Newer CLI-Oriented Migration
+
+- `20260414012000_add_exam_slug_and_metadata.sql`
+  - adds `public.exams.slug`
+  - adds `public.exams.metadata`
+  - backfills slug values for existing rows
+  - creates a unique index for slug-based content sync
 
 ## Working Rule
 

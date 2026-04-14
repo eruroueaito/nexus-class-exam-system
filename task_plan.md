@@ -208,4 +208,9 @@ Phase 5
 - 3. 新增 `sync-bundles` CLI 命令，供 GitHub Actions 在云端执行 apply/publish
 - 4. workflow 已增加 secrets preflight，缺少 `SUPABASE_URL` 或 `SUPABASE_SERVICE_ROLE_KEY` 时会明确失败
 - 5. 本地仍负责生成、校验、预览和 review；云端负责 apply 和 publish
+- 当前仓库说明文档同步切片已完成：
+- 1. 根 `README.md` 已补充 exam CLI、content layer 和 GitHub Actions sync workflow
+- 2. `docs/README.md` 已补充 CLI 相关英文规范文档入口
+- 3. `content/exams/README.md` 已写明 production bundles 与 examples 的边界
+- 4. `supabase/README.md`、`supabase/migrations/README.md`、`supabase/functions/README.md` 已补充 CLI 和新 migration 的关系说明
 - 文档中会显式标记对原始需求的必要修正点，避免后续实现时返工。
